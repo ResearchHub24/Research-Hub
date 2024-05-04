@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "369302165748",
+    "project_id": "researchhub-21392",
+    "storage_bucket": "researchhub-21392.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369302165748:android:5e38211ac241c5cb3666a1",
+        "android_client_info": {
+          "package_name": "com.atech.research"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1EABQs8GaOWzONZmS4hyYsRx2_z62-bQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
