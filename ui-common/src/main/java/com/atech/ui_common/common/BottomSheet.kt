@@ -1,4 +1,4 @@
-package com.atech.research.ui.comman
+package com.atech.ui_common.common
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.atech.research.ui.theme.ResearchHubTheme
+import com.atech.ui_common.theme.ResearchHubTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)

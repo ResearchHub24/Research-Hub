@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MiniProject</string>
+    <string name="home">Home</string>
+    <string name="faculties">Faculties</string>
+    <string name="research">Research</string>
+    <string name="wishlist">Wishlist</string>
+</resources>

@@ -2,14 +2,10 @@ package com.atech.research.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.navigation
-import com.atech.research.ui.screens.home.compose.HomeScreen
 import com.atech.research.ui.screens.main.MainScreen
 import com.atech.research.utils.animatedComposable
-import com.atech.research.utils.fadeThroughComposable
 
 enum class TopLevelRoutes(
     val route: String,
@@ -46,11 +42,14 @@ sealed class MainScreenRoutes(
     val route: String,
 ) {
     data object Home : MainScreenRoutes("home")
+    data object Faculties : HomeScreenRoutes("faculties")
+    data object Research : HomeScreenRoutes("research")
+    data object Wishlist : HomeScreenRoutes("wishlist")
 }
 
 
 @Composable
-fun MainScreenNavigation(
+fun MainScreenStudentNavigation(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
     startDestination: String = MainScreenRoutes.Home.route
@@ -61,26 +60,9 @@ fun MainScreenNavigation(
         startDestination = startDestination,
     ) {
         homeScreenGraph(navController = navHostController)
+        facultiesScreenGraph(navController = navHostController)
+        researchScreenGraph(navController = navHostController)
+        wishListScreenGraph(navController = navHostController)
     }
 }
 
-sealed class HomeScreenRoutes(
-    val route: String,
-) {
-    data object HomeScreen : HomeScreenRoutes("home_screen")
-}
-
-fun NavGraphBuilder.homeScreenGraph(
-    navController: NavHostController,
-) {
-    navigation(
-        route = MainScreenRoutes.Home.route,
-        startDestination = HomeScreenRoutes.HomeScreen.route
-    ) {
-        fadeThroughComposable(
-            route = HomeScreenRoutes.HomeScreen.route
-        ) {
-            HomeScreen()
-        }
-    }
-}

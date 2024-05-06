@@ -20,9 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.atech.research.ui.comman.AppBar
+import com.atech.research.ui.common.AppBar
+import com.atech.research.ui.navigation.FacultiesScreenRoutes
 import com.atech.research.ui.navigation.HomeScreenRoutes
-import com.atech.research.ui.navigation.MainScreenNavigation
+import com.atech.research.ui.navigation.MainScreenStudentNavigation
+import com.atech.research.ui.navigation.ResearchScreenRoutes
+import com.atech.research.ui.navigation.WishlistScreenRoutes
 
 
 @Composable
@@ -32,6 +35,9 @@ fun MainScreen(
 ) {
     val visibleScreens = listOf(
         HomeScreenRoutes.HomeScreen.route,
+        FacultiesScreenRoutes.FacultiesScreen.route,
+        WishlistScreenRoutes.WishListScreen.route,
+        ResearchScreenRoutes.ResearchScreen.route
     )
     val backStackEntry by navHostController.currentBackStackEntryAsState()
     Scaffold(
@@ -60,7 +66,7 @@ fun MainScreen(
             }
         }
     ) {
-        MainScreenNavigation(
+        MainScreenStudentNavigation(
             navHostController = navHostController,
             modifier = modifier.padding(
                 start = it.calculateStartPadding(layoutDirection = LayoutDirection.Ltr),

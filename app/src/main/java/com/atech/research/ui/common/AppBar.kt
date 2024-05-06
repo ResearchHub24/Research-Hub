@@ -1,4 +1,4 @@
-package com.atech.research.ui.comman
+package com.atech.research.ui.common
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.MenuBook
+import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Dashboard
+import androidx.compose.material.icons.rounded.PersonPinCircle
+import androidx.compose.material.icons.rounded.ScreenSearchDesktop
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation
@@ -34,10 +36,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
-import com.atech.research.R
+import com.atech.research.ui.navigation.FacultiesScreenRoutes
 import com.atech.research.ui.navigation.HomeScreenRoutes
 import com.atech.research.ui.navigation.MainScreenRoutes
-import com.atech.research.ui.theme.ResearchHubTheme
+import com.atech.research.ui.navigation.ResearchScreenRoutes
+import com.atech.research.ui.navigation.WishlistScreenRoutes
+import com.atech.ui_common.R
+import com.atech.ui_common.theme.ResearchHubTheme
 
 internal data class NavBarModel(
     @StringRes val title: Int,
@@ -63,18 +68,27 @@ fun AppBar(
             isVisible = !isSelectionViewActive,
             destinationName = HomeScreenRoutes.HomeScreen.route
         ),
-//        NavBarModel(
-//            title = R.string.Affirmation,
-//            selectedIcon = Icons.Outlined.Healing,
-//            route = Screen.Affirmation.route,
-//            destinationName = AffirmationScreenRoute.AffirmationScreen.route
-//        ),
-//        NavBarModel(
-//            title = R.string.VisionBoard,
-//            selectedIcon = Icons.Outlined.Square,
-//            route = Screen.VisionBoard.route,
-//            destinationName = VisionBoardScreenRoute.VisionBoardScreen.route
-//        ),
+        NavBarModel(
+            title = R.string.research,
+            selectedIcon = Icons.Rounded.ScreenSearchDesktop,
+            route = MainScreenRoutes.Research.route,
+            isVisible = !isSelectionViewActive,
+            destinationName = ResearchScreenRoutes.ResearchScreen.route
+        ),
+        NavBarModel(
+            title = R.string.faculties,
+            selectedIcon = Icons.Rounded.PersonPinCircle,
+            route = MainScreenRoutes.Faculties.route,
+            isVisible = !isSelectionViewActive,
+            destinationName = FacultiesScreenRoutes.FacultiesScreen.route
+        ),
+        NavBarModel(
+            title = R.string.wishlist,
+            selectedIcon = Icons.Rounded.Checklist,
+            route = MainScreenRoutes.Wishlist.route,
+            isVisible = !isSelectionViewActive,
+            destinationName = WishlistScreenRoutes.WishListScreen.route
+        ),
     )
     Row(
         modifier = modifier

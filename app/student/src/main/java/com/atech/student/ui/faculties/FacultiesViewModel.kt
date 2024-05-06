@@ -1,11 +1,11 @@
-package com.atech.research.ui.screens.home
+package com.atech.student.ui.faculties
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class FacultiesViewModel @Inject constructor(
 
 ) : ViewModel() {
 

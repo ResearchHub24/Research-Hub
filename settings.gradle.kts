@@ -22,3 +22,6 @@ dependencyResolutionManagement {
 rootProject.name = "MiniProject"
 include(":app")
 include(":core")
+include(":ui-common")
+include(":app:teacher")
+include(":app:student")

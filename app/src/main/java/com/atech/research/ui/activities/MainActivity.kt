@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.atech.research.ui.navigation.ResearchHubNavigation
-import com.atech.research.ui.theme.ResearchHubTheme
+import com.atech.ui_common.theme.ResearchHubTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
