@@ -40,8 +40,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

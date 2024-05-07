@@ -3,11 +3,13 @@ package com.atech.core.model
 import androidx.annotation.Keep
 import com.atech.core.utils.DateFormat
 import com.atech.core.utils.convertLongToTime
-import com.atech.core.utils.fromJSON
+import com.google.firebase.firestore.PropertyName
+
+import com.google.gson.annotations.SerializedName
 
 @Keep
 data class TagModel(
-    val createdBy: String,
+    @SerializedName("created_by") val createdBy: String,
     val name: String,
     val created: Long = System.currentTimeMillis(),
 ) {
@@ -20,21 +22,19 @@ data class TagModel(
 data class ResearchModel(
     val title: String,
     val description: String,
-    val createdBy: String,
-    val createdByUID: String,
+    @PropertyName("created_by") @get:PropertyName("created_by") val createdBy: String,
+    @PropertyName("created_by_uid") @get:PropertyName("created_by_uid") val createdByUID: String,
     val created: Long = System.currentTimeMillis(),
-    val deadLine: Long? = null,
-    val tags: String = "",
+    @PropertyName("dead_line") @get:PropertyName("dead_line") val deadLine: Long? = null,
+    val tags: String,
 ) {
+    constructor() : this("", "", "", "", System.currentTimeMillis(), null, "")
+
     val formattedTime: String
-        get() = created.convertLongToTime(DateFormat.DD_MMM_YYYY.format)
+        get() = created.convertLongToTime(DateFormat.DD_MMM_YYYY.format) ?: "No Date"
 
     val formattedDeadline: String
         get() = deadLine?.convertLongToTime(DateFormat.DD_MMM_YYYY.format) ?: "No Deadline"
-
-    val tagsToList: List<TagModel> = fromJSON(tags, List::class.java)
-        ?.filterIsInstance<TagModel>()
-        ?: emptyList()
 }
 
 

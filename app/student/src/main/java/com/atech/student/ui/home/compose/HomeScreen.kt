@@ -15,50 +15,6 @@ import com.atech.ui_common.theme.ResearchHubTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
-    val list = listOf(
-        ResearchModel(
-            title = "Gender Recognitions based on Fingerprints",
-            description = "Some Description",
-            createdBy = "Dr. Aparna Shukla",
-            createdByUID = ""
-        ),
-        ResearchModel(
-            title = "Gender Recognitions based on Fingerprints",
-            description = "Some Description",
-            createdBy = "Dr. Aparna Shukla",
-            createdByUID = ""
-
-        ),
-        ResearchModel(
-            title = "Gender Recognitions based on Fingerprints",
-            description = "Some Description",
-            createdBy = "Dr. Aparna Shukla",
-            createdByUID = ""
-        ),
-        ResearchModel(
-            title = "Gender Recognitions based on Fingerprints",
-            description = "Some Description",
-            createdBy = "Dr. Aparna Shukla",
-            createdByUID = ""
-        ),
-        ResearchModel(
-            title = "Gender Recognitions based on Fingerprints",
-            description = "Some Description",
-            createdBy = "Dr. Aparna Shukla",
-            createdByUID = ""
-        ),
-        ResearchModel(
-            title = "Gender Recognitions based on Fingerprints",
-            description = "Some Description",
-            createdBy = "Dr. Aparna Shukla",
-            createdByUID = ""
-        ), ResearchModel(
-            title = "Gender Recognitions based on Fingerprints",
-            description = "Some Description",
-            createdBy = "Dr. Aparna Shukla",
-            createdByUID = ""
-        )
-    )
     MainContainer(
         title = stringResource(id = R.string.home),
         modifier = modifier
@@ -67,11 +23,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             modifier = Modifier,
             contentPadding = paddingValues
         ) {
-            items(list.size) { index ->
-                ResearchItem(
-                    model = list[index]
-                )
-            }
         }
     }
 }
