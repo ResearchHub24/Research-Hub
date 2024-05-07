@@ -18,14 +18,19 @@ data class TagModel(
 
 @Keep
 data class ResearchModel(
-    val createdBy: String,
     val title: String,
     val description: String,
+    val createdBy: String,
+    val createdByUID: String,
     val created: Long = System.currentTimeMillis(),
-    val tags: String,
+    val deadLine: Long? = null,
+    val tags: String = "",
 ) {
     val formattedTime: String
         get() = created.convertLongToTime(DateFormat.DD_MMM_YYYY.format)
+
+    val formattedDeadline: String
+        get() = deadLine?.convertLongToTime(DateFormat.DD_MMM_YYYY.format) ?: "No Deadline"
 
     val tagsToList: List<TagModel> = fromJSON(tags, List::class.java)
         ?.filterIsInstance<TagModel>()

@@ -15,7 +15,7 @@ data class UserModel(
     val email: String,
     val name: String,
     val photoUrl: String? = null,
-    val userType: UserType = UserType.STUDENTS,
+    val userType: String = UserType.STUDENTS.name,
     private val created: Long = System.currentTimeMillis(),
 ) {
     val formatedTime: String
