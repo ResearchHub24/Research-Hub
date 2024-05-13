@@ -10,14 +10,34 @@ import javax.inject.Inject
 
 
 data class AuthUseCases @Inject constructor(
-    val logInWithGoogle: LogInWithGoogle, val isUserLoggedInUseCase: IsUserLoggedInUseCase
+    val logInWithGoogle: LogInWithGoogle,
+    val isUserLoggedInUseCase: IsUserLoggedInUseCase,
+    val getUserDetailsUseFromAuthCase: GetUserDetailsUseFromAuthCase
 )
 
 data class IsUserLoggedInUseCase @Inject constructor(
     private val auth: FirebaseAuth
 ) {
     operator fun invoke(): String? = auth.currentUser?.uid
+}
 
+data class GetUserDetailsUseFromAuthCase @Inject constructor(
+    private val auth: FirebaseAuth
+) {
+    operator fun invoke(): UserModel? {
+        val user = auth.currentUser
+        return if (user != null) {
+            UserModel(
+                uid = user.uid,
+                email = user.email ?: "",
+                name = user.displayName ?: "",
+                photoUrl = user.photoUrl?.toString() ?: "",
+                userType = ""
+            )
+        } else {
+            null
+        }
+    }
 }
 
 data class LogInWithGoogle @Inject constructor(

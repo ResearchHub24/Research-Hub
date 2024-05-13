@@ -1,10 +1,13 @@
 package com.atech.student.navigation
 
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
+import com.atech.student.ui.home.HomeViewModel
 import com.atech.student.ui.home.compose.HomeScreen
 import com.atech.ui_common.utils.fadeThroughComposable
+import com.atech.ui_common.utils.sharedViewModel
 
 sealed class HomeScreenRoutes(
     val route: String,
@@ -22,8 +25,12 @@ fun NavGraphBuilder.homeScreenGraph(
     ) {
         fadeThroughComposable(
             route = HomeScreenRoutes.HomeScreen.route
-        ) {
-            HomeScreen()
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<HomeViewModel>(navController = navController)
+            val userModel by viewModel.userModel
+            HomeScreen(
+                model = userModel
+            )
         }
     }
 }

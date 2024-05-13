@@ -6,18 +6,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.atech.core.model.ResearchModel
+import com.atech.core.model.UserModel
 import com.atech.ui_common.R
 import com.atech.ui_common.common.MainContainer
-import com.atech.ui_common.common.ResearchItem
+import com.atech.ui_common.common.ProfileImage
 import com.atech.ui_common.theme.ResearchHubTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    model: UserModel? = null
+) {
     MainContainer(
         title = stringResource(id = R.string.home),
-        modifier = modifier
+        modifier = modifier,
+        actions = {
+            ProfileImage(
+                url = model?.photoUrl,
+                onClick = { }
+            )
+        }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier,

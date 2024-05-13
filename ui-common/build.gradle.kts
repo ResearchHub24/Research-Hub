@@ -77,4 +77,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.activity.ktx)
 
+    implementation(libs.coil.kt.coil.compose)
+    implementation(libs.coil.svg)
+
+
 }
