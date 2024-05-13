@@ -1,7 +1,10 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
 }
@@ -21,6 +24,14 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").reader())
+
+        buildConfigField(
+            "String",
+            "FIREBASE_WEB_CLIENT",
+            "\"${properties.getProperty("FIREBASE_WEB_CLIENT")}\""
+        )
     }
     flavorDimensions += "role"
     productFlavors {
@@ -52,6 +63,7 @@ android {
     }
     buildFeatures {
         compose = true
+         buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
@@ -78,6 +90,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.analytics)
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
@@ -89,4 +102,6 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.hilt.navigation.fragment)
     implementation(libs.androidx.navigation.compose)
+
+    implementation(libs.play.service.auth)
 }

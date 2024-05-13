@@ -3,8 +3,10 @@ package com.atech.research.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
+import com.atech.research.ui.screens.login.LoginViewModel
 import com.atech.research.ui.screens.login.screen.LogInScreen
 import com.atech.ui_common.utils.animatedComposable
+import com.atech.ui_common.utils.sharedViewModel
 
 
 sealed class LogInScreenRoutes(
@@ -22,11 +24,17 @@ fun NavGraphBuilder.logInScreenGraph(
         route = ResearchHubNavigation.LogInScreen.route,
         startDestination = LogInScreenRoutes.LogInScreen.route
     ) {
+
         animatedComposable(
             route = LogInScreenRoutes.LogInScreen.route
-        ) {
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<LoginViewModel>(navController = navHostController)
+            val logInState = viewModel.logInState.value
+            val ui = viewModel.ui.value
             LogInScreen(
-                navHostController = navHostController
+                navHostController = navHostController,
+                logInState = logInState,
+                onEvent = viewModel::onEvent
             )
         }
     }

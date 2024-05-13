@@ -1,5 +1,10 @@
 package com.atech.research.ui.screens.login.screen
 
+import android.app.Activity.RESULT_OK
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +19,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,16 +35,63 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.research.R
 import com.atech.research.ui.common.GoogleButton
+import com.atech.research.ui.screens.login.LogInScreenEvents
+import com.atech.research.ui.screens.login.LogInState
+import com.atech.research.ui.screens.login.utils.GoogleAuthUiClient
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
+import com.google.android.gms.auth.api.identity.Identity
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogInScreen(
     modifier: Modifier = Modifier,
-    navHostController: NavHostController = rememberNavController()
+    navHostController: NavHostController = rememberNavController(),
+    logInState: LogInState,
+    onEvent: (LogInScreenEvents) -> Unit
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var logInMessage by rememberSaveable { mutableStateOf("Creating Account...") }
+    var hasClick by rememberSaveable { mutableStateOf(false) }
+    val googleAuthUiClient by lazy {
+        GoogleAuthUiClient(
+            oneTapClient = Identity.getSignInClient(context)
+        )
+    }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result ->
+            if (result.resultCode == RESULT_OK) {
+                coroutineScope.launch {
+                    val signInResult = googleAuthUiClient.signInWithIntent(
+                        data = result.data ?: return@launch
+                    )
+                    onEvent(
+                        LogInScreenEvents.OnSignInResult(
+                            LogInState(
+                                userToken = signInResult.first,
+                                errorMessage = signInResult.second?.message
+                            )
+                        )
+                    )
+                }
+            }
+        })
+    LaunchedEffect(key1 = logInState.errorMessage) {
+        logInState.errorMessage?.let { error ->
+            hasClick = false
+            Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+        }
+    }
+    LaunchedEffect(key1 = logInState) {
+        logInState.userToken?.let { token ->
+            logInMessage = "Signing In... 🔃"
+
+        }
+    }
     MainContainer(
         modifier = modifier, appBarColor = MaterialTheme.colorScheme.primary
     ) { contentPadding ->
@@ -63,8 +122,17 @@ fun LogInScreen(
             ) {
                 Text(text = stringResource(id = R.string.app_welcome))
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-                GoogleButton() {
-
+                GoogleButton(
+                    loadingText = logInMessage
+                ) {
+                    coroutineScope.launch {
+                        val sigInIntentSender = googleAuthUiClient.signIn()
+                        launcher.launch(
+                            IntentSenderRequest.Builder(
+                                sigInIntentSender ?: return@launch
+                            ).build()
+                        )
+                    }
                 }
             }
         }
@@ -75,6 +143,9 @@ fun LogInScreen(
 @Composable
 private fun LogInScreenPreview() {
     ResearchHubTheme {
-        LogInScreen()
+        LogInScreen(
+            logInState = LogInState(),
+            onEvent = {}
+        )
     }
 }
