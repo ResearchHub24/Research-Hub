@@ -79,6 +79,6 @@ dependencies {
 
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.coil.svg)
-
+    implementation(libs.lottie.compose)
 
 }
