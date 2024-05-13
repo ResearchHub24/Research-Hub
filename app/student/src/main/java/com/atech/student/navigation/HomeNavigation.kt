@@ -1,10 +1,10 @@
-package com.atech.research.ui.navigation
+package com.atech.student.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
-import com.atech.research.utils.fadeThroughComposable
 import com.atech.student.ui.home.compose.HomeScreen
+import com.atech.ui_common.utils.fadeThroughComposable
 
 sealed class HomeScreenRoutes(
     val route: String,

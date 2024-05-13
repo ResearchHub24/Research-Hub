@@ -36,11 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
-import com.atech.research.ui.navigation.FacultiesScreenRoutes
-import com.atech.research.ui.navigation.HomeScreenRoutes
-import com.atech.research.ui.navigation.MainScreenRoutes
-import com.atech.research.ui.navigation.ResearchScreenRoutes
-import com.atech.research.ui.navigation.WishlistScreenRoutes
+import com.atech.student.navigation.MainScreenRoutes
 import com.atech.ui_common.R
 import com.atech.ui_common.theme.ResearchHubTheme
 
@@ -66,28 +62,28 @@ fun AppBar(
             selectedIcon = Icons.Rounded.Dashboard,
             route = MainScreenRoutes.Home.route,
             isVisible = !isSelectionViewActive,
-            destinationName = HomeScreenRoutes.HomeScreen.route
+            destinationName = MainScreenRoutes.Home.route
         ),
         NavBarModel(
             title = R.string.research,
             selectedIcon = Icons.Rounded.ScreenSearchDesktop,
             route = MainScreenRoutes.Research.route,
             isVisible = !isSelectionViewActive,
-            destinationName = ResearchScreenRoutes.ResearchScreen.route
+            destinationName = MainScreenRoutes.Research.route
         ),
         NavBarModel(
             title = R.string.faculties,
             selectedIcon = Icons.Rounded.PersonPinCircle,
             route = MainScreenRoutes.Faculties.route,
             isVisible = !isSelectionViewActive,
-            destinationName = FacultiesScreenRoutes.FacultiesScreen.route
+            destinationName = MainScreenRoutes.Faculties.route
         ),
         NavBarModel(
             title = R.string.wishlist,
             selectedIcon = Icons.Rounded.Checklist,
             route = MainScreenRoutes.Wishlist.route,
             isVisible = !isSelectionViewActive,
-            destinationName = WishlistScreenRoutes.WishListScreen.route
+            destinationName = MainScreenRoutes.Wishlist.route
         ),
     )
     Row(

@@ -15,24 +15,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.atech.research.navigation.MainScreenStudentNavigation
 import com.atech.research.ui.common.AppBar
-import com.atech.research.ui.navigation.FacultiesScreenRoutes
-import com.atech.research.ui.navigation.HomeScreenRoutes
-import com.atech.research.ui.navigation.MainScreenStudentNavigation
-import com.atech.research.ui.navigation.ResearchScreenRoutes
-import com.atech.research.ui.navigation.WishlistScreenRoutes
+import com.atech.student.navigation.FacultiesScreenRoutes
+import com.atech.student.navigation.HomeScreenRoutes
+import com.atech.student.navigation.ResearchScreenRoutes
+import com.atech.student.navigation.WishlistScreenRoutes
+import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.theme.ResearchHubTheme
 
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    navHostController: NavHostController = rememberNavController(),
 ) {
+    val navHostController = rememberNavController()
     val visibleScreens = listOf(
         HomeScreenRoutes.HomeScreen.route,
         FacultiesScreenRoutes.FacultiesScreen.route,
@@ -74,5 +77,13 @@ fun MainScreen(
                 bottom = it.calculateBottomPadding()
             )
         )
+    }
+}
+
+@Preview
+@Composable
+private fun MainScreenPreview() {
+    ResearchHubTheme {
+        MainScreen()
     }
 }

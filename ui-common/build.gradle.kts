@@ -61,8 +61,12 @@ dependencies {
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.richtext.commonmark)
+    implementation(libs.richtext.ui.material3)
+
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.hilt.navigation.fragment)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.activity.ktx)
 
 }

@@ -1,13 +1,16 @@
 package com.atech.ui_common.common
 
-import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,33 +20,42 @@ import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PublicOff
 import androidx.compose.material.icons.rounded.PublishedWithChanges
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.atech.core.model.ResearchModel
 import com.atech.core.model.TagModel
 import com.atech.core.utils.fromJsonList
+import com.atech.ui_common.R
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ResearchItem(
-    modifier: Modifier = Modifier, model: ResearchModel, onClick: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    model: ResearchModel,
+    onClick: () -> Unit = {}
 ) {
-    Log.d("AAA", "ResearchItem: $model")
-    Surface(modifier = Modifier
-        .fillMaxWidth()
-        .clickable { onClick() }) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        border = BorderStroke(.5.dp, MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f))
+    ) {
         Card(
             modifier = modifier
                 .fillMaxWidth()
@@ -58,13 +70,16 @@ fun ResearchItem(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = MaterialTheme.spacing.medium),
+                    .padding(
+                        horizontal = MaterialTheme.spacing.medium,
+                        vertical = MaterialTheme.spacing.small
+                    ),
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
                     modifier = Modifier,
-                    text = model.title,
-                    style = MaterialTheme.typography.titleLarge,
+                    text = model.title ?: "No Title",
+                    style = MaterialTheme.typography.titleMedium,
                     maxLines = 4,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -82,7 +97,7 @@ fun ResearchItem(
                     )
                     Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
                     Text(
-                        text = model.createdBy,
+                        text = model.createdBy ?: "No Author",
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -102,7 +117,7 @@ fun ResearchItem(
                         )
                     )
                     Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
-                    model.tags.let {
+                    model.tags?.let {
                         val tags = fromJsonList<TagModel>(it)
                         Text(
                             modifier = Modifier.basicMarquee(),
@@ -111,14 +126,12 @@ fun ResearchItem(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                    }
-//                    Text(
-//                        modifier = Modifier.basicMarquee(),
-//                        text = model.tagsToList.joinToString(".").take(5).ifEmpty { "No Tags" },
-//                        style = MaterialTheme.typography.labelSmall,
-//                        maxLines = 1,
-//                        overflow = TextOverflow.Ellipsis
-//                    )
+                    } ?: Text(
+                        text = "No Tags",
+                        style = MaterialTheme.typography.labelSmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
                 Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
                 Row(
@@ -164,7 +177,16 @@ fun ResearchItem(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                    ) {
+                        Text(text = stringResource(id = R.string.view_details))
+                    }
+                }
             }
         }
     }
@@ -177,7 +199,9 @@ fun ResearchItemPreview() {
     ResearchHubTheme {
         ResearchItem(
             model = ResearchModel(
-
+                title = "Finding the best way to learn",
+                createdBy = "John Doe",
+                created = System.currentTimeMillis(),
             )
         )
     }
