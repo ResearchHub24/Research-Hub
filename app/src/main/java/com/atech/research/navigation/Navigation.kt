@@ -16,22 +16,25 @@ enum class TopLevelRoutes(
     val route: String,
 ) {
     HOME("home"),
+    LOGIN("login")
 }
 
 sealed class ResearchHubNavigation(
     val route: String
 ) {
     data object MainScreen : ResearchHubNavigation(TopLevelRoutes.HOME.route)
+    data object LogInScreen : ResearchHubNavigation(TopLevelRoutes.LOGIN.route)
 }
 
 @Composable
 fun ResearchHubNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    startDestination: ResearchHubNavigation = ResearchHubNavigation.MainScreen
 ) {
     NavHost(
         navController = navController,
-        startDestination = ResearchHubNavigation.MainScreen.route,
+        startDestination = startDestination.route,
         modifier = modifier
     ) {
         animatedComposable(
@@ -39,6 +42,7 @@ fun ResearchHubNavigation(
         ) {
             MainScreen()
         }
+        logInScreenGraph(navController)
     }
 }
 

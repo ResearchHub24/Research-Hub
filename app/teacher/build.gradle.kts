@@ -16,6 +16,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
+    flavorDimensions += "role"
+    productFlavors {
+        create("student") {
+            dimension = "role"
+        }
+        create("teacher") {
+            dimension = "role"
+        }
+    }
 
     buildTypes {
         release {

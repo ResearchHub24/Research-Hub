@@ -32,7 +32,8 @@ class MainActivity : ComponentActivity() {
                             WindowInsets(
                                 bottom = innerPadding.calculateBottomPadding(),
                             )
-                        )
+                        ),
+                        startDestination = ResearchHubNavigation.LogInScreen
                     )
                 }
             }

@@ -22,6 +22,17 @@ android {
             useSupportLibrary = true
         }
     }
+    flavorDimensions += "role"
+    productFlavors {
+        create("student") {
+            dimension = "role"
+            versionNameSuffix = "-student"
+        }
+        create("teacher") {
+            dimension = "role"
+            versionNameSuffix = "-teacher"
+        }
+    }
 
     buildTypes {
         release {
