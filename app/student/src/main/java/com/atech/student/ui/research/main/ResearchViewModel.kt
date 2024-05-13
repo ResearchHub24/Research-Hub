@@ -5,13 +5,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.atech.core.model.ResearchModel
-import com.atech.core.use_cases.ResearchUseCases
+import com.atech.core.use_cases.FireStoreUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ResearchViewModel @Inject constructor(
-    useCases: ResearchUseCases
+    useCases: FireStoreUseCases
 ) : ViewModel() {
     val research = useCases.getAllResearchUseCase()
 

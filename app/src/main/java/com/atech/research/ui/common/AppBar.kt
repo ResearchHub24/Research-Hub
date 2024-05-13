@@ -36,7 +36,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
+import com.atech.student.navigation.FacultiesScreenRoutes
+import com.atech.student.navigation.HomeScreenRoutes
 import com.atech.student.navigation.MainScreenRoutes
+import com.atech.student.navigation.ResearchScreenRoutes
+import com.atech.student.navigation.WishlistScreenRoutes
 import com.atech.ui_common.R
 import com.atech.ui_common.theme.ResearchHubTheme
 
@@ -62,28 +66,28 @@ fun AppBar(
             selectedIcon = Icons.Rounded.Dashboard,
             route = MainScreenRoutes.Home.route,
             isVisible = !isSelectionViewActive,
-            destinationName = MainScreenRoutes.Home.route
+            destinationName = HomeScreenRoutes.HomeScreen.route
         ),
         NavBarModel(
             title = R.string.research,
             selectedIcon = Icons.Rounded.ScreenSearchDesktop,
             route = MainScreenRoutes.Research.route,
             isVisible = !isSelectionViewActive,
-            destinationName = MainScreenRoutes.Research.route
+            destinationName = ResearchScreenRoutes.ResearchScreen.route
         ),
         NavBarModel(
             title = R.string.faculties,
             selectedIcon = Icons.Rounded.PersonPinCircle,
             route = MainScreenRoutes.Faculties.route,
             isVisible = !isSelectionViewActive,
-            destinationName = MainScreenRoutes.Faculties.route
+            destinationName = FacultiesScreenRoutes.FacultiesScreen.route
         ),
         NavBarModel(
             title = R.string.wishlist,
             selectedIcon = Icons.Rounded.Checklist,
             route = MainScreenRoutes.Wishlist.route,
             isVisible = !isSelectionViewActive,
-            destinationName = MainScreenRoutes.Wishlist.route
+            destinationName = WishlistScreenRoutes.WishListScreen.route
         ),
     )
     Row(

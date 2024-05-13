@@ -30,7 +30,6 @@ fun NavGraphBuilder.logInScreenGraph(
         ) { entry ->
             val viewModel = entry.sharedViewModel<LoginViewModel>(navController = navHostController)
             val logInState = viewModel.logInState.value
-            val ui = viewModel.ui.value
             LogInScreen(
                 navHostController = navHostController,
                 logInState = logInState,

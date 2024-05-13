@@ -1,5 +1,7 @@
 package com.atech.core.module
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,5 +22,9 @@ object FirebaseModule {
 
     @Provides
     fun provideRealtimeDatabase(): FirebaseDatabase = Firebase.database
+
+
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
 
 }

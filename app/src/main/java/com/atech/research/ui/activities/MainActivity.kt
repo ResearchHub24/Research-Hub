@@ -12,12 +12,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.atech.core.use_cases.IsUserLoggedInUseCase
 import com.atech.research.navigation.ResearchHubNavigation
 import com.atech.ui_common.theme.ResearchHubTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var isUserLogIn: IsUserLoggedInUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +38,10 @@ class MainActivity : ComponentActivity() {
                                 bottom = innerPadding.calculateBottomPadding(),
                             )
                         ),
-                        startDestination = ResearchHubNavigation.LogInScreen
+                        startDestination = if (isUserLogIn.invoke() == null)
+                            ResearchHubNavigation.LogInScreen
+                        else
+                            ResearchHubNavigation.MainScreen
                     )
                 }
             }

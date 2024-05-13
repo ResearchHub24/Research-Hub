@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.research.R
+import com.atech.research.navigation.ResearchHubNavigation
 import com.atech.research.ui.common.GoogleButton
 import com.atech.research.ui.screens.login.LogInScreenEvents
 import com.atech.research.ui.screens.login.LogInState
@@ -61,25 +62,25 @@ fun LogInScreen(
             oneTapClient = Identity.getSignInClient(context)
         )
     }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartIntentSenderForResult(),
-        onResult = { result ->
-            if (result.resultCode == RESULT_OK) {
-                coroutineScope.launch {
-                    val signInResult = googleAuthUiClient.signInWithIntent(
-                        data = result.data ?: return@launch
-                    )
-                    onEvent(
-                        LogInScreenEvents.OnSignInResult(
-                            LogInState(
-                                userToken = signInResult.first,
-                                errorMessage = signInResult.second?.message
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult(),
+            onResult = { result ->
+                if (result.resultCode == RESULT_OK) {
+                    coroutineScope.launch {
+                        val signInResult = googleAuthUiClient.signInWithIntent(
+                            data = result.data ?: return@launch
+                        )
+                        onEvent(
+                            LogInScreenEvents.OnSignInResult(
+                                LogInState(
+                                    token = signInResult.first,
+                                    errorMessage = signInResult.second?.message
+                                )
                             )
                         )
-                    )
+                    }
                 }
-            }
-        })
+            })
     LaunchedEffect(key1 = logInState.errorMessage) {
         logInState.errorMessage?.let { error ->
             hasClick = false
@@ -87,9 +88,17 @@ fun LogInScreen(
         }
     }
     LaunchedEffect(key1 = logInState) {
-        logInState.userToken?.let { token ->
+        logInState.token?.let { token ->
             logInMessage = "Signing In... 🔃"
-
+            onEvent(LogInScreenEvents.TriggerAuth(token))
+        }
+        logInState.uId?.let {
+            logInMessage = "Sign Done"
+            navHostController.navigate(ResearchHubNavigation.MainScreen.route) {
+                popUpTo(ResearchHubNavigation.LogInScreen.route) {
+                    inclusive = true
+                }
+            }
         }
     }
     MainContainer(
@@ -143,9 +152,6 @@ fun LogInScreen(
 @Composable
 private fun LogInScreenPreview() {
     ResearchHubTheme {
-        LogInScreen(
-            logInState = LogInState(),
-            onEvent = {}
-        )
+        LogInScreen(logInState = LogInState(), onEvent = {})
     }
 }

@@ -10,5 +10,6 @@ package com.atech.research.ui.screens.login
 sealed interface LogInScreenEvents {
 
     data class OnSignInResult(val state: LogInState) : LogInScreenEvents
-    data object SetUID : LogInScreenEvents
+
+    data class TriggerAuth(val token: String) : LogInScreenEvents
 }

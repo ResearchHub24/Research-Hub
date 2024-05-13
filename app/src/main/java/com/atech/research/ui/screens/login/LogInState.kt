@@ -9,6 +9,7 @@ package com.atech.research.ui.screens.login
 
 data class LogInState(
     val isNewUser: Boolean = false,
-    val userToken: String? = null,
-    val errorMessage: String? = null
+    val token: String? = null,
+    val errorMessage: String? = null,
+    val uId : String? = null
 )
