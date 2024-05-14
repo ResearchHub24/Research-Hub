@@ -38,10 +38,10 @@ class MainActivity : ComponentActivity() {
                                 bottom = innerPadding.calculateBottomPadding(),
                             )
                         ),
-                        startDestination = if (isUserLogIn.invoke() == null)
+                        startDestination = /*if (isUserLogIn.invoke() == null)
                             ResearchHubNavigation.LogInScreen
-                        else
-                            ResearchHubNavigation.MainScreen
+                        else*/
+                        ResearchHubNavigation.MainScreen
                     )
                 }
             }

@@ -22,11 +22,14 @@ class ResearchViewModel @Inject constructor(
     val clickItem: State<ResearchModel?> get() = _clickItem
     private val _isExist = mutableStateOf(false)
     val isExist: State<Boolean> get() = _isExist
+    private val _isFromArgs = mutableStateOf(false)
+    val isFromArgs: State<Boolean> get() = _isFromArgs
 
 
     fun onEvent(event: ResearchScreenEvents) {
         when (event) {
             is ResearchScreenEvents.OnItemClick -> {
+                _isFromArgs.value = false
                 _clickItem.value = event.model
                 checkExistence(event.model)
             }
@@ -34,6 +37,7 @@ class ResearchViewModel @Inject constructor(
             ResearchScreenEvents.ResetClickItem -> {
                 _clickItem.value = null
                 _isExist.value = false
+                _isFromArgs.value = false
             }
 
             is ResearchScreenEvents.OnAddToWishList -> viewModelScope.launch {
@@ -43,6 +47,15 @@ class ResearchViewModel @Inject constructor(
                     wishListUseCases.deleteById(event.model.key ?: "")
                 }
                 checkExistence(event.model)
+            }
+
+            is ResearchScreenEvents.SetDataFromArgs -> {
+                viewModelScope.launch {
+                    val model = wishListUseCases.getById(event.key)
+                    _clickItem.value = model
+                    checkExistence(model ?: return@launch)
+                    _isFromArgs.value = true
+                }
             }
         }
     }

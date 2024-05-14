@@ -9,7 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchModel
+import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.ui_common.R
 import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
@@ -21,7 +24,8 @@ import com.atech.ui_common.theme.spacing
 @Composable
 fun WishlistScreen(
     modifier: Modifier = Modifier,
-    items: List<ResearchModel> = emptyList()
+    navController: NavHostController = rememberNavController(),
+    items: List<ResearchModel> = emptyList(),
 ) {
     MainContainer(
         title = stringResource(id = R.string.wishlist),
@@ -41,7 +45,9 @@ fun WishlistScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             items(items.size) { index ->
-                ResearchItem(model = items[index])
+                ResearchItem(model = items[index]) {
+                    navController.navigate(ResearchScreenRoutes.DetailScreen.route + "?key=${items[index].key}")
+                }
             }
         }
     }

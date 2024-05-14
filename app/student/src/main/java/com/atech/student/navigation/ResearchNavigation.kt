@@ -4,8 +4,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.atech.student.ui.research.detail.compose.ResearchDetailScreen
+import com.atech.student.ui.research.main.ResearchScreenEvents
 import com.atech.student.ui.research.main.ResearchViewModel
 import com.atech.student.ui.research.main.compose.ResearchScreen
 import com.atech.ui_common.utils.animatedComposable
@@ -39,16 +42,28 @@ fun NavGraphBuilder.researchScreenGraph(
         }
 
         animatedComposable(
-            route = ResearchScreenRoutes.DetailScreen.route
+            route = ResearchScreenRoutes.DetailScreen.route + "?key={key}",
+            arguments = listOf(
+                navArgument("key") {
+                    type = NavType.StringType
+                    defaultValue = null
+                    nullable = true
+                }
+            )
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navController = navController)
+            entry.arguments?.getString("key")?.let {
+                viewModel.onEvent(ResearchScreenEvents.SetDataFromArgs(it))
+            }
             val clickedItem by viewModel.clickItem
             val isExistInWishList by viewModel.isExist
+            val isFromArgs by viewModel.isFromArgs
             ResearchDetailScreen(
                 onEvent = viewModel::onEvent,
                 navController = navController,
                 model = clickedItem ?: return@animatedComposable,
-                isExistInWishList = isExistInWishList
+                isExistInWishList = isExistInWishList,
+                isFromArgs = isFromArgs
             )
         }
     }

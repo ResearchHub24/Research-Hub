@@ -47,6 +47,7 @@ fun ResearchDetailScreen(
     navController: NavController = rememberNavController(),
     onEvent: (ResearchScreenEvents) -> Unit = {},
     isExistInWishList: Boolean = false,
+    isFromArgs: Boolean = false,
     model: ResearchModel
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -61,6 +62,10 @@ fun ResearchDetailScreen(
             IconButton(
                 onClick = {
                     onEvent.invoke(ResearchScreenEvents.OnAddToWishList(model, !isExistInWishList))
+                    if (isFromArgs) {
+                        onEvent.invoke(ResearchScreenEvents.ResetClickItem)
+                        navController.popBackStack()
+                    }
                 }
             ) {
                 Icon(
