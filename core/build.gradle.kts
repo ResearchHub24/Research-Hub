@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    id("androidx.room")
 }
 
 android {
@@ -15,6 +16,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        room {
+            schemaDirectory("$projectDir/schemas")
+        }
     }
     flavorDimensions += "role"
     productFlavors {
@@ -57,6 +62,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
+
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)

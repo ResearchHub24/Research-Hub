@@ -1,10 +1,14 @@
 package com.atech.student.navigation
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
+import com.atech.student.ui.wishlist.WishListViewModel
 import com.atech.student.ui.wishlist.compose.WishlistScreen
 import com.atech.ui_common.utils.fadeThroughComposable
+import com.atech.ui_common.utils.sharedViewModel
 
 
 sealed class WishlistScreenRoutes(
@@ -23,8 +27,12 @@ fun NavGraphBuilder.wishListScreenGraph(
     ) {
         fadeThroughComposable(
             route = WishlistScreenRoutes.WishListScreen.route
-        ) {
-            WishlistScreen()
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<WishListViewModel>(navController = navController)
+            val items by viewModel.getAllResearch.collectAsState(initial = emptyList())
+            WishlistScreen(
+                items = items
+            )
         }
     }
 }

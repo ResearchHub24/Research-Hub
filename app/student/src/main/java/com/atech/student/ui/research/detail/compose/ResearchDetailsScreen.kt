@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,27 +45,30 @@ import com.atech.ui_common.theme.spacing
 fun ResearchDetailScreen(
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController(),
-    events: (ResearchScreenEvents) -> Unit = {},
-    model: ResearchModel,
+    onEvent: (ResearchScreenEvents) -> Unit = {},
+    isExistInWishList: Boolean = false,
+    model: ResearchModel
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    MainContainer(
-        title = stringResource(id = R.string.blank),
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    MainContainer(title = stringResource(id = R.string.blank),
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         onNavigationClick = {
-            events.invoke(ResearchScreenEvents.ResetClickItem)
+            onEvent.invoke(ResearchScreenEvents.ResetClickItem)
             navController.popBackStack()
         },
         scrollBehavior = scrollBehavior,
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(
+                onClick = {
+                    onEvent.invoke(ResearchScreenEvents.OnAddToWishList(model, !isExistInWishList))
+                }
+            ) {
                 Icon(
-                    imageVector = Icons.Rounded.BookmarkBorder,
+                    imageVector = if (isExistInWishList) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
                     contentDescription = stringResource(id = R.string.wishlist)
                 )
             }
-        }
-    ) { paddingValue ->
+        }) { paddingValue ->
         Column(
             modifier = Modifier
                 .verticalScroll(state = rememberScrollState())
@@ -84,8 +88,7 @@ fun ResearchDetailScreen(
                     text = "Tags", style = MaterialTheme.typography.labelSmall
                 )
                 Row(
-                    modifier = Modifier
-                        .horizontalScroll(rememberScrollState()),
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
                 ) {
                     tags.forEach { item ->
@@ -99,9 +102,7 @@ fun ResearchDetailScreen(
             MarkDown(markDown = model.description ?: "")
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RectangleShape
+                onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth(), shape = RectangleShape
             ) {
                 Text(text = stringResource(id = R.string.apply))
             }
@@ -126,9 +127,7 @@ fun DetailScreenPreview() {
     ResearchHubTheme {
         ResearchDetailScreen(
             model = ResearchModel(
-                title = "This is only for preview",
-                description = "des",
-                tags = toJSON(
+                title = "This is only for preview", description = "des", tags = toJSON(
                     listOf(
                         TagModel(createdBy = "", name = "Tag 1"),
                         TagModel(createdBy = "", name = "Tag 1"),
@@ -141,9 +140,7 @@ fun DetailScreenPreview() {
                         TagModel(createdBy = "", name = "Tag 1"),
                         TagModel(createdBy = "", name = "Tag 1"),
                     )
-                ),
-                created = System.currentTimeMillis(),
-                createdBy = "Dr. Aparna Sukla"
+                ), created = System.currentTimeMillis(), createdBy = "Dr. Aparna Sukla"
             ),
         )
     }

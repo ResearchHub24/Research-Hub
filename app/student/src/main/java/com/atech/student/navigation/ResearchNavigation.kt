@@ -1,12 +1,14 @@
 package com.atech.student.navigation
 
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
 import com.atech.student.ui.research.detail.compose.ResearchDetailScreen
 import com.atech.student.ui.research.main.ResearchViewModel
 import com.atech.student.ui.research.main.compose.ResearchScreen
+import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.fadeThroughComposable
 import com.atech.ui_common.utils.sharedViewModel
 
@@ -36,15 +38,17 @@ fun NavGraphBuilder.researchScreenGraph(
             )
         }
 
-        fadeThroughComposable(
+        animatedComposable(
             route = ResearchScreenRoutes.DetailScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navController = navController)
-            val clickedItem = viewModel.clickItem.value
+            val clickedItem by viewModel.clickItem
+            val isExistInWishList by viewModel.isExist
             ResearchDetailScreen(
-                events = viewModel::onEvent,
+                onEvent = viewModel::onEvent,
                 navController = navController,
-                model = clickedItem ?: return@fadeThroughComposable
+                model = clickedItem ?: return@animatedComposable,
+                isExistInWishList = isExistInWishList
             )
         }
     }

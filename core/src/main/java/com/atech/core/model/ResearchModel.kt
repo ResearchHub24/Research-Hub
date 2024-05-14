@@ -27,6 +27,7 @@ data class ResearchModel(
     val created: Long? = null,
     @PropertyName("dead_line") @get:PropertyName("dead_line") val deadLine: Long? = null,
     val tags: String? = null,
+    val key: String? = null
 ) {
     val formattedTime: String
         get() = created?.convertLongToTime(DateFormat.DD_MMM_YYYY.format) ?: "No Date"
