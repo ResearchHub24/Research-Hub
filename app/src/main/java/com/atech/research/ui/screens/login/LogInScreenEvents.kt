@@ -12,4 +12,6 @@ sealed interface LogInScreenEvents {
     data class OnSignInResult(val state: LogInState) : LogInScreenEvents
 
     data class TriggerAuth(val token: String) : LogInScreenEvents
+
+    data object OnSkipClick : LogInScreenEvents
 }

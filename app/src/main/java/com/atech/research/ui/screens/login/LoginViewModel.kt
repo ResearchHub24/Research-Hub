@@ -1,17 +1,20 @@
 package com.atech.research.ui.screens.login
 
+import android.content.SharedPreferences
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atech.core.use_cases.AuthUseCases
+import com.atech.core.utils.PrefKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authUseCases: AuthUseCases
+    private val authUseCases: AuthUseCases,
+    private val pref: SharedPreferences
 ) : ViewModel() {
 
     private val _logInState = mutableStateOf(LogInState())
@@ -41,6 +44,10 @@ class LoginViewModel @Inject constructor(
         when (event) {
             is LogInScreenEvents.OnSignInResult -> _logInState.value = event.state
             is LogInScreenEvents.TriggerAuth -> logIn(event.token)
+            LogInScreenEvents.OnSkipClick -> pref.edit()
+                .apply {
+                    putBoolean(PrefKeys.IS_LOGIN_SKIP.value, true)
+                }.apply()
         }
     }
 }
