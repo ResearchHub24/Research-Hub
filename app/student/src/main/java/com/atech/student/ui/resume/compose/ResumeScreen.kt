@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,72 +56,96 @@ fun ResumeScreen(
         onNavigationClick = {
             navController.popBackStack()
         }) { contentPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(contentPadding)
-                .verticalScroll(state = rememberScrollState())
         ) {
-            CardSection(title = "About") {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text(
-                            text = state.userData.name, style = MaterialTheme.typography.titleMedium
-                        )
-                        Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
-                        Text(
-                            text = state.userData.email, style = MaterialTheme.typography.bodyMedium
-                        )
-                        Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
-                        Text(
-                            text = state.userData.phone ?: "",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.captionColor
-                        )
-                    }
-                    EditButton()
-                }
-            }
-            Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
-            CardSection(
-                title = "Education"
-            ) {
-                state.userData.educationDetails?.let { educationDetails ->
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            item(key = "about") {
+                CardSection(title = "About") {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        items(fromJsonList<EducationDetails>(educationDetails)) { item ->
-                            EducationDetailsItems(
-                                title = "${item.degree} ${item.startYear} - ${item.endYear ?: "Present"} (${item.percentage})",
-                                des = item.institute
+                        Column {
+                            Text(
+                                text = state.userData.name,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
+                            Text(
+                                text = state.userData.email,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
+                            Text(
+                                text = state.userData.phone ?: "",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.captionColor
                             )
                         }
-                        item(key = "add_education") {
+                        EditButton()
+                    }
+                }
+                Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
+            }
+            item(key = "education") {
+                CardSection(
+                    title = "Education"
+                ) {
+                    state.userData.educationDetails?.let { educationDetails ->
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                        ) {
+                            fromJsonList<EducationDetails>(educationDetails).forEach { item ->
+                                EducationDetailsItems(
+                                    title = "${item.degree} ${item.startYear} - ${item.endYear ?: "Present"} (${item.percentage})",
+                                    des = item.institute
+                                )
+                            }
+//                        item(key = "add_education") {
                             AddButton(
                                 title = "Add Education",
                             )
+//                        }
                         }
                     }
                 }
+                Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
             }
-            Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
-            CardSection(
-                title = "Skills"
-            ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            item(key = "skills") {
+                CardSection(
+                    title = "Skills"
                 ) {
-                    item(key = "add_skills") {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
                         AddButton(
                             title = "Add Skills",
                         )
                     }
+                }
+                Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
+            }
+            item(key = "apply") {
+                TextButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.spacing.medium),
+                    onClick = {},
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    shape = RoundedCornerShape(MaterialTheme.spacing.medium)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                        text = "Proceed to application"
+                    )
                 }
             }
         }
