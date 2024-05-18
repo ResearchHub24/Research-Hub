@@ -1,8 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.google.gms.google.services)
-    id("com.google.dagger.hilt.android")
+    id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp")
     id("androidx.room")
 }
@@ -69,4 +68,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.gson)
+}
+hilt {
+    enableAggregatingTask = true
 }

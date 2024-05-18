@@ -5,6 +5,7 @@ import com.atech.core.utils.DateFormat
 import com.atech.core.utils.convertLongToTime
 import com.google.firebase.firestore.Exclude
 
+@Keep
 enum class UserType {
     PROFESSORS,
     STUDENTS,
