@@ -33,6 +33,7 @@ import com.atech.core.model.ResearchModel
 import com.atech.core.model.TagModel
 import com.atech.core.utils.fromJsonList
 import com.atech.core.utils.toJSON
+import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.student.ui.research.main.ResearchScreenEvents
 import com.atech.ui_common.R
 import com.atech.ui_common.common.MainContainer
@@ -107,7 +108,9 @@ fun ResearchDetailScreen(
             MarkDown(markDown = model.description ?: "")
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             Button(
-                onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth(), shape = RectangleShape
+                onClick = {
+                    navController.navigate(ResearchScreenRoutes.ResumeScreen.route)
+                }, modifier = Modifier.fillMaxWidth(), shape = RectangleShape
             ) {
                 Text(text = stringResource(id = R.string.apply))
             }

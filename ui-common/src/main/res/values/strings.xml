@@ -12,4 +12,6 @@
     <string name="no_research_found">No Research Found</string>
     <string name="no_faculties_found">No Faculties Available</string>
     <string name="no_wishlist_found">Empty Wishlist</string>
+    <string name="resume">Resume</string>
+    <string name="add_education">Add Education</string>
 </resources>

@@ -98,6 +98,16 @@ data class SystemTheme(
 
 val LocalTheme = compositionLocalOf { SystemTheme(lightColorScheme) }
 
+
+val ColorScheme.captionColor: Color
+    @Composable
+    get() = onSurface.copy(alpha = 0.6f)
+
+val ColorScheme.dividerOrCardColor: Color
+    @Composable
+    get() = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
+
+
 @Composable
 fun ResearchHubTheme(
     systemTheme: SystemTheme = SystemTheme(
