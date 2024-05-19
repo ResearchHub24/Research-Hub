@@ -47,6 +47,7 @@ import com.atech.ui_common.R
 import com.atech.ui_common.common.EditText
 import com.atech.ui_common.common.EditTextEnhance
 import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.common.TextItem
 import com.atech.ui_common.common.TitleComposable
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
@@ -72,21 +73,24 @@ fun AddEditScreen(
         navController.popBackStack()
     }) { paddingValue ->
         when (state.screenType) {
-            AddEditScreenType.DETAILS -> {
+            AddEditScreenType.DETAILS ->
                 EditPersonalDetails(
                     modifier = Modifier.padding(paddingValue),
                     model = state.personalDetails,
                     onEvent = onEvent
                 )
-            }
 
-            AddEditScreenType.EDUCATION -> {
+            AddEditScreenType.EDUCATION ->
                 AddOrEditEducation(
                     modifier = Modifier.padding(paddingValue),
                 )
-            }
 
-            AddEditScreenType.SKILL -> {}
+
+            AddEditScreenType.SKILL -> AddSkillList(
+                modifier = Modifier.padding(paddingValue),
+                skillList = state.skillList,
+                onEvent = onEvent
+            )
         }
     }
 }
@@ -331,11 +335,49 @@ fun AddOrEditEducation(
     }
 }
 
+@Composable
+fun AddSkillList(
+    modifier: Modifier = Modifier,
+    skillList: List<String>,
+    onEvent: (ResumeScreenEvents) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(MaterialTheme.spacing.medium)
+    ) {
+        var query by remember { mutableStateOf("") }
+        EditText(modifier = Modifier.fillMaxWidth(),
+            value = query,
+            placeholder = "Skill",
+            supportingMessage = "require",
+            isError = false,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Person, contentDescription = null
+                )
+            },
+            onValueChange = { value ->
+                query = value
+                onEvent.invoke(ResumeScreenEvents.FilterResult(value))
+            },
+            clearIconClick = {}
+        )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            items(skillList) {
+                TextItem(text = it)
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 private fun AddEditScreenPreview() {
     ResearchHubTheme {
-        AddOrEditEducation()
+        AddSkillList(skillList = listOf(), onEvent = {})
     }
 }

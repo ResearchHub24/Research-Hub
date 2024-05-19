@@ -18,6 +18,6 @@ enum class RemoteConfigKeys(val value: String) {
     SKILLS("SKILLS")
 }
 
-enum class AppErrors {
+enum class TAGS {
     ERROR
 }

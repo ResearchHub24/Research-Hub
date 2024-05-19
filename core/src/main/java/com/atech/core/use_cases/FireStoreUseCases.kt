@@ -3,7 +3,7 @@ package com.atech.core.use_cases
 import android.util.Log
 import com.atech.core.model.ResearchModel
 import com.atech.core.model.UserModel
-import com.atech.core.utils.AppErrors
+import com.atech.core.utils.TAGS
 import com.atech.core.utils.CollectionName
 import com.atech.core.utils.State
 import com.google.firebase.firestore.FirebaseFirestore
@@ -97,7 +97,7 @@ data class GetUserDataUseCase @Inject constructor(
                 .await()
                 .toObject(UserModel::class.java)
         } catch (e: Exception) {
-            Log.e(AppErrors.ERROR.name, "invoke: $e")
+            Log.e(TAGS.ERROR.name, "invoke: $e")
             null
         }
 }

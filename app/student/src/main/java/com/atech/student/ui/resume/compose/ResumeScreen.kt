@@ -147,7 +147,10 @@ fun ResumeScreen(
                     ) {
                         AddButton(
                             title = stringResource(R.string.add_skills),
-                        )
+                        ){
+                            onEvents(ResumeScreenEvents.OnAddSkillClick)
+                            navController.navigate(ResearchScreenRoutes.EditScreen.route)
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))

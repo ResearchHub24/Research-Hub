@@ -6,6 +6,6 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false
-    id("com.google.firebase.crashlytics") version "3.0.0" apply false
+    id("com.google.firebase.crashlytics") version "3.0.1" apply false
     id("androidx.room") version "2.6.1" apply false
 }

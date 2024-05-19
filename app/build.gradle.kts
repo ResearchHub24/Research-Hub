@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -110,7 +111,6 @@ dependencies {
     implementation(libs.firebase.analytics)
     releaseImplementation(libs.firebase.crashlytics)
     implementation(libs.firebase.message)
-
     implementation(libs.play.service.auth)
 
 

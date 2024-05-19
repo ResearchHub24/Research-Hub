@@ -11,6 +11,7 @@ enum class AddEditScreenType {
  */
 data class AddScreenState(
     val screenType: AddEditScreenType = AddEditScreenType.DETAILS,
-    val personalDetails: Triple<String, String, String> = Triple("", "", "")
+    val personalDetails: Triple<String, String, String> = Triple("", "", ""),
+    val skillList: List<String> = listOf(),
 )
 
