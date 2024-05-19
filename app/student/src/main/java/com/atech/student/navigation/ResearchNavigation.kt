@@ -12,6 +12,7 @@ import com.atech.student.ui.research.main.ResearchScreenEvents
 import com.atech.student.ui.research.main.ResearchViewModel
 import com.atech.student.ui.research.main.compose.ResearchScreen
 import com.atech.student.ui.resume.ResumeViewModel
+import com.atech.student.ui.resume.compose.AddEditScreen
 import com.atech.student.ui.resume.compose.ResumeScreen
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.fadeThroughComposable
@@ -23,6 +24,7 @@ sealed class ResearchScreenRoutes(
     data object ResearchScreen : ResearchScreenRoutes("research_screen")
     data object DetailScreen : ResearchScreenRoutes("detail_screen")
     data object ResumeScreen : ResearchScreenRoutes("resume_screen")
+    data object EditScreen : ResearchScreenRoutes("edit_screen")
 }
 
 fun NavGraphBuilder.researchScreenGraph(
@@ -76,7 +78,19 @@ fun NavGraphBuilder.researchScreenGraph(
             val state by viewModel.resumeState
             ResumeScreen(
                 state = state,
-                navController = navController
+                navController = navController,
+                onEvents = viewModel::onEvent
+            )
+        }
+        animatedComposable(
+            route = ResearchScreenRoutes.EditScreen.route
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<ResumeViewModel>(navController = navController)
+            val state by viewModel.addScreenState
+            AddEditScreen(
+                navController = navController,
+                state = state,
+                onEvent = viewModel::onEvent
             )
         }
     }

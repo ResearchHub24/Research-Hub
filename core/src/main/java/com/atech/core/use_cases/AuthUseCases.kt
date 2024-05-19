@@ -22,21 +22,22 @@ data class IsUserLoggedInUseCase @Inject constructor(
 }
 
 data class GetUserDetailsUseFromAuthCase @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val getUserUseCase: GetUserDataUseCase
 ) {
-    operator fun invoke(): UserModel? {
+    suspend operator fun invoke(
+        fromDatabase: Boolean = false
+    ): UserModel? = if (!fromDatabase && auth.currentUser != null) {
         val user = auth.currentUser
-        return if (user != null) {
-            UserModel(
-                uid = user.uid,
-                email = user.email ?: "",
-                name = user.displayName ?: "",
-                photoUrl = user.photoUrl?.toString() ?: "",
-                userType = ""
-            )
-        } else {
-            null
-        }
+        UserModel(
+            uid = user!!.uid,
+            email = user.email ?: "",
+            name = user.displayName ?: "",
+            photoUrl = user.photoUrl?.toString() ?: "",
+            userType = ""
+        )
+    } else {
+        getUserUseCase.invoke(auth.currentUser?.uid ?: "")
     }
 }
 

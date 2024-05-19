@@ -90,7 +90,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.analytics)
+
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
@@ -106,7 +106,14 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    releaseImplementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.message)
+
     implementation(libs.play.service.auth)
+
+
 }
 hilt {
     enableAggregatingTask = true

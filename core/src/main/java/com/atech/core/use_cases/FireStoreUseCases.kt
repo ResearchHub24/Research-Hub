@@ -1,7 +1,9 @@
 package com.atech.core.use_cases
 
+import android.util.Log
 import com.atech.core.model.ResearchModel
 import com.atech.core.model.UserModel
+import com.atech.core.utils.AppErrors
 import com.atech.core.utils.CollectionName
 import com.atech.core.utils.State
 import com.google.firebase.firestore.FirebaseFirestore
@@ -82,4 +84,20 @@ data class HasUserUseCase @Inject constructor(
             state(State.Error(e))
         }
     }
+}
+
+data class GetUserDataUseCase @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    suspend operator fun invoke(uid: String): UserModel? =
+        try {
+            db.collection(CollectionName.USER.value)
+                .document(uid)
+                .get()
+                .await()
+                .toObject(UserModel::class.java)
+        } catch (e: Exception) {
+            Log.e(AppErrors.ERROR.name, "invoke: $e")
+            null
+        }
 }

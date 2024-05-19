@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+  <entry>
+    <key>SKILLS</key>
+    <value>["Algorithm Design","Artificial Intelligence","Assembly Language","Big Data","Blockchain","C","C++","Cloud Computing","Computer Networks","Computer Vision","Cryptography","Cybersecurity","Data Mining","Data Structures","Databases","Docker","Git","HTML","Internet of Things (IoT)","Java","JavaFX","JavaScript","Jira","Machine Learning","Mobile App Development","Natural Language Processing","NodeJS","NumPy","Operating Systems","PostgreSQL","Python","React","Redis","Robot Framework","Search Engine Optimization","Software Engineering","Software Testing","Spring framework","Test-driven development","UI/UX Design","Web Development","XML"]</value>
+  </entry>
+</defaults>

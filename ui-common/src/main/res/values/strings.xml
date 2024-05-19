@@ -13,5 +13,10 @@
     <string name="no_faculties_found">No Faculties Available</string>
     <string name="no_wishlist_found">Empty Wishlist</string>
     <string name="resume">Resume</string>
+    <string name="personal_details">Personal Details</string>
+    <string name="education">Education</string>
     <string name="add_education">Add Education</string>
+    <string name="skills">Skills</string>
+    <string name="add_skills">Add Skills</string>
+    <string name="proceed_to_application">Proceed to application</string>
 </resources>

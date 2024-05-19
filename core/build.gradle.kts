@@ -45,6 +45,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -53,10 +56,13 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    releaseImplementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.remote.config)
     implementation(libs.firebase.firestore)
-    implementation(libs.firebase.database)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

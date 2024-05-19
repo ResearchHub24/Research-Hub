@@ -3,7 +3,6 @@ package com.atech.core.model
 import androidx.annotation.Keep
 import com.atech.core.utils.DateFormat
 import com.atech.core.utils.convertLongToTime
-import com.atech.core.utils.toJSON
 import com.google.firebase.firestore.Exclude
 
 @Keep
@@ -15,9 +14,9 @@ enum class UserType {
 
 @Keep
 data class UserModel(
-    val uid: String,
-    val email: String,
-    val name: String,
+    val uid: String = "",
+    val email: String = "",
+    val name: String = "",
     val photoUrl: String? = null,
     val userType: String = UserType.STUDENTS.name,
     val password: String? = null,
@@ -45,12 +44,27 @@ val DUMMY_EDUCATION_DETAILS = listOf(
 )
 val EMPTY_USER = UserModel(
     uid = "",
-    email = "xyz@gmail.com",
-    name = "XYZ",
+    email = "",
+    name = "",
     photoUrl = "",
     userType = "",
     password = "",
     created = 0,
-    phone = "+91 1234567890",
-    educationDetails = toJSON(DUMMY_EDUCATION_DETAILS),
+    phone = "",
+    educationDetails = "@Keep\n" +
+            "data class UserModel(\n" +
+            "    val uid: String = \"\",\n" +
+            "    val email: String = \"\",\n" +
+            "    val name: String = \"\",\n" +
+            "    val photoUrl: String? = null,\n" +
+            "    val userType: String = UserType.STUDENTS.name,\n" +
+            "    val password: String? = null,\n" +
+            "    val created: Long = System.currentTimeMillis(),\n" +
+            "    val phone: String? = null,\n" +
+            "    val educationDetails: String? = null,\n" +
+            ") {\n" +
+            "    @get:Exclude\n" +
+            "    val formatedTime: String\n" +
+            "        get() = created.convertLongToTime(DateFormat.DD_MMM_YYYY.format)\n" +
+            "}",
 )
