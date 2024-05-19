@@ -19,4 +19,11 @@
     <string name="skills">Skills</string>
     <string name="add_skills">Add Skills</string>
     <string name="proceed_to_application">Proceed to application</string>
+    <string name="name">Name</string>
+    <string name="enter_your_full_name">Enter your full name</string>
+    <string name="name_is_required">Name is required</string>
+    <string name="email">Email</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="save_details">Save Details</string>
+    <string name="phone_number_is_required">Phone number is required</string>
 </resources>

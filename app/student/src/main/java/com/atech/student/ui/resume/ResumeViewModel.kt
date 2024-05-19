@@ -38,7 +38,7 @@ class ResumeViewModel @Inject constructor(
 
     fun onEvent(event: ResumeScreenEvents) {
         when (event) {
-            is ResumeScreenEvents.OnPersonalDetailsClick -> {
+            ResumeScreenEvents.OnPersonalDetailsClick -> {
                 _addScreenState.value = AddScreenState(
                     screenType = AddEditScreenType.DETAILS,
                     personalDetails = Triple(
@@ -60,6 +60,13 @@ class ResumeViewModel @Inject constructor(
             }
 
             ResumeScreenEvents.UpdateUserDetails -> updateUserDetails()
+
+            ResumeScreenEvents.OnAddEditEducationClick -> {
+                _addScreenState.value = AddScreenState(
+                    screenType = AddEditScreenType.EDUCATION,
+                )
+            }
+
         }
     }
 }

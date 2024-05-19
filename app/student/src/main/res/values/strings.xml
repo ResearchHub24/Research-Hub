@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="name">Name</string>
-    <string name="enter_your_full_name">Enter your full name</string>
-    <string name="name_is_required">Name is required</string>
-    <string name="email">Email</string>
-    <string name="contact_number">Contact Number</string>
-    <string name="save_details">Save Details</string>
-    <string name="phone_number_is_required">Phoe number is required</string>
+
 </resources>

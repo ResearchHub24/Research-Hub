@@ -90,6 +90,62 @@ fun EditText(
     )
 }
 
+@Composable
+fun EditTextEnhance(
+    modifier: Modifier = Modifier,
+    value: String,
+    placeholder: String,
+    onValueChange: (String) -> Unit = {},
+    clearIconClick: () -> Unit = {},
+    isError: Boolean = false,
+    errorMessage: String = "",
+    supportingText: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    focusRequester: FocusRequester? = null,
+    enable: Boolean = true,
+    colors: TextFieldColors = textFieldColors(),
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = {
+        if (value.isNotBlank()) Icon(imageVector = Icons.Outlined.Clear,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.clickable {
+                clearIconClick()
+            })
+    },
+    maxLines: Int = Int.MAX_VALUE,
+    readOnly: Boolean = false,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+) {
+
+    LaunchedEffect(focusRequester) {
+        awaitFrame()
+        focusRequester?.requestFocus()
+    }
+
+    OutlinedTextField(
+        modifier = modifier.let {
+            if (focusRequester == null) it
+            else it.focusRequester(focusRequester)
+        },
+        value = value,
+        maxLines = maxLines,
+        onValueChange = onValueChange,
+        label = {
+            Text(text = placeholder)
+        },
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        colors = colors,
+        isError = isError,
+        supportingText = supportingText,
+        keyboardOptions = keyboardOptions,
+        enabled = enable,
+        readOnly = readOnly,
+        interactionSource = interactionSource
+    )
+}
+
 //@Composable
 //fun MutableInteractionSource.clickable(
 //    action: () -> Unit
@@ -118,10 +174,9 @@ fun textFieldColors() = TextFieldDefaults.colors(
 @Composable
 fun EditTextPreview() {
     ResearchHubTheme {
-        EditText(
+        EditTextEnhance(
             modifier = Modifier.fillMaxWidth(),
             value = "", placeholder = "Subject Name",
-            supportingMessage = "Required",
         )
     }
 }

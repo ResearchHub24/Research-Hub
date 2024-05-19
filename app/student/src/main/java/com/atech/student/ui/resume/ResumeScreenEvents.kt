@@ -8,4 +8,6 @@ interface ResumeScreenEvents {
     ) : ResumeScreenEvents
 
     data object UpdateUserDetails : ResumeScreenEvents
+
+    data object OnAddEditEducationClick : ResumeScreenEvents
 }

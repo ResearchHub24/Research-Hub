@@ -1,6 +1,5 @@
 package com.atech.student.ui.resume.compose
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -62,14 +61,10 @@ fun ResumeScreen(
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
     LaunchedEffect(lifecycleState) {
         when (lifecycleState) {
-            Lifecycle.State.RESUMED -> {
-                Log.d("AAA", "ResumeScreen: resume")
+            Lifecycle.State.RESUMED ->
                 onEvents(ResumeScreenEvents.UpdateUserDetails)
-            }
 
-            else -> {
-
-            }
+            else -> {}
         }
     }
     MainContainer(
@@ -103,7 +98,7 @@ fun ResumeScreen(
                             )
                             Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
                             Text(
-                                text = state.userData.phone ?: "",
+                                text = state.userData.phone ?: "Add phone number",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.captionColor
                             )
@@ -121,12 +116,6 @@ fun ResumeScreen(
                     title = stringResource(R.string.education)
                 ) {
                     state.userData.educationDetails?.let { educationDetails ->
-                        if (educationDetails.isEmpty()) {
-                            AddButton(
-                                title = stringResource(R.string.add_education),
-                            )
-                            return@let
-                        }
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
@@ -137,10 +126,13 @@ fun ResumeScreen(
                                     des = item.institute
                                 )
                             }
-                            AddButton(
-                                title = stringResource(R.string.add_education),
-                            )
                         }
+                    }
+                    AddButton(
+                        title = stringResource(R.string.add_education),
+                    ) {
+                        onEvents(ResumeScreenEvents.OnAddEditEducationClick)
+                        navController.navigate(ResearchScreenRoutes.EditScreen.route)
                     }
                 }
                 Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))

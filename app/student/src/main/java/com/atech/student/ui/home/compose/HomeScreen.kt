@@ -6,7 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.UserModel
+import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.ui_common.R
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.ProfileImage
@@ -16,7 +19,8 @@ import com.atech.ui_common.theme.ResearchHubTheme
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    model: UserModel? = null
+    model: UserModel? = null,
+    navController: NavHostController = rememberNavController()
 ) {
     MainContainer(
         title = stringResource(id = R.string.home),
@@ -24,7 +28,13 @@ fun HomeScreen(
         actions = {
             ProfileImage(
                 url = model?.photoUrl,
-                onClick = { }
+                onClick = {
+                    if (model != null) {
+                        navController.navigate(
+                            ResearchScreenRoutes.ResumeScreen.route
+                        )
+                    }
+                }
             )
         }
     ) { paddingValues ->
