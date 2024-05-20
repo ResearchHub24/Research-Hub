@@ -19,7 +19,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,8 +44,11 @@ import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.student.ui.resume.ResumeState
 import com.atech.ui_common.R
+import com.atech.ui_common.common.CustomIconButton
+import com.atech.ui_common.common.EducationDetailsItems
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.TextItem
+import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.captionColor
 import com.atech.ui_common.theme.spacing
@@ -61,30 +64,27 @@ fun ResumeScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+    val context = LocalContext.current
     LaunchedEffect(lifecycleState) {
         when (lifecycleState) {
-            Lifecycle.State.RESUMED ->
-                onEvents(ResumeScreenEvents.UpdateUserDetails)
+            Lifecycle.State.RESUMED -> onEvents(ResumeScreenEvents.UpdateUserDetails)
 
             else -> {}
         }
     }
-    MainContainer(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    MainContainer(modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         title = stringResource(R.string.resume),
         scrollBehavior = scrollBehavior,
         onNavigationClick = {
             navController.popBackStack()
         }) { contentPadding ->
         LazyColumn(
-            modifier = Modifier
-                .padding(contentPadding)
+            modifier = Modifier.padding(contentPadding)
         ) {
             item(key = "about") {
                 CardSection(title = stringResource(R.string.personal_details)) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -105,7 +105,7 @@ fun ResumeScreen(
                                 color = MaterialTheme.colorScheme.captionColor
                             )
                         }
-                        EditButton {
+                        CustomIconButton {
                             onEvents(ResumeScreenEvents.OnPersonalDetailsClick)
                             navController.navigate(ResearchScreenRoutes.EditScreen.route)
                         }
@@ -122,18 +122,40 @@ fun ResumeScreen(
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                         ) {
-                            fromJsonList<EducationDetails>(educationDetails).forEach { item ->
-                                EducationDetailsItems(
-                                    title = "${item.degree} ${item.startYear} - ${item.endYear ?: "Present"} (${item.percentage})",
-                                    des = item.institute
-                                )
-                            }
+                            fromJsonList<EducationDetails>(educationDetails).sortedByDescending { it.startYear.toInt() }
+                                .forEachIndexed { index, item ->
+                                    EducationDetailsItems(
+                                        title = "${item.degree}, ${item.startYear} - ${item.endYear ?: "Present"} ${item.percentage.let { if (it?.toDouble() == 0.0) "" else "( $it )" }}",
+                                        des = item.institute,
+                                        onDeleteClick = {
+                                            onEvents(
+                                                ResumeScreenEvents.OnEducationSave(
+                                                    pos = index
+                                                ) { message ->
+                                                    if (message != null) {
+                                                        toast(context, message)
+                                                        return@OnEducationSave
+                                                    }
+                                                    toast(context, "Deleted successfully !!")
+                                                }
+                                            )
+                                        },
+                                        onEditClick = {
+                                            onEvents(
+                                                ResumeScreenEvents.OnAddEditEducationClick(
+                                                    item, index
+                                                )
+                                            )
+                                            navController.navigate(ResearchScreenRoutes.EditScreen.route)
+                                        }
+                                    )
+                                }
                         }
                     }
                     AddButton(
                         title = stringResource(R.string.add_education),
                     ) {
-                        onEvents(ResumeScreenEvents.OnAddEditEducationClick)
+                        onEvents(ResumeScreenEvents.OnAddEditEducationClick())
                         navController.navigate(ResearchScreenRoutes.EditScreen.route)
                     }
                 }
@@ -154,8 +176,7 @@ fun ResumeScreen(
                                     endIcon = Icons.Outlined.Delete,
                                     onEndIconClick = {
 
-                                    }
-                                )
+                                    })
                             }
                         }
                     }
@@ -169,12 +190,9 @@ fun ResumeScreen(
                 Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
             }
             item(key = "apply") {
-                ApplyButton(
-                    text = stringResource(R.string.proceed_to_application),
-                    action = {
+                ApplyButton(text = stringResource(R.string.proceed_to_application), action = {
 
-                    }
-                )
+                })
             }
         }
     }
@@ -199,20 +217,17 @@ fun ApplyButton(
         enabled = enable
     ) {
         Text(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium),
-            text = text
+            modifier = Modifier.padding(MaterialTheme.spacing.medium), text = text
         )
     }
 }
 
 @Composable
 private fun AddButton(
-    title: String,
-    action: () -> Unit = {}
+    title: String, action: () -> Unit = {}
 ) {
     TextButton(
-        onClick = action,
-        modifier = Modifier.fillMaxWidth()
+        onClick = action, modifier = Modifier.fillMaxWidth()
     ) {
         Icon(
             modifier = Modifier.padding(end = MaterialTheme.spacing.medium),
@@ -223,45 +238,6 @@ private fun AddButton(
     }
 }
 
-@Composable
-private fun EducationDetailsItems(
-    modifier: Modifier = Modifier,
-    title: String,
-    des: String,
-    onEditClick: () -> Unit = {}
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(
-            modifier = modifier
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
-            Text(
-                text = des,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.captionColor
-            )
-        }
-        EditButton(action = onEditClick)
-    }
-}
-
-@Composable
-private fun EditButton(
-    action: () -> Unit = {}
-) {
-    IconButton(onClick = action) {
-        Icon(imageVector = Icons.Outlined.Edit, contentDescription = "edit")
-    }
-}
 
 @Composable
 fun CardSection(

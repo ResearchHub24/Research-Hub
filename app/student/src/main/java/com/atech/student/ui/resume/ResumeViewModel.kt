@@ -25,6 +25,7 @@ class ResumeViewModel @Inject constructor(
 
     private val _addScreenState = mutableStateOf(AddScreenState())
     val addScreenState: State<AddScreenState> get() = _addScreenState
+    private var educationClickItemPos: Int? = null
 
 
     init {
@@ -77,10 +78,17 @@ class ResumeViewModel @Inject constructor(
 
             ResumeScreenEvents.UpdateUserDetails -> updateUserDetails()
 
-            ResumeScreenEvents.OnAddEditEducationClick -> {
+            is ResumeScreenEvents.OnAddEditEducationClick -> {
                 _addScreenState.value = AddScreenState(
                     screenType = AddEditScreenType.EDUCATION,
-                )
+                ).let { addScreenState ->
+                    event.model?.let { m ->
+                        educationClickItemPos = event.position
+                        addScreenState.copy(
+                            details = m
+                        )
+                    } ?: addScreenState
+                }
             }
 
             is ResumeScreenEvents.OnEducationEdit -> {
@@ -133,15 +141,26 @@ class ResumeViewModel @Inject constructor(
                     val educationList = fromJsonList<EducationDetails>(
                         _resumeState.value.userData.educationDetails ?: ""
                     ).toMutableList()
-                    educationList.add(
-                        _addScreenState.value.details
-                    )
+                    if (event.pos == null) {
+                        if (educationClickItemPos == null)
+                            educationList.add(
+                                _addScreenState.value.details
+                            )
+                        else {
+                            educationList[educationClickItemPos!!] =
+                                _addScreenState.value.details
+                        }
+                    } else {
+                        educationList.removeAt(event.pos)
+                    }
                     authUseCases.saveDetails.saveEducationData(
                         educationDetails = educationList,
                         onComplete = { exception ->
+                            educationClickItemPos = null
                             event.onComplete.invoke(exception?.message)
                         }
                     )
+                    updateUserDetails()
                 }
 
 
@@ -159,6 +178,7 @@ class ResumeViewModel @Inject constructor(
                             event.onComplete.invoke(exception?.message)
                         }
                     )
+                    updateUserDetails()
                 }
         }
     }

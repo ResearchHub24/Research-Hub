@@ -15,12 +15,17 @@ interface ResumeScreenEvents {
 
     data object UpdateUserDetails : ResumeScreenEvents
 
-    data object OnAddEditEducationClick : ResumeScreenEvents
+    data class OnAddEditEducationClick(
+        val model: EducationDetails? = null,
+        val position: Int? = null
+    ) : ResumeScreenEvents
+
     data class OnEducationEdit(
         val model: EducationDetails
     ) : ResumeScreenEvents
 
     data class OnEducationSave(
+        val pos: Int? = null,
         val onComplete: (String?) -> Unit
     ) : ResumeScreenEvents
 

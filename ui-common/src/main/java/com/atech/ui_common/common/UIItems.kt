@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Approval
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -103,6 +104,22 @@ fun toast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
+
+@Composable
+fun CustomIconButton(
+    modifier: Modifier= Modifier,
+    imageVector: ImageVector = Icons.Outlined.Edit,
+    action: () -> Unit = {}
+) {
+    IconButton(
+        onClick = action,
+        modifier =modifier
+    ) {
+        Icon(imageVector = imageVector, contentDescription = "edit")
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
 private fun TitleComposablePreview() {
@@ -113,3 +130,4 @@ private fun TitleComposablePreview() {
         )
     }
 }
+
