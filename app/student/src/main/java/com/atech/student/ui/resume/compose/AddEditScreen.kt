@@ -1,5 +1,6 @@
 package com.atech.student.ui.resume.compose
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -44,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +63,7 @@ import com.atech.ui_common.common.EditTextEnhance
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.TextItem
 import com.atech.ui_common.common.TitleComposable
+import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
 import kotlinx.coroutines.launch
@@ -88,18 +91,26 @@ fun AddEditScreen(
             AddEditScreenType.DETAILS -> EditPersonalDetails(
                 modifier = Modifier.padding(paddingValue),
                 model = state.personalDetails,
-                onEvent = onEvent
+                onEvent = onEvent,
+                navController = navController,
+                context = context
             )
 
             AddEditScreenType.EDUCATION -> AddOrEditEducation(
-                modifier = Modifier.padding(paddingValue), state = state.details, onEvent = onEvent
+                modifier = Modifier.padding(paddingValue),
+                state = state.details,
+                onEvent = onEvent,
+                navController = navController,
+                context = context
             )
 
 
             AddEditScreenType.SKILL -> AddSkillList(
                 modifier = Modifier.padding(paddingValue),
                 skillList = state.skillList,
-                onEvent = onEvent
+                onEvent = onEvent,
+                navController = navController,
+                context = context
             )
         }
     }
@@ -109,7 +120,9 @@ fun AddEditScreen(
 private fun EditPersonalDetails(
     modifier: Modifier = Modifier,
     model: Triple<String, String, String>,
-    onEvent: (ResumeScreenEvents) -> Unit
+    onEvent: (ResumeScreenEvents) -> Unit,
+    navController: NavHostController,
+    context: Context
 ) {
     Column(
         modifier = modifier
@@ -120,6 +133,7 @@ private fun EditPersonalDetails(
             value = model.first,
             placeholder = stringResource(R.string.name),
             supportingMessage = stringResource(R.string.enter_your_full_name),
+            maxLines = 1,
             errorMessage = stringResource(R.string.name_is_required),
             isError = model.first.isEmpty(),
             leadingIcon = {
@@ -140,7 +154,11 @@ private fun EditPersonalDetails(
                         name = "", phone = model.third
                     )
                 )
-            })
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            )
+        )
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         EditText(
             modifier = Modifier.fillMaxWidth(),
@@ -175,12 +193,25 @@ private fun EditPersonalDetails(
                         name = model.first, phone = ""
                     )
                 )
-            })
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            )
+        )
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         ApplyButton(
             text = stringResource(R.string.save_details)
         ) {
-
+            onEvent(
+                ResumeScreenEvents.OnPersonalDataSave { message ->
+                    if (message != null) {
+                        toast(context, message)
+                        return@OnPersonalDataSave
+                    }
+                    toast(context, "Personal information is updated !!")
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
@@ -192,7 +223,11 @@ private enum class Request {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddOrEditEducation(
-    modifier: Modifier = Modifier, state: EducationDetails, onEvent: (ResumeScreenEvents) -> Unit
+    modifier: Modifier = Modifier,
+    state: EducationDetails,
+    onEvent: (ResumeScreenEvents) -> Unit,
+    navController: NavHostController,
+    context: Context
 ) {
     val yearList =
         (2010..Calendar.getInstance().get(Calendar.YEAR)).map { it.toString() }.reversed()
@@ -314,7 +349,11 @@ fun AddOrEditEducation(
                         )
                     )
                 )
-            })
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            )
+        )
         EditTextEnhance(modifier = Modifier.fillMaxWidth(),
             value = state.degree,
             placeholder = "Degree/Subject*",
@@ -341,7 +380,11 @@ fun AddOrEditEducation(
                         )
                     )
                 )
-            })
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            )
+        )
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         TitleComposable(
             title = "Year Details"
@@ -426,7 +469,10 @@ fun AddOrEditEducation(
                 isCurrentlyLearning = value
                 onEvent.invoke(
                     ResumeScreenEvents.OnEducationEdit(
-                        model = state.copy(endYear = if (value) "Present" else "")
+                        model = state.copy(
+                            endYear = if (value) "Present" else "",
+                            percentage = if (value) "0" else null
+                        )
                     )
                 )
             })
@@ -494,8 +540,9 @@ fun AddOrEditEducation(
                         )
                     },
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal
-                    )
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Done
+                    ),
                 )
             }
         }
@@ -503,14 +550,27 @@ fun AddOrEditEducation(
         ApplyButton(
             text = "Add Education", enable = hasError.not()
         ) {
-            // TODO add education
+            onEvent(
+                ResumeScreenEvents.OnEducationSave { message ->
+                    if (message != null) {
+                        toast(context, message)
+                        return@OnEducationSave
+                    }
+                    toast(context, "Personal information is updated !!")
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
 
 @Composable
 fun AddSkillList(
-    modifier: Modifier = Modifier, skillList: List<String>, onEvent: (ResumeScreenEvents) -> Unit
+    modifier: Modifier = Modifier,
+    skillList: List<String>,
+    onEvent: (ResumeScreenEvents) -> Unit,
+    navController: NavHostController,
+    context: Context
 ) {
     Column(
         modifier = modifier
@@ -547,6 +607,5 @@ fun AddSkillList(
 @Composable
 private fun AddEditScreenPreview() {
     ResearchHubTheme {
-        AddSkillList(skillList = listOf(), onEvent = {})
     }
 }

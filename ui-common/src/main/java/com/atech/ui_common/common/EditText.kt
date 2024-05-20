@@ -98,7 +98,6 @@ fun EditTextEnhance(
     onValueChange: (String) -> Unit = {},
     clearIconClick: () -> Unit = {},
     isError: Boolean = false,
-    errorMessage: String = "",
     supportingText: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     focusRequester: FocusRequester? = null,

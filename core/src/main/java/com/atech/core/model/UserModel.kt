@@ -23,6 +23,7 @@ data class UserModel(
     val created: Long = System.currentTimeMillis(),
     val phone: String? = null,
     val educationDetails: String? = null,
+    val skillList: String? = null
 ) {
     @get:Exclude
     val formatedTime: String

@@ -1,5 +1,7 @@
 package com.atech.ui_common.common
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -70,6 +72,11 @@ fun DisplayCard(
             )
         }
     }
+}
+
+
+fun toast(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
 @Preview(showBackground = true)

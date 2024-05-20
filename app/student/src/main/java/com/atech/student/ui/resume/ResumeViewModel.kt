@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atech.core.config.RemoteConfigHelper
+import com.atech.core.model.EducationDetails
 import com.atech.core.use_cases.AuthUseCases
 import com.atech.core.utils.RemoteConfigKeys
 import com.atech.core.utils.TAGS
@@ -102,10 +103,6 @@ class ResumeViewModel @Inject constructor(
                 )
             }
 
-            is ResumeScreenEvents.OnSkillClick -> {
-
-            }
-
             is ResumeScreenEvents.FilterResult -> {
                 _addScreenState.value =
                     _addScreenState.value.copy(skillList = if (event.query.isBlank()) fromJsonList<String>(
@@ -116,6 +113,40 @@ class ResumeViewModel @Inject constructor(
                     else _addScreenState.value.skillList.filter {
                         it.contains(event.query, ignoreCase = true)
                     })
+            }
+
+            is ResumeScreenEvents.OnPersonalDataSave -> {
+                viewModelScope.launch {
+                    authUseCases.saveDetails.saveProfileData(
+                        name = addScreenState.value.personalDetails.first,
+                        phone = addScreenState.value.personalDetails.third,
+                        onComplete = { exception ->
+                            event.onComplete.invoke(exception?.message)
+                        }
+                    )
+                    updateUserDetails()
+                }
+            }
+
+            is ResumeScreenEvents.OnEducationSave -> {
+                viewModelScope.launch {
+                    val educationList = fromJsonList<EducationDetails>(
+                        _resumeState.value.userData.educationDetails ?: ""
+                    ).toMutableList()
+                    educationList.add(
+                        _addScreenState.value.details
+                    )
+                    authUseCases.saveDetails.saveEducationData(
+                        educationDetails = educationList,
+                        onComplete = { exception ->
+                            event.onComplete.invoke(exception?.message)
+                        }
+                    )
+                }
+            }
+
+            is ResumeScreenEvents.OnSkillClick -> {
+//                TODO : Save skill
             }
         }
     }

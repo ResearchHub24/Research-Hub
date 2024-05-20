@@ -1,5 +1,6 @@
 package com.atech.core.use_cases
 
+import com.atech.core.model.EducationDetails
 import com.atech.core.model.UserModel
 import com.atech.core.model.UserType
 import com.atech.core.utils.State
@@ -12,7 +13,8 @@ import javax.inject.Inject
 data class AuthUseCases @Inject constructor(
     val logInWithGoogle: LogInWithGoogle,
     val isUserLoggedInUseCase: IsUserLoggedInUseCase,
-    val getUserDetailsUseFromAuthCase: GetUserDetailsUseFromAuthCase
+    val getUserDetailsUseFromAuthCase: GetUserDetailsUseFromAuthCase,
+    val saveDetails: SaveDetails
 )
 
 data class IsUserLoggedInUseCase @Inject constructor(
@@ -44,7 +46,7 @@ data class GetUserDetailsUseFromAuthCase @Inject constructor(
 data class LogInWithGoogle @Inject constructor(
     private val auth: FirebaseAuth,
     private val logInUseCase: LogInUseCase,
-    private val hasUserData: HasUserUseCase
+    private val hasUserData: HasUserUseCase,
 ) {
     suspend operator fun invoke(
         token: String,
@@ -76,4 +78,22 @@ data class LogInWithGoogle @Inject constructor(
             state(State.Error(e))
         }
     }
+}
+
+data class SaveDetails @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val saveData: SaveUserDetails
+) {
+    suspend fun saveProfileData(
+        name: String, phone: String, onComplete: (Exception?) -> Unit = {}
+    ) = saveData.saveProfileData(auth.currentUser?.uid ?: "", name, phone, onComplete)
+
+    suspend fun saveEducationData(
+        educationDetails: List<EducationDetails>, onComplete: (Exception?) -> Unit = {}
+    ) = saveData.saveEducationData(auth.currentUser?.uid ?: "", educationDetails, onComplete)
+
+    suspend fun saveSkillData(
+        skillList: List<String>, onComplete: (Exception?) -> Unit = {}
+    ) = saveData.saveSkillData(auth.currentUser?.uid ?: "", skillList, onComplete)
+
 }

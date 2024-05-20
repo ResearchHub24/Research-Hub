@@ -9,11 +9,19 @@ interface ResumeScreenEvents {
         val phone: String
     ) : ResumeScreenEvents
 
+    data class OnPersonalDataSave(
+        val onComplete: (String?) -> Unit
+    ) : ResumeScreenEvents
+
     data object UpdateUserDetails : ResumeScreenEvents
 
     data object OnAddEditEducationClick : ResumeScreenEvents
     data class OnEducationEdit(
-        val model : EducationDetails
+        val model: EducationDetails
+    ) : ResumeScreenEvents
+
+    data class OnEducationSave(
+        val onComplete: (String?) -> Unit
     ) : ResumeScreenEvents
 
     data object OnAddSkillClick : ResumeScreenEvents
