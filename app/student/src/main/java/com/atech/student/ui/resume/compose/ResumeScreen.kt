@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -44,6 +45,7 @@ import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.student.ui.resume.ResumeState
 import com.atech.ui_common.R
 import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.common.TextItem
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.captionColor
 import com.atech.ui_common.theme.spacing
@@ -145,12 +147,23 @@ fun ResumeScreen(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                     ) {
-                        AddButton(
-                            title = stringResource(R.string.add_skills),
-                        ){
-                            onEvents(ResumeScreenEvents.OnAddSkillClick)
-                            navController.navigate(ResearchScreenRoutes.EditScreen.route)
+                        state.userData.skillList?.let { skillList ->
+                            fromJsonList<String>(skillList).forEach { item ->
+                                TextItem(
+                                    text = item,
+                                    endIcon = Icons.Outlined.Delete,
+                                    onEndIconClick = {
+
+                                    }
+                                )
+                            }
                         }
+                    }
+                    AddButton(
+                        title = stringResource(R.string.add_skills),
+                    ) {
+                        onEvents(ResumeScreenEvents.OnAddSkillClick)
+                        navController.navigate(ResearchScreenRoutes.EditScreen.route)
                     }
                 }
                 Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
@@ -170,7 +183,7 @@ fun ResumeScreen(
 @Composable
 fun ApplyButton(
     text: String,
-    enable:Boolean = true,
+    enable: Boolean = true,
     action: () -> Unit,
 ) {
     TextButton(

@@ -129,7 +129,8 @@ private fun EditPersonalDetails(
             .fillMaxSize()
             .padding(MaterialTheme.spacing.medium)
     ) {
-        EditText(modifier = Modifier.fillMaxWidth(),
+        EditText(
+            modifier = Modifier.fillMaxWidth(),
             value = model.first,
             placeholder = stringResource(R.string.name),
             supportingMessage = stringResource(R.string.enter_your_full_name),
@@ -173,7 +174,8 @@ private fun EditPersonalDetails(
             enable = false,
         )
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
-        EditText(modifier = Modifier.fillMaxWidth(),
+        EditText(
+            modifier = Modifier.fillMaxWidth(),
             value = model.third,
             placeholder = stringResource(R.string.contact_number),
             trailingIcon = null,
@@ -323,7 +325,8 @@ fun AddOrEditEducation(
         TitleComposable(
             title = "Education Details"
         )
-        EditTextEnhance(modifier = Modifier.fillMaxWidth(),
+        EditTextEnhance(
+            modifier = Modifier.fillMaxWidth(),
             value = state.institute,
             placeholder = "Collage/School*",
             isError = state.institute.isEmpty(),
@@ -354,7 +357,8 @@ fun AddOrEditEducation(
                 imeAction = ImeAction.Next
             )
         )
-        EditTextEnhance(modifier = Modifier.fillMaxWidth(),
+        EditTextEnhance(
+            modifier = Modifier.fillMaxWidth(),
             value = state.degree,
             placeholder = "Degree/Subject*",
             isError = state.degree.isEmpty(),
@@ -556,7 +560,7 @@ fun AddOrEditEducation(
                         toast(context, message)
                         return@OnEducationSave
                     }
-                    toast(context, "Personal information is updated !!")
+                    toast(context, "Education Details added !!")
                     navController.popBackStack()
                 }
             )
@@ -597,7 +601,23 @@ fun AddSkillList(
             modifier = Modifier.fillMaxSize()
         ) {
             items(skillList) {
-                TextItem(text = it)
+                TextItem(
+                    text = it,
+                    onClick = {
+                        onEvent.invoke(
+                            ResumeScreenEvents.OnSkillClick(
+                                it
+                            ) { message ->
+                                if (message != null) {
+                                    toast(context, message)
+                                    return@OnSkillClick
+                                }
+                                toast(context, "Skill Added !!")
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+                )
             }
         }
     }

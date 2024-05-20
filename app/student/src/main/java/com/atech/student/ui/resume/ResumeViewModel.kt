@@ -115,7 +115,7 @@ class ResumeViewModel @Inject constructor(
                     })
             }
 
-            is ResumeScreenEvents.OnPersonalDataSave -> {
+            is ResumeScreenEvents.OnPersonalDataSave ->
                 viewModelScope.launch {
                     authUseCases.saveDetails.saveProfileData(
                         name = addScreenState.value.personalDetails.first,
@@ -126,9 +126,9 @@ class ResumeViewModel @Inject constructor(
                     )
                     updateUserDetails()
                 }
-            }
 
-            is ResumeScreenEvents.OnEducationSave -> {
+
+            is ResumeScreenEvents.OnEducationSave ->
                 viewModelScope.launch {
                     val educationList = fromJsonList<EducationDetails>(
                         _resumeState.value.userData.educationDetails ?: ""
@@ -143,11 +143,23 @@ class ResumeViewModel @Inject constructor(
                         }
                     )
                 }
-            }
 
-            is ResumeScreenEvents.OnSkillClick -> {
-//                TODO : Save skill
-            }
+
+            is ResumeScreenEvents.OnSkillClick ->
+                viewModelScope.launch {
+                    val skillList = fromJsonList<String>(
+                        _resumeState.value.userData.skillList ?: ""
+                    ).toMutableList()
+                    skillList.add(
+                        event.skill
+                    )
+                    authUseCases.saveDetails.saveSkillData(
+                        skillList = skillList,
+                        onComplete = { exception ->
+                            event.onComplete.invoke(exception?.message)
+                        }
+                    )
+                }
         }
     }
 }

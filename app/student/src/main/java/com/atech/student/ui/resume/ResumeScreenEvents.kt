@@ -26,6 +26,8 @@ interface ResumeScreenEvents {
 
     data object OnAddSkillClick : ResumeScreenEvents
 
-    data class OnSkillClick(val skill: String) : ResumeScreenEvents
+    data class OnSkillClick(val skill: String, val onComplete: (String?) -> Unit) :
+        ResumeScreenEvents
+
     data class FilterResult(val query: String) : ResumeScreenEvents
 }
