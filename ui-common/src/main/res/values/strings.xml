@@ -26,4 +26,22 @@
     <string name="contact_number">Contact Number</string>
     <string name="save_details">Save Details</string>
     <string name="phone_number_is_required">Phone number is required</string>
+    <string name="present">Present</string>
+    <string name="deleted_successfully">Deleted successfully !!</string>
+    <string name="personal_information_is_updated">Personal information is updated !!</string>
+    <string name="education_details">Education Details</string>
+    <string name="collage_school">Collage/School*</string>
+    <string name="degree_subject">Degree/Subject*</string>
+    <string name="year_details">Year Details</string>
+    <string name="end_year_should_be_greater_than_start_year">End year should be greater than start year</string>
+    <string name="start_year">Start Year</string>
+    <string name="end_year">End Year</string>
+    <string name="current_pursuing">Current Pursuing</string>
+    <string name="grades">Grades</string>
+    <string name="grade_should_be_less_than_100">Grade should be less than 100</string>
+    <string name="grades_percentage">Grades/Percentage</string>
+    <string name="education_details_added">Education Details added !!</string>
+    <string name="skill">Skill</string>
+    <string name="require">require</string>
+    <string name="skill_added">Skill Added !!</string>
 </resources>

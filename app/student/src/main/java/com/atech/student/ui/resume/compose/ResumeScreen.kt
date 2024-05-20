@@ -125,7 +125,11 @@ fun ResumeScreen(
                             fromJsonList<EducationDetails>(educationDetails).sortedByDescending { it.startYear.toInt() }
                                 .forEachIndexed { index, item ->
                                     EducationDetailsItems(
-                                        title = "${item.degree}, ${item.startYear} - ${item.endYear ?: "Present"} ${item.percentage.let { if (it?.toDouble() == 0.0) "" else "( $it )" }}",
+                                        title = "${item.degree}, ${item.startYear} - ${
+                                            item.endYear ?: stringResource(
+                                                R.string.present
+                                            )
+                                        } ${item.percentage.let { if (it?.toDouble() == 0.0) "" else "( $it )" }}",
                                         des = item.institute,
                                         onDeleteClick = {
                                             onEvents(
@@ -136,7 +140,10 @@ fun ResumeScreen(
                                                         toast(context, message)
                                                         return@OnEducationSave
                                                     }
-                                                    toast(context, "Deleted successfully !!")
+                                                    toast(
+                                                        context,
+                                                        context.getString(R.string.deleted_successfully)
+                                                    )
                                                 }
                                             )
                                         },
@@ -184,7 +191,10 @@ fun ResumeScreen(
                                                     toast(context, message)
                                                     return@OnSkillClick
                                                 }
-                                                toast(context, "Deleted successfully !!")
+                                                toast(
+                                                    context,
+                                                    context.getString(R.string.deleted_successfully)
+                                                )
                                             }
                                         )
                                     }

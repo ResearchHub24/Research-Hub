@@ -210,7 +210,10 @@ private fun EditPersonalDetails(
                         toast(context, message)
                         return@OnPersonalDataSave
                     }
-                    toast(context, "Personal information is updated !!")
+                    toast(
+                        context,
+                        context.getString(R.string.personal_information_is_updated)
+                    )
                     navController.popBackStack()
                 }
             )
@@ -238,7 +241,10 @@ fun AddOrEditEducation(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val isYearValid = state.endYear?.let { year ->
-        if (year == "Present") true
+        if (year == context.getString(
+                R.string.present
+            )
+        ) true
         else if (year.isNotBlank() && state.startYear.toInt() <= year.toInt()) true
         else false
     } ?: false
@@ -323,12 +329,12 @@ fun AddOrEditEducation(
         verticalArrangement = Arrangement.Top
     ) {
         TitleComposable(
-            title = "Education Details"
+            title = stringResource(R.string.education_details)
         )
         EditTextEnhance(
             modifier = Modifier.fillMaxWidth(),
             value = state.institute,
-            placeholder = "Collage/School*",
+            placeholder = stringResource(R.string.collage_school),
             isError = state.institute.isEmpty(),
             leadingIcon = {
                 Icon(
@@ -360,7 +366,7 @@ fun AddOrEditEducation(
         EditTextEnhance(
             modifier = Modifier.fillMaxWidth(),
             value = state.degree,
-            placeholder = "Degree/Subject*",
+            placeholder = stringResource(R.string.degree_subject),
             isError = state.degree.isEmpty(),
             leadingIcon = {
                 Icon(
@@ -391,7 +397,7 @@ fun AddOrEditEducation(
         )
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         TitleComposable(
-            title = "Year Details"
+            title = stringResource(R.string.year_details)
         )
         AnimatedVisibility(
             isYearValid.not()
@@ -414,7 +420,7 @@ fun AddOrEditEducation(
                         tint = MaterialTheme.colorScheme.error
                     )
                     Text(
-                        text = "End year should be greater than start year",
+                        text = stringResource(R.string.end_year_should_be_greater_than_start_year),
                         modifier = Modifier.padding(MaterialTheme.spacing.medium),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.error
@@ -424,7 +430,7 @@ fun AddOrEditEducation(
         }
         EditTextEnhance(modifier = Modifier.fillMaxWidth(),
             value = state.startYear,
-            placeholder = "Start Year",
+            placeholder = stringResource(R.string.start_year),
             trailingIcon = null,
             readOnly = true,
             interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
@@ -439,7 +445,7 @@ fun AddOrEditEducation(
             })
         EditTextEnhance(modifier = Modifier.fillMaxWidth(),
             value = state.endYear ?: "",
-            placeholder = "End Year",
+            placeholder = stringResource(R.string.end_year),
             trailingIcon = null,
             readOnly = true,
             interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
@@ -460,7 +466,9 @@ fun AddOrEditEducation(
                     onEvent.invoke(
                         ResumeScreenEvents.OnEducationEdit(
                             model = state.copy(
-                                endYear = if (value) "Present" else "",
+                                endYear = if (value) context.getString(
+                                    R.string.present
+                                ) else "",
                                 percentage = if (value) "0" else null
                             )
                         )
@@ -474,13 +482,15 @@ fun AddOrEditEducation(
                 onEvent.invoke(
                     ResumeScreenEvents.OnEducationEdit(
                         model = state.copy(
-                            endYear = if (value) "Present" else "",
+                            endYear = if (value) context.getString(
+                                R.string.present
+                            ) else "",
                             percentage = if (value) "0" else null
                         )
                     )
                 )
             })
-            Text(text = "Current Pursuing")
+            Text(text = stringResource(R.string.current_pursuing))
         }
         AnimatedVisibility(isCurrentlyLearning.not()) {
             Column(
@@ -489,7 +499,8 @@ fun AddOrEditEducation(
             ) {
                 Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
                 TitleComposable(
-                    title = "Grades"
+                    title = stringResource(R.string.grades)
+
                 )
                 AnimatedVisibility(
                     isGradeValid.not()
@@ -512,7 +523,7 @@ fun AddOrEditEducation(
                                 tint = MaterialTheme.colorScheme.error
                             )
                             Text(
-                                text = "Grade should be less than 100",
+                                text = stringResource(R.string.grade_should_be_less_than_100),
                                 modifier = Modifier.padding(MaterialTheme.spacing.medium),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.error
@@ -523,7 +534,7 @@ fun AddOrEditEducation(
                 EditTextEnhance(
                     modifier = Modifier.fillMaxWidth(),
                     value = if (state.percentage == null) "" else state.percentage.toString(),
-                    placeholder = "Grades/Percentage",
+                    placeholder = stringResource(R.string.grades_percentage),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Person, contentDescription = null
@@ -552,7 +563,7 @@ fun AddOrEditEducation(
         }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         ApplyButton(
-            text = "Add Education", enable = hasError.not()
+            text = stringResource(R.string.add_education), enable = hasError.not()
         ) {
             onEvent(
                 ResumeScreenEvents.OnEducationSave { message ->
@@ -560,7 +571,10 @@ fun AddOrEditEducation(
                         toast(context, message)
                         return@OnEducationSave
                     }
-                    toast(context, "Education Details added !!")
+                    toast(
+                        context,
+                        context.getString(R.string.education_details_added)
+                    )
                     navController.popBackStack()
                 }
             )
@@ -584,8 +598,8 @@ fun AddSkillList(
         var query by remember { mutableStateOf("") }
         EditText(modifier = Modifier.fillMaxWidth(),
             value = query,
-            placeholder = "Skill",
-            supportingMessage = "require",
+            placeholder = stringResource(R.string.skill),
+            supportingMessage = stringResource(R.string.require),
             isError = false,
             leadingIcon = {
                 Icon(
@@ -612,7 +626,10 @@ fun AddSkillList(
                                     toast(context, message)
                                     return@OnSkillClick
                                 }
-                                toast(context, "Skill Added !!")
+                                toast(
+                                    context,
+                                    context.getString(R.string.skill_added)
+                                )
                                 navController.popBackStack()
                             }
                         )
