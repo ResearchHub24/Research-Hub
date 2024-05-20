@@ -1,6 +1,6 @@
 package com.atech.student.ui.resume
 
-import android.app.DownloadManager.Query
+import com.atech.core.model.EducationDetails
 
 interface ResumeScreenEvents {
     data object OnPersonalDetailsClick : ResumeScreenEvents
@@ -12,6 +12,9 @@ interface ResumeScreenEvents {
     data object UpdateUserDetails : ResumeScreenEvents
 
     data object OnAddEditEducationClick : ResumeScreenEvents
+    data class OnEducationEdit(
+        val model : EducationDetails
+    ) : ResumeScreenEvents
 
     data object OnAddSkillClick : ResumeScreenEvents
 

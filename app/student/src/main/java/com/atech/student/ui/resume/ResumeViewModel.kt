@@ -82,6 +82,19 @@ class ResumeViewModel @Inject constructor(
                 )
             }
 
+            is ResumeScreenEvents.OnEducationEdit -> {
+                _addScreenState.value = AddScreenState(
+                    screenType = AddEditScreenType.EDUCATION,
+                    details = _addScreenState.value.details.copy(
+                        institute = event.model.institute,
+                        degree = event.model.degree,
+                        startYear = event.model.startYear,
+                        endYear = event.model.endYear,
+                        percentage = event.model.percentage
+                    )
+                )
+            }
+
             ResumeScreenEvents.OnAddSkillClick -> {
                 fetchDataFromRemoteConfig()
                 _addScreenState.value = AddScreenState(

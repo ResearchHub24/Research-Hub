@@ -170,6 +170,7 @@ fun ResumeScreen(
 @Composable
 fun ApplyButton(
     text: String,
+    enable:Boolean = true,
     action: () -> Unit,
 ) {
     TextButton(
@@ -181,7 +182,8 @@ fun ApplyButton(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
         ),
-        shape = RoundedCornerShape(MaterialTheme.spacing.medium)
+        shape = RoundedCornerShape(MaterialTheme.spacing.medium),
+        enabled = enable
     ) {
         Text(
             modifier = Modifier.padding(MaterialTheme.spacing.medium),

@@ -1,5 +1,7 @@
 package com.atech.student.ui.resume
 
+import com.atech.core.model.EducationDetails
+
 enum class AddEditScreenType {
     DETAILS,
     EDUCATION,
@@ -12,6 +14,7 @@ enum class AddEditScreenType {
 data class AddScreenState(
     val screenType: AddEditScreenType = AddEditScreenType.DETAILS,
     val personalDetails: Triple<String, String, String> = Triple("", "", ""),
+    val details: EducationDetails = EducationDetails("", "", ""),
     val skillList: List<String> = listOf(),
 )
 

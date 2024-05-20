@@ -34,13 +34,13 @@ data class EducationDetails(
     val institute: String,
     val startYear: String,
     val endYear: String? = null,
-    val percentage: Double? = null,
+    val percentage: String? = null,
 )
 
 val DUMMY_EDUCATION_DETAILS = listOf(
-    EducationDetails("BCA", "XYZ Institute", "2018", "2022", 8.0),
-    EducationDetails("MCA", "XYZ Institute", "2022", "2024", 8.0),
-    EducationDetails("PhD", "XYZ Institute", "2024", percentage = 8.0),
+    EducationDetails("BCA", "XYZ Institute", "2018", "2022", "8.0"),
+    EducationDetails("MCA", "XYZ Institute", "2022", "2024", "8.0"),
+    EducationDetails("PhD", "XYZ Institute", "2024", percentage = "8.0"),
 )
 val EMPTY_USER = UserModel(
     uid = "",
