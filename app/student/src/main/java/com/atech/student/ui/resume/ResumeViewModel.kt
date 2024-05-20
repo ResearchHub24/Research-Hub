@@ -123,63 +123,53 @@ class ResumeViewModel @Inject constructor(
                     })
             }
 
-            is ResumeScreenEvents.OnPersonalDataSave ->
-                viewModelScope.launch {
-                    authUseCases.saveDetails.saveProfileData(
-                        name = addScreenState.value.personalDetails.first,
-                        phone = addScreenState.value.personalDetails.third,
-                        onComplete = { exception ->
-                            event.onComplete.invoke(exception?.message)
-                        }
+            is ResumeScreenEvents.OnPersonalDataSave -> viewModelScope.launch {
+                authUseCases.saveDetails.saveProfileData(name = addScreenState.value.personalDetails.first,
+                    phone = addScreenState.value.personalDetails.third,
+                    onComplete = { exception ->
+                        event.onComplete.invoke(exception?.message)
+                    })
+                updateUserDetails()
+            }
+
+
+            is ResumeScreenEvents.OnEducationSave -> viewModelScope.launch {
+                val educationList = fromJsonList<EducationDetails>(
+                    _resumeState.value.userData.educationDetails ?: ""
+                ).toMutableList()
+                if (event.pos == null) {
+                    if (educationClickItemPos == null) educationList.add(
+                        _addScreenState.value.details
                     )
-                    updateUserDetails()
-                }
-
-
-            is ResumeScreenEvents.OnEducationSave ->
-                viewModelScope.launch {
-                    val educationList = fromJsonList<EducationDetails>(
-                        _resumeState.value.userData.educationDetails ?: ""
-                    ).toMutableList()
-                    if (event.pos == null) {
-                        if (educationClickItemPos == null)
-                            educationList.add(
-                                _addScreenState.value.details
-                            )
-                        else {
-                            educationList[educationClickItemPos!!] =
-                                _addScreenState.value.details
-                        }
-                    } else {
-                        educationList.removeAt(event.pos)
+                    else {
+                        educationList[educationClickItemPos!!] = _addScreenState.value.details
                     }
-                    authUseCases.saveDetails.saveEducationData(
-                        educationDetails = educationList,
-                        onComplete = { exception ->
-                            educationClickItemPos = null
-                            event.onComplete.invoke(exception?.message)
-                        }
-                    )
-                    updateUserDetails()
+                } else {
+                    educationList.removeAt(event.pos)
                 }
+                authUseCases.saveDetails.saveEducationData(educationDetails = educationList,
+                    onComplete = { exception ->
+                        educationClickItemPos = null
+                        event.onComplete.invoke(exception?.message)
+                    })
+                updateUserDetails()
+            }
 
 
-            is ResumeScreenEvents.OnSkillClick ->
-                viewModelScope.launch {
-                    val skillList = fromJsonList<String>(
-                        _resumeState.value.userData.skillList ?: ""
-                    ).toMutableList()
-                    skillList.add(
-                        event.skill
-                    )
-                    authUseCases.saveDetails.saveSkillData(
-                        skillList = skillList,
-                        onComplete = { exception ->
-                            event.onComplete.invoke(exception?.message)
-                        }
-                    )
-                    updateUserDetails()
-                }
+            is ResumeScreenEvents.OnSkillClick -> viewModelScope.launch {
+                val skillList = fromJsonList<String>(
+                    _resumeState.value.userData.skillList ?: ""
+                ).toMutableList()
+                if (event.pos == null) skillList.add(
+                    event.skill
+                )
+                else skillList.removeAt(event.pos)
+                authUseCases.saveDetails.saveSkillData(skillList = skillList,
+                    onComplete = { exception ->
+                        event.onComplete.invoke(exception?.message)
+                    })
+                updateUserDetails()
+            }
         }
     }
 }

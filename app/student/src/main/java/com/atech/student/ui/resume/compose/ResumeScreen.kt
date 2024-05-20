@@ -170,13 +170,25 @@ fun ResumeScreen(
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                     ) {
                         state.userData.skillList?.let { skillList ->
-                            fromJsonList<String>(skillList).forEach { item ->
+                            fromJsonList<String>(skillList).forEachIndexed { index, item ->
                                 TextItem(
                                     text = item,
                                     endIcon = Icons.Outlined.Delete,
                                     onEndIconClick = {
-
-                                    })
+                                        onEvents.invoke(
+                                            ResumeScreenEvents.OnSkillClick(
+                                                skill = item,
+                                                pos = index
+                                            ) { message ->
+                                                if (message != null) {
+                                                    toast(context, message)
+                                                    return@OnSkillClick
+                                                }
+                                                toast(context, "Deleted successfully !!")
+                                            }
+                                        )
+                                    }
+                                )
                             }
                         }
                     }
