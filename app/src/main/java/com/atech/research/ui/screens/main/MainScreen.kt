@@ -1,5 +1,6 @@
 package com.atech.research.ui.screens.main
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -21,33 +22,26 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.atech.research.navigation.MainScreenStudentNavigation
 import com.atech.research.ui.common.AppBar
-import com.atech.student.navigation.FacultiesScreenRoutes
-import com.atech.student.navigation.HomeScreenRoutes
-import com.atech.student.navigation.ResearchScreenRoutes
-import com.atech.student.navigation.WishlistScreenRoutes
-import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.theme.ResearchHubTheme
+import com.atech.ui_common.utils.NavBarModel
 
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
+    visibleScreens: List<String> = emptyList(),
+    navigationItem: List<NavBarModel> = emptyList(),
+    mainScreen: @Composable (navController: NavHostController, modifier: Modifier) -> Unit
 ) {
     val navHostController = rememberNavController()
-    val visibleScreens = listOf(
-        HomeScreenRoutes.HomeScreen.route,
-        FacultiesScreenRoutes.FacultiesScreen.route,
-        WishlistScreenRoutes.WishListScreen.route,
-        ResearchScreenRoutes.ResearchScreen.route
-    )
     val backStackEntry by navHostController.currentBackStackEntryAsState()
     Scaffold(
         modifier = modifier,
         bottomBar = {
             val currentDestination = backStackEntry?.destination
             val isTheir = visibleScreens.any { it == currentDestination?.route }
+            Log.d("AAA", "MainScreen: $isTheir")
             val density = LocalDensity.current
             AnimatedVisibility(
                 visible = isTheir,
@@ -61,6 +55,7 @@ fun MainScreen(
                 exit = slideOutVertically() + shrinkVertically() + fadeOut()
             ) {
                 AppBar(
+                    items = navigationItem,
                     backStackEntry = navHostController.currentBackStackEntryAsState(),
                     onClick = {
                         navHostController.navigate(it)
@@ -69,9 +64,9 @@ fun MainScreen(
             }
         }
     ) {
-        MainScreenStudentNavigation(
-            navHostController = navHostController,
-            modifier = modifier.padding(
+        mainScreen(
+            navHostController,
+            modifier.padding(
                 start = it.calculateStartPadding(layoutDirection = LayoutDirection.Ltr),
                 end = it.calculateStartPadding(layoutDirection = LayoutDirection.Rtl),
                 bottom = it.calculateBottomPadding()
@@ -84,6 +79,6 @@ fun MainScreen(
 @Composable
 private fun MainScreenPreview() {
     ResearchHubTheme {
-        MainScreen()
+//        MainScreen()
     }
 }

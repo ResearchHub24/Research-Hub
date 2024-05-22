@@ -1,6 +1,5 @@
 package com.atech.research.ui.common
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -15,11 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Checklist
-import androidx.compose.material.icons.rounded.Dashboard
-import androidx.compose.material.icons.rounded.PersonPinCircle
-import androidx.compose.material.icons.rounded.ScreenSearchDesktop
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation
@@ -32,64 +26,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
-import com.atech.student.navigation.FacultiesScreenRoutes
-import com.atech.student.navigation.HomeScreenRoutes
-import com.atech.student.navigation.MainScreenRoutes
-import com.atech.student.navigation.ResearchScreenRoutes
-import com.atech.student.navigation.WishlistScreenRoutes
-import com.atech.ui_common.R
 import com.atech.ui_common.theme.ResearchHubTheme
+import com.atech.ui_common.utils.NavBarModel
 
-internal data class NavBarModel(
-    @StringRes val title: Int,
-    val selectedIcon: ImageVector,
-    val unSelectedIcon: ImageVector? = null,
-    val route: String = "",
-    val destinationName: String = "",
-    val isVisible: Boolean = true
-)
 
 @Composable
 fun AppBar(
     modifier: Modifier = Modifier,
+    items: List<NavBarModel> = emptyList(),
     backStackEntry: State<NavBackStackEntry?> = remember { mutableStateOf(null) },
     onClick: (route: String) -> Unit = { },
     isSelectionViewActive: Boolean = false,
 ) {
-    val navigationItems = listOf(
-        NavBarModel(
-            title = R.string.home,
-            selectedIcon = Icons.Rounded.Dashboard,
-            route = MainScreenRoutes.Home.route,
-            isVisible = !isSelectionViewActive,
-            destinationName = HomeScreenRoutes.HomeScreen.route
-        ),
-        NavBarModel(
-            title = R.string.research,
-            selectedIcon = Icons.Rounded.ScreenSearchDesktop,
-            route = MainScreenRoutes.Research.route,
-            isVisible = !isSelectionViewActive,
-            destinationName = ResearchScreenRoutes.ResearchScreen.route
-        ),
-        NavBarModel(
-            title = R.string.faculties,
-            selectedIcon = Icons.Rounded.PersonPinCircle,
-            route = MainScreenRoutes.Faculties.route,
-            isVisible = !isSelectionViewActive,
-            destinationName = FacultiesScreenRoutes.FacultiesScreen.route
-        ),
-        NavBarModel(
-            title = R.string.wishlist,
-            selectedIcon = Icons.Rounded.Checklist,
-            route = MainScreenRoutes.Wishlist.route,
-            isVisible = !isSelectionViewActive,
-            destinationName = WishlistScreenRoutes.WishListScreen.route
-        ),
-    )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -108,7 +60,7 @@ fun AppBar(
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            navigationItems.forEach { item ->
+            items.forEach { item ->
                 val selected = item.destinationName == backStackEntry.value?.destination?.route
                 NavBarItem(
                     navItem = item,
@@ -138,7 +90,7 @@ internal fun RowScope.NavBarItem(
         label = "selectedIconColor"
     )
     AnimatedVisibility(
-        visible = navItem.isVisible,
+        visible = true,
         modifier = Modifier.weight(1f)
     ) {
         Box(
@@ -186,6 +138,8 @@ internal fun RowScope.NavBarItem(
 @Composable
 private fun BottomAppBarStatePreview() {
     ResearchHubTheme {
-        AppBar()
+        AppBar(
+
+        )
     }
 }

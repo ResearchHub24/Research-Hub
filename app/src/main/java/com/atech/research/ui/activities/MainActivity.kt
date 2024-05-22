@@ -17,6 +17,7 @@ import com.atech.core.use_cases.IsUserLoggedInUseCase
 import com.atech.core.utils.PrefKeys
 import com.atech.research.navigation.ResearchHubNavigation
 import com.atech.ui_common.theme.ResearchHubTheme
+import com.atech.ui_common.utils.NavigationProvider
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -28,6 +29,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var pref: SharedPreferences
+
+    @Inject
+    lateinit var navigationProvider: NavigationProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +50,10 @@ class MainActivity : ComponentActivity() {
                         ),
                         startDestination = if (isUserLogIn.invoke() == null && !isLogInSkipp)
                             ResearchHubNavigation.LogInScreen
-                        else ResearchHubNavigation.MainScreen
+                        else ResearchHubNavigation.MainScreen,
+                        mainScreen = navigationProvider.provideMainScreen(),
+                        navigationItem = navigationProvider.getNavigationItems(),
+                        visibleScreens = navigationProvider.getVisibleScreens()
                     )
                 }
             }
