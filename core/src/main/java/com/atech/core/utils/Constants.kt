@@ -4,7 +4,8 @@ enum class CollectionName(
     val value: String
 ) {
     USER("user_database"),
-    RESEARCH("research")
+    RESEARCH("research"),
+    SUBMITTED_FORM("submitted_form"),
 }
 
 

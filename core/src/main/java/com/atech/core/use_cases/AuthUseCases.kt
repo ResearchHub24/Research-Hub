@@ -1,6 +1,7 @@
 package com.atech.core.use_cases
 
 import com.atech.core.model.EducationDetails
+import com.atech.core.model.ResearchPublishModel
 import com.atech.core.model.UserModel
 import com.atech.core.model.UserType
 import com.atech.core.utils.State
@@ -14,7 +15,8 @@ data class AuthUseCases @Inject constructor(
     val logInWithGoogle: LogInWithGoogle,
     val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     val getUserDetailsUseFromAuthCase: GetUserDetailsUseFromAuthCase,
-    val saveDetails: SaveDetails
+    val saveDetails: SaveDetails,
+    val publishApplication :PublishApplication
 )
 
 data class IsUserLoggedInUseCase @Inject constructor(
@@ -96,4 +98,24 @@ data class SaveDetails @Inject constructor(
         skillList: List<String>, onComplete: (Exception?) -> Unit = {}
     ) = saveData.saveSkillData(auth.currentUser?.uid ?: "", skillList, onComplete)
 
+}
+
+data class PublishApplication @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val publishApplication: PublishApplicationToDb
+) {
+    suspend operator fun invoke(
+        key: String,
+        filledForm: String,
+        model: ResearchPublishModel,
+        onComplete: (Exception?) -> Unit = {}
+    ) {
+        publishApplication.invoke(
+            uid = auth.currentUser?.uid ?: "",
+            key = key,
+            model = model,
+            filledForm = filledForm,
+            onComplete = onComplete
+        )
+    }
 }

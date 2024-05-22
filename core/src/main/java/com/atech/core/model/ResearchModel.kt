@@ -37,4 +37,17 @@ data class ResearchModel(
         get() = deadLine?.convertLongToTime(DateFormat.DD_MMM_YYYY.format) ?: "No Deadline"
 }
 
+@Keep
+data class QuestionModel(
+    val question: String? = null,
+    val answer: String? = null
+)
 
+
+@Keep
+data class ResearchPublishModel(
+    val studentName: String? = null,
+    val studentEmail: String? = null,
+    val studentPhoneNumber: String? = null,
+    val answers: String? = null
+)

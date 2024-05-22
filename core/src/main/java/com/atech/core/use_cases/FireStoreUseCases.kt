@@ -3,10 +3,12 @@ package com.atech.core.use_cases
 import android.util.Log
 import com.atech.core.model.EducationDetails
 import com.atech.core.model.ResearchModel
+import com.atech.core.model.ResearchPublishModel
 import com.atech.core.model.UserModel
 import com.atech.core.utils.CollectionName
 import com.atech.core.utils.State
 import com.atech.core.utils.TAGS
+import com.atech.core.utils.fromJsonList
 import com.atech.core.utils.toJSON
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
@@ -89,9 +91,6 @@ data class GetUserDataUseCase @Inject constructor(
     }
 }
 
-enum class SaveType {
-    Profile, Education, Skill
-}
 
 data class SaveUserDetails @Inject constructor(
     private val db: FirebaseFirestore
@@ -140,6 +139,61 @@ data class SaveUserDetails @Inject constructor(
                 )
             ).await()
             onComplete(null)
+        } catch (e: Exception) {
+            Log.e(TAGS.ERROR.name, "saveEducationData: $e")
+            onComplete(e)
+        }
+    }
+
+    suspend fun saveFilledForm(
+        uid: String,
+        filledForm: String,
+        key: String,
+        onComplete: (Exception?) -> Unit = {}
+    ) {
+        try {
+
+            val list = fromJsonList<String>(filledForm).toMutableList()
+            list.add(key)
+            db.collection(CollectionName.USER.value).document(uid).update(
+                mapOf(
+                    "filledForm" to toJSON(list)
+                )
+            ).await()
+            onComplete(null)
+        } catch (e: Exception) {
+            Log.e(TAGS.ERROR.name, "saveEducationData: $e")
+            onComplete(e)
+        }
+    }
+}
+
+
+data class PublishApplicationToDb @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val saveUserDetails: SaveUserDetails
+) {
+    suspend operator fun invoke(
+        uid: String,
+        key: String,
+        filledForm: String,
+        model: ResearchPublishModel,
+        onComplete: (Exception?) -> Unit = {}
+    ) {
+        try {
+            db.collection(CollectionName.RESEARCH.value)
+                .document(key)
+                .collection(CollectionName.SUBMITTED_FORM.value)
+                .document(uid)
+                .set(model)
+                .await()
+            saveUserDetails.saveFilledForm(
+                uid = uid,
+                key = key,
+                filledForm = filledForm,
+                onComplete = onComplete
+            )
+            onComplete.invoke(null)
         } catch (e: Exception) {
             Log.e(TAGS.ERROR.name, "saveEducationData: $e")
             onComplete(e)

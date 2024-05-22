@@ -1,5 +1,6 @@
 package com.atech.student.ui.resume.compose
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,11 +32,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.EducationDetails
@@ -127,28 +128,25 @@ fun ResumeScreen(
                         ) {
                             fromJsonList<EducationDetails>(educationDetails).sortedByDescending { it.startYear.toInt() }
                                 .forEachIndexed { index, item ->
-                                    EducationDetailsItems(
-                                        title = "${item.degree}, ${item.startYear} - ${
-                                            item.endYear ?: stringResource(
-                                                R.string.present
-                                            )
-                                        } ${item.percentage.let { if (it?.toDouble() == 0.0) "" else "( $it )" }}",
+                                    EducationDetailsItems(title = "${item.degree}, ${item.startYear} - ${
+                                        item.endYear ?: stringResource(
+                                            R.string.present
+                                        )
+                                    } ${item.percentage.let { if (it?.toDouble() == 0.0) "" else "( $it )" }}",
                                         des = item.institute,
                                         onDeleteClick = {
-                                            onEvents(
-                                                ResumeScreenEvents.OnEducationSave(
-                                                    pos = index
-                                                ) { message ->
-                                                    if (message != null) {
-                                                        toast(context, message)
-                                                        return@OnEducationSave
-                                                    }
-                                                    toast(
-                                                        context,
-                                                        context.getString(R.string.deleted_successfully)
-                                                    )
+                                            onEvents(ResumeScreenEvents.OnEducationSave(
+                                                pos = index
+                                            ) { message ->
+                                                if (message != null) {
+                                                    toast(context, message)
+                                                    return@OnEducationSave
                                                 }
-                                            )
+                                                toast(
+                                                    context,
+                                                    context.getString(R.string.deleted_successfully)
+                                                )
+                                            })
                                         },
                                         onEditClick = {
                                             onEvents(
@@ -157,8 +155,7 @@ fun ResumeScreen(
                                                 )
                                             )
                                             navController.navigate(ResearchScreenRoutes.EditScreen.route)
-                                        }
-                                    )
+                                        })
                                 }
                         }
                     }
@@ -185,23 +182,19 @@ fun ResumeScreen(
                                     text = item,
                                     endIcon = Icons.Outlined.Delete,
                                     onEndIconClick = {
-                                        onEvents.invoke(
-                                            ResumeScreenEvents.OnSkillClick(
-                                                skill = item,
-                                                pos = index
-                                            ) { message ->
-                                                if (message != null) {
-                                                    toast(context, message)
-                                                    return@OnSkillClick
-                                                }
-                                                toast(
-                                                    context,
-                                                    context.getString(R.string.deleted_successfully)
-                                                )
+                                        onEvents.invoke(ResumeScreenEvents.OnSkillClick(
+                                            skill = item, pos = index
+                                        ) { message ->
+                                            if (message != null) {
+                                                toast(context, message)
+                                                return@OnSkillClick
                                             }
-                                        )
-                                    }
-                                )
+                                            toast(
+                                                context,
+                                                context.getString(R.string.deleted_successfully)
+                                            )
+                                        })
+                                    })
                             }
                         }
                     }
@@ -216,16 +209,19 @@ fun ResumeScreen(
             }
             if (args.fromDetailScreen) {
                 item(key = "apply") {
-                    ApplyButton(
-                        text = stringResource(R.string.proceed_to_application),
-                        action = {
-                            navController.navigate(
-                                QuestionScreenArgs(
-                                    key = args.key,
-                                    question = args.question
-                                )
+                    ApplyButton(text = stringResource(R.string.proceed_to_application), action = {
+                        Log.d("AAA", "ResumeScreen:${state.userData.filledForm} ")
+                        navController.navigate(
+                            QuestionScreenArgs(
+                                key = args.key,
+                                userEmail = state.userData.email,
+                                question = args.question,
+                                userName = state.userData.name,
+                                userPhone = state.userData.phone ?: "",
+                                filledForm = state.userData.filledForm ?: "[]"
                             )
-                        })
+                        )
+                    })
                 }
             }
         }

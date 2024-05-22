@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.student.ui.question.QuestionStateEvent
 import com.atech.student.ui.resume.compose.ApplyButton
 import com.atech.ui_common.R
@@ -57,9 +58,7 @@ fun QuestionScreen(
     }) { paddingValues ->
         var isDialogVisible by rememberSaveable { mutableStateOf(false) }
         var answers by remember {
-            mutableStateOf(
-                List(state.size) { "" }
-            )
+            mutableStateOf(List(state.size) { "" })
         }
         var errorMessage by remember {
             mutableStateOf("")
@@ -76,8 +75,7 @@ fun QuestionScreen(
         ) {
             items(state.size) { pos ->
                 QuestionItem(
-                    question = state[pos],
-                    answer = answers[pos]
+                    question = state[pos], answer = answers[pos]
                 ) { answer ->
                     answers = answers.toMutableList().also {
                         it[pos] = answer
@@ -101,8 +99,7 @@ fun QuestionScreen(
                             ),
                         ) {
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
@@ -121,29 +118,33 @@ fun QuestionScreen(
                     }
                     Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
                     ApplyButton(text = "Submit") {
-                        onEvent.invoke(
-                            QuestionStateEvent.ValidateInput(answers) { message ->
-                                if (message != null) {
-                                    errorMessage = message
-                                    return@ValidateInput
-                                }
-                                errorMessage = ""
-                                isDialogVisible = true
+                        onEvent.invoke(QuestionStateEvent.ValidateInput(answers) { message ->
+                            if (message != null) {
+                                errorMessage = message
+                                return@ValidateInput
                             }
-                        )
-                    }
-                    if (isDialogVisible)
-                        AppAlertDialog(
-                            dialogTitle = "Confirm Submit",
-                            dialogText = "Are you sure you want to submit?",
-                            icon = Icons.Outlined.Mail,
-                            onDismissRequest = {
-                                isDialogVisible = false
-                            }
-                        ) {
+                            errorMessage = ""
                             isDialogVisible = true
-//                            TODO: Submit answers
-                        }
+                        })
+                    }
+                    if (isDialogVisible) AppAlertDialog(dialogTitle = "Confirm Submit",
+                        dialogText = "Are you sure you want to submit?",
+                        icon = Icons.Outlined.Mail,
+                        onDismissRequest = {
+                            isDialogVisible = false
+                        }) {
+                        isDialogVisible = false
+                        onEvent.invoke(QuestionStateEvent.PublishApplication { message ->
+                            if (message != null) {
+                                errorMessage = message
+                            } else {
+                                navController.popBackStack(
+                                    route = ResearchScreenRoutes.ResearchScreen.route,
+                                    inclusive = false
+                                )
+                            }
+                        })
+                    }
                 }
             }
         }
@@ -176,8 +177,7 @@ fun QuestionItem(
             supportingMessage = stringResource(R.string.require),
             onValueChange = onValueChange,
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Sentences,
-                keyboardType = KeyboardType.Text
+                capitalization = KeyboardCapitalization.Sentences, keyboardType = KeyboardType.Text
             )
         )
     }

@@ -37,10 +37,18 @@ data class ResumeScreenArgs(
     val fromDetailScreen: Boolean = true
 )
 
+
 @Serializable
+/***
+ * triple : (name,email,phone)
+ */
 data class QuestionScreenArgs(
+    val userName: String,
+    val userEmail: String,
+    val userPhone: String,
     val key: String,
-    val question: String
+    val question: String,
+    val filledForm:String
 )
 
 fun NavGraphBuilder.researchScreenGraph(
@@ -122,9 +130,8 @@ fun NavGraphBuilder.researchScreenGraph(
         animatedComposableEnh<QuestionScreenArgs> { entry ->
             val viewModel = entry.sharedViewModel<QuestionsViewModel>(navController = navController)
             val args = entry.toRoute<QuestionScreenArgs>()
-            viewModel.setKeyAndQuestion(
-                key = args.key,
-                question = args.question
+            viewModel.setArgs(
+                args
             )
             val state by viewModel.questionsState
             QuestionScreen(
