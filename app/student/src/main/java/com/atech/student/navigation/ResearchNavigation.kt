@@ -1,6 +1,5 @@
 package com.atech.student.navigation
 
-import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
@@ -130,7 +129,8 @@ fun NavGraphBuilder.researchScreenGraph(
             val state by viewModel.questionsState
             QuestionScreen(
                 navController = navController,
-                state = state
+                state = state,
+                onEvent = viewModel::onEven
             )
         }
 

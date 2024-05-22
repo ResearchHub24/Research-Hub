@@ -181,7 +181,7 @@ fun ResearchItem(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     TextButton(
-                        onClick = { /*TODO*/ },
+                        onClick = onClick,
                         modifier = Modifier.align(Alignment.BottomEnd)
                     ) {
                         Text(text = stringResource(id = R.string.view_details))
