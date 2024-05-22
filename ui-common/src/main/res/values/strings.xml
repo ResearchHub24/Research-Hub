@@ -44,4 +44,5 @@
     <string name="skill">Skill</string>
     <string name="require">Require *</string>
     <string name="skill_added">Skill Added !!</string>
+    <string name="already_apply">Already Applied</string>
 </resources>

@@ -49,7 +49,8 @@ fun ResearchDetailScreen(
     onEvent: (ResearchScreenEvents) -> Unit = {},
     isExistInWishList: Boolean = false,
     isFromArgs: Boolean = false,
-    model: ResearchModel
+    model: ResearchModel,
+    filledForm: String = "",
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     MainContainer(title = stringResource(id = R.string.blank),
@@ -60,15 +61,13 @@ fun ResearchDetailScreen(
         },
         scrollBehavior = scrollBehavior,
         actions = {
-            IconButton(
-                onClick = {
-                    onEvent.invoke(ResearchScreenEvents.OnAddToWishList(model, !isExistInWishList))
-                    if (isFromArgs) {
-                        onEvent.invoke(ResearchScreenEvents.ResetClickItem)
-                        navController.popBackStack()
-                    }
+            IconButton(onClick = {
+                onEvent.invoke(ResearchScreenEvents.OnAddToWishList(model, !isExistInWishList))
+                if (isFromArgs) {
+                    onEvent.invoke(ResearchScreenEvents.ResetClickItem)
+                    navController.popBackStack()
                 }
-            ) {
+            }) {
                 Icon(
                     imageVector = if (isExistInWishList) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
                     contentDescription = stringResource(id = R.string.wishlist)
@@ -107,21 +106,22 @@ fun ResearchDetailScreen(
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             MarkDown(markDown = model.description ?: "")
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            val isFilled = filledForm.contains(model.key ?: "")
             Button(
                 onClick = {
                     navController.navigate(
                         ResumeScreenArgs(
-                            key = model.key!!,
-                            question = model.questions!!
+                            key = model.key!!, question = model.questions!!
                         )
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(MaterialTheme.spacing.medium)
+                shape = RoundedCornerShape(MaterialTheme.spacing.medium),
+                enabled = isFilled.not()
             ) {
                 Text(
                     modifier = Modifier.padding(MaterialTheme.spacing.medium),
-                    text = stringResource(id = R.string.apply)
+                    text = stringResource(if (isFilled) R.string.already_apply else R.string.apply)
                 )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
@@ -129,15 +129,6 @@ fun ResearchDetailScreen(
     }
 }
 
-val des = """
-    Lorem chudam dolor sit amet, consectetur adipiscing elit. Fusce finibus pellentesque enim varius eleifend. Cras quis justo quam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus nisi diam, vestibulum dictum rutrum a, eleifend nec augue. Sed interdum egestas sapien dictum condimentum. Sed non consequat nibh. Mauris quis auctor leo. Nulla consectetur dolor leo, in sagittis diam aliquet id. Curabitur facilisis turpis egestas porta bibendum. Praesent suscipit ligula sed erat scelerisque, ut tincidunt sem congue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur tincidunt diam eget eleifend commodo.
-
-    Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec libero risus, laoreet vel ante eget, lacinia consequat magna. Nam eget justo at metus accumsan consequat eu id nulla. Nulla egestas, enim eget blandit pretium, purus purus placerat elit, ut consequat odio neque in leo. Sed purus ante, consequat tempus risus sed, pharetra rhoncus ex. Sed sodales elit eu ultrices luctus. Sed posuere, metus quis volutpat fermentum, nisi arcu egestas orci, in euismod metus risus a sem. Phasellus sed nunc pharetra nisi interdum vulputate quis et nulla. Quisque et mattis est, volutpat porttitor sapien.
-
-    Sed lacinia luctus urna. Nulla facilisi. Phasellus venenatis tempus pharetra. Praesent maximus iaculis mi ut maximus. Nulla elementum sem sem, et euismod turpis laoreet in. Vestibulum augue risus, rhoncus sit amet felis quis, dapibus tempor velit. Nunc metus metus, molestie a sodales et, molestie sit amet velit. Suspendisse tempor, justo et ultrices ultricies, dolor turpis consectetur nunc, sit amet volutpat neque mi in odio. Pellentesque eget tempor dui, a aliquam metus. Maecenas ipsum ligula, tempor vel nibh id, luctus faucibus tellus. Praesent iaculis blandit nibh, et pharetra justo condimentum vitae. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus justo libero, feugiat ac enim vitae, sollicitudin tristique mi. Fusce nec ullamcorper purus.
-    
-   
-""".trimIndent()
 
 @Preview(showBackground = true)
 @Composable

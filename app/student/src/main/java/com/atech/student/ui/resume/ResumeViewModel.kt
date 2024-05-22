@@ -24,13 +24,12 @@ class ResumeViewModel @Inject constructor(
 ) : ViewModel() {
     private val _resumeState = mutableStateOf(ResumeState())
     val resumeState: State<ResumeState> get() = _resumeState
+    private val _filledForm = mutableStateOf("")
+    val filledForm: State<String> get() = _filledForm
 
     private val _addScreenState = mutableStateOf(AddScreenState())
     val addScreenState: State<AddScreenState> get() = _addScreenState
     private var educationClickItemPos: Int? = null
-    var question = ""
-    var key = ""
-
 
 
 
@@ -55,7 +54,9 @@ class ResumeViewModel @Inject constructor(
             )?.let {
                 _resumeState.value = _resumeState.value.copy(
                     userData = it
-                )
+                ).also {details->
+                    _filledForm.value = details.userData.filledForm ?: ""
+                }
             }
         }
     }

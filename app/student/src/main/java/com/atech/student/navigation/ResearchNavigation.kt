@@ -4,6 +4,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.atech.student.ui.question.QuestionsViewModel
@@ -48,7 +50,7 @@ data class QuestionScreenArgs(
     val userPhone: String,
     val key: String,
     val question: String,
-    val filledForm:String
+    val filledForm: String
 )
 
 fun NavGraphBuilder.researchScreenGraph(
@@ -62,6 +64,7 @@ fun NavGraphBuilder.researchScreenGraph(
             route = ResearchScreenRoutes.ResearchScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navController = navController)
+            entry.sharedViewModel<ResumeViewModel>(navController = navController)
             val items = viewModel.research.collectAsState(initial = emptyList())
             ResearchScreen(
                 items = items.value,
@@ -71,9 +74,22 @@ fun NavGraphBuilder.researchScreenGraph(
         }
 
         animatedComposable(
-            route = ResearchScreenRoutes.DetailScreen.route,
+            route = ResearchScreenRoutes.DetailScreen.route + "?key={key}",
+            arguments = listOf(
+                navArgument("key") {
+                    type = NavType.StringType
+                    defaultValue = null
+                    nullable = true
+                }
+            ),
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navController = navController)
+            entry.arguments?.getString("key")?.let {
+                viewModel.onEvent(ResearchScreenEvents.SetDataFromArgs(it))
+            }
+            val resumeViewModel =
+                entry.sharedViewModel<ResumeViewModel>(navController = navController)
+            val filledForm by resumeViewModel.filledForm
             entry.arguments?.getString("key")?.let {
                 viewModel.onEvent(ResearchScreenEvents.SetDataFromArgs(it))
             }
@@ -85,7 +101,8 @@ fun NavGraphBuilder.researchScreenGraph(
                 navController = navController,
                 model = clickedItem ?: return@animatedComposable,
                 isExistInWishList = isExistInWishList,
-                isFromArgs = isFromArgs
+                isFromArgs = isFromArgs,
+                filledForm = filledForm
             )
         }
         animatedComposable(
