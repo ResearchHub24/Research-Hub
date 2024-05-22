@@ -40,7 +40,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.EducationDetails
 import com.atech.core.utils.fromJsonList
+import com.atech.student.navigation.QuestionScreenArgs
 import com.atech.student.navigation.ResearchScreenRoutes
+import com.atech.student.navigation.ResumeScreenArgs
 import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.student.ui.resume.ResumeState
 import com.atech.ui_common.R
@@ -59,6 +61,7 @@ fun ResumeScreen(
     modifier: Modifier = Modifier,
     state: ResumeState = ResumeState(),
     navController: NavHostController = rememberNavController(),
+    args: ResumeScreenArgs = ResumeScreenArgs("", ""),
     onEvents: (ResumeScreenEvents) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -211,10 +214,19 @@ fun ResumeScreen(
                 }
                 Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
             }
-            item(key = "apply") {
-                ApplyButton(text = stringResource(R.string.proceed_to_application), action = {
-
-                })
+            if (args.fromDetailScreen) {
+                item(key = "apply") {
+                    ApplyButton(
+                        text = stringResource(R.string.proceed_to_application),
+                        action = {
+                            navController.navigate(
+                                QuestionScreenArgs(
+                                    key = args.key,
+                                    question = args.question
+                                )
+                            )
+                        })
+                }
             }
         }
     }

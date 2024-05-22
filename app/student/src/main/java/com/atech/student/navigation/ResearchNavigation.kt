@@ -1,12 +1,14 @@
 package com.atech.student.navigation
 
+import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
+import com.atech.student.ui.question.QuestionsViewModel
+import com.atech.student.ui.question.compose.QuestionScreen
 import com.atech.student.ui.research.detail.compose.ResearchDetailScreen
 import com.atech.student.ui.research.main.ResearchScreenEvents
 import com.atech.student.ui.research.main.ResearchViewModel
@@ -15,8 +17,10 @@ import com.atech.student.ui.resume.ResumeViewModel
 import com.atech.student.ui.resume.compose.AddEditScreen
 import com.atech.student.ui.resume.compose.ResumeScreen
 import com.atech.ui_common.utils.animatedComposable
+import com.atech.ui_common.utils.animatedComposableEnh
 import com.atech.ui_common.utils.fadeThroughComposable
 import com.atech.ui_common.utils.sharedViewModel
+import kotlinx.serialization.Serializable
 
 sealed class ResearchScreenRoutes(
     val route: String,
@@ -26,6 +30,19 @@ sealed class ResearchScreenRoutes(
     data object ResumeScreen : ResearchScreenRoutes("resume_screen")
     data object EditScreen : ResearchScreenRoutes("edit_screen")
 }
+
+@Serializable
+data class ResumeScreenArgs(
+    val key: String,
+    val question: String,
+    val fromDetailScreen: Boolean = true
+)
+
+@Serializable
+data class QuestionScreenArgs(
+    val key: String,
+    val question: String
+)
 
 fun NavGraphBuilder.researchScreenGraph(
     navController: NavHostController
@@ -47,14 +64,7 @@ fun NavGraphBuilder.researchScreenGraph(
         }
 
         animatedComposable(
-            route = ResearchScreenRoutes.DetailScreen.route + "?key={key}",
-            arguments = listOf(
-                navArgument("key") {
-                    type = NavType.StringType
-                    defaultValue = null
-                    nullable = true
-                }
-            )
+            route = ResearchScreenRoutes.DetailScreen.route,
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navController = navController)
             entry.arguments?.getString("key")?.let {
@@ -76,14 +86,31 @@ fun NavGraphBuilder.researchScreenGraph(
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResumeViewModel>(navController = navController)
             val state by viewModel.resumeState
+            val args = ResumeScreenArgs(
+                key = "",
+                question = "",
+                fromDetailScreen = false
+            )
             ResumeScreen(
                 state = state,
                 navController = navController,
-                onEvents = viewModel::onEvent
+                onEvents = viewModel::onEvent,
+                args = args
+            )
+        }
+        animatedComposableEnh<ResumeScreenArgs> { entry ->
+            val viewModel = entry.sharedViewModel<ResumeViewModel>(navController = navController)
+            val state by viewModel.resumeState
+            val args = entry.toRoute<ResumeScreenArgs>()
+            ResumeScreen(
+                state = state,
+                navController = navController,
+                onEvents = viewModel::onEvent,
+                args = args
             )
         }
         animatedComposable(
-            route = ResearchScreenRoutes.EditScreen.route
+            route = ResearchScreenRoutes.EditScreen.route,
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResumeViewModel>(navController = navController)
             val state by viewModel.addScreenState
@@ -93,5 +120,19 @@ fun NavGraphBuilder.researchScreenGraph(
                 onEvent = viewModel::onEvent
             )
         }
+        animatedComposableEnh<QuestionScreenArgs> { entry ->
+            val viewModel = entry.sharedViewModel<QuestionsViewModel>(navController = navController)
+            val args = entry.toRoute<QuestionScreenArgs>()
+            viewModel.setKeyAndQuestion(
+                key = args.key,
+                question = args.question
+            )
+            val state by viewModel.questionsState
+            QuestionScreen(
+                navController = navController,
+                state = state
+            )
+        }
+
     }
 }

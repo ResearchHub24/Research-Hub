@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,7 +33,7 @@ import com.atech.core.model.ResearchModel
 import com.atech.core.model.TagModel
 import com.atech.core.utils.fromJsonList
 import com.atech.core.utils.toJSON
-import com.atech.student.navigation.ResearchScreenRoutes
+import com.atech.student.navigation.ResumeScreenArgs
 import com.atech.student.ui.research.main.ResearchScreenEvents
 import com.atech.ui_common.R
 import com.atech.ui_common.common.MainContainer
@@ -110,7 +109,12 @@ fun ResearchDetailScreen(
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             Button(
                 onClick = {
-                    navController.navigate(ResearchScreenRoutes.ResumeScreen.route)
+                    navController.navigate(
+                        ResumeScreenArgs(
+                            key = model.key!!,
+                            question = model.questions!!
+                        )
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(MaterialTheme.spacing.medium)

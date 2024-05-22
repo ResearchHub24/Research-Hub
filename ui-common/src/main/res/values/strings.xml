@@ -42,6 +42,6 @@
     <string name="grades_percentage">Grades/Percentage</string>
     <string name="education_details_added">Education Details added !!</string>
     <string name="skill">Skill</string>
-    <string name="require">require</string>
+    <string name="require">Require *</string>
     <string name="skill_added">Skill Added !!</string>
 </resources>

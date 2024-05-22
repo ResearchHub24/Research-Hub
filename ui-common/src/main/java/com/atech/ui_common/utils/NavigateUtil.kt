@@ -113,3 +113,61 @@ fun NavGraphBuilder.fadeThroughComposable(
     },
     content = content
 )
+
+inline fun <reified T : Any> NavGraphBuilder.animatedComposableEnh(
+    deepLinks: List<NavDeepLink> = emptyList(),
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
+) {
+    composable<T>(
+        content = content,
+        deepLinks = deepLinks,
+        enterTransition = {
+            fadeIn(animationSpec = tween(220, delayMillis = 90)) +
+                    scaleIn(
+                        initialScale = 0.92f,
+                        animationSpec = tween(220, delayMillis = 90)
+                    )
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(90))
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(220, delayMillis = 90)) +
+                    scaleIn(
+                        initialScale = 0.92f,
+                        animationSpec = tween(220, delayMillis = 90)
+                    )
+        },
+        popExitTransition = {
+            fadeOut(animationSpec = tween(90))
+        },
+    )
+}
+
+inline fun <reified T : Any> NavGraphBuilder.fadeThroughComposableEnh(
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+) {
+    composable<T>(
+        content = content,
+        enterTransition = {
+            fadeIn(animationSpec = tween(220, delayMillis = 90)) +
+                    scaleIn(
+                        initialScale = 0.92f,
+                        animationSpec = tween(220, delayMillis = 90)
+                    )
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(90))
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(220, delayMillis = 90)) +
+                    scaleIn(
+                        initialScale = 0.92f,
+                        animationSpec = tween(220, delayMillis = 90)
+                    )
+        },
+        popExitTransition = {
+            fadeOut(animationSpec = tween(90))
+        }
+    )
+}

@@ -86,7 +86,7 @@ fun EditText(
         keyboardOptions = keyboardOptions,
         enabled = enable,
         readOnly = readOnly,
-        interactionSource = interactionSource
+        interactionSource = interactionSource,
     )
 }
 
