@@ -1,4 +1,4 @@
-package com.atech.student.navigation
+package com.atech.student.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Checklist
@@ -9,6 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.atech.student.navigation.FacultiesScreenRoutes
+import com.atech.student.navigation.HomeScreenRoutes
+import com.atech.student.navigation.MainScreenRoutes
+import com.atech.student.navigation.ResearchScreenRoutes
+import com.atech.student.navigation.WishlistScreenRoutes
+import com.atech.student.navigation.facultiesScreenGraph
+import com.atech.student.navigation.homeScreenGraph
+import com.atech.student.navigation.researchScreenGraph
+import com.atech.student.navigation.wishListScreenGraph
 import com.atech.ui_common.R
 import com.atech.ui_common.utils.NavBarModel
 import com.atech.ui_common.utils.NavigationProvider

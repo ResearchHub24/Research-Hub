@@ -51,6 +51,7 @@ import com.atech.ui_common.common.CustomIconButton
 import com.atech.ui_common.common.EducationDetailsItems
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.TextItem
+import com.atech.ui_common.common.bottomPaddingLazy
 import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.captionColor
@@ -224,6 +225,7 @@ fun ResumeScreen(
                     })
                 }
             }
+            bottomPaddingLazy()
         }
     }
 }

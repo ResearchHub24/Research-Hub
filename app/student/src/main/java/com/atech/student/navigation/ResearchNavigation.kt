@@ -64,12 +64,14 @@ fun NavGraphBuilder.researchScreenGraph(
             route = ResearchScreenRoutes.ResearchScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navController = navController)
-            entry.sharedViewModel<ResumeViewModel>(navController = navController)
+            val resumeViewModel =
+                entry.sharedViewModel<ResumeViewModel>(navController = navController)
             val items = viewModel.research.collectAsState(initial = emptyList())
             ResearchScreen(
                 items = items.value,
                 navController = navController,
-                onEvent = viewModel::onEvent
+                onEvent = viewModel::onEvent,
+                resumeEvents = resumeViewModel::onEvent
             )
         }
 

@@ -42,6 +42,7 @@ import com.atech.ui_common.common.AppAlertDialog
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EditText
 import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.common.bottomPaddingLazy
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
 
@@ -147,6 +148,7 @@ fun QuestionScreen(
                     }
                 }
             }
+            bottomPaddingLazy()
         }
     }
 }

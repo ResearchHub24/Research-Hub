@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Approval
 import androidx.compose.material.icons.outlined.Edit
@@ -107,18 +111,36 @@ fun toast(context: Context, message: String) {
 
 @Composable
 fun CustomIconButton(
-    modifier: Modifier= Modifier,
+    modifier: Modifier = Modifier,
     imageVector: ImageVector = Icons.Outlined.Edit,
     action: () -> Unit = {}
 ) {
     IconButton(
         onClick = action,
-        modifier =modifier
+        modifier = modifier
     ) {
         Icon(imageVector = imageVector, contentDescription = "edit")
     }
 }
 
+
+@Composable
+fun BottomPadding() {
+    Spacer(
+        modifier = Modifier.height(
+            MaterialTheme.spacing.bottomPadding
+        )
+    )
+}
+
+
+fun LazyListScope.bottomPaddingLazy() {
+    item (
+        key = "bottom_padding"
+    ){
+        BottomPadding()
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

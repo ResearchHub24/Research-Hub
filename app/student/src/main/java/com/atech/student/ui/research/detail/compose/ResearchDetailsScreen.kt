@@ -36,6 +36,7 @@ import com.atech.core.utils.toJSON
 import com.atech.student.navigation.ResumeScreenArgs
 import com.atech.student.ui.research.main.ResearchScreenEvents
 import com.atech.ui_common.R
+import com.atech.ui_common.common.BottomPadding
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.MarkDown
 import com.atech.ui_common.theme.ResearchHubTheme
@@ -111,7 +112,7 @@ fun ResearchDetailScreen(
                 onClick = {
                     navController.navigate(
                         ResumeScreenArgs(
-                            key = model.key!!, question = model.questions!!
+                            key = model.key ?: "", question = model.questions ?: ""
                         )
                     )
                 },
@@ -124,7 +125,7 @@ fun ResearchDetailScreen(
                     text = stringResource(if (isFilled) R.string.already_apply else R.string.apply)
                 )
             }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            BottomPadding()
         }
     }
 }

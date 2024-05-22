@@ -18,6 +18,7 @@ data class ResearchRoomModel(
     val deadLine: Long?,
     val tags: String,
     val addedAt: Long = System.currentTimeMillis(),
+    val question: String,
     @PrimaryKey(autoGenerate = false)
     val key: String = ""
 )
@@ -32,7 +33,8 @@ class ResearchMapper @Inject constructor() : EntityMapper<ResearchModel, Researc
             created = entity.created ?: 0L,
             deadLine = entity.deadLine,
             tags = entity.tags ?: "",
-            key = entity.key ?: ""
+            key = entity.key ?: "",
+            question = entity.questions ?: ""
         )
     }
 
@@ -45,13 +47,15 @@ class ResearchMapper @Inject constructor() : EntityMapper<ResearchModel, Researc
             created = domainModel.created,
             deadLine = domainModel.deadLine,
             tags = domainModel.tags,
-            key = domainModel.key
+            key = domainModel.key,
+            questions = domainModel.question
         )
     }
 
     fun mapFromEntityList(entities: List<ResearchModel>): List<ResearchRoomModel> {
         return entities.map { mapFromEntity(it) }
     }
+
     fun mapToEntityList(entities: List<ResearchRoomModel>): List<ResearchModel> {
         return entities.map { mapToEntity(it) }
     }

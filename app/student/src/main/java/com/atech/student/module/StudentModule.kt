@@ -1,6 +1,6 @@
 package com.atech.student.module
 
-import com.atech.student.navigation.StudentNavigationProvider
+import com.atech.student.utils.StudentNavigationProvider
 import com.atech.ui_common.utils.NavigationProvider
 import dagger.Module
 import dagger.Provides

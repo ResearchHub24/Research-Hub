@@ -58,12 +58,14 @@ import com.atech.student.ui.resume.AddEditScreenType
 import com.atech.student.ui.resume.AddScreenState
 import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.ui_common.R
+import com.atech.ui_common.common.BottomPadding
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EditText
 import com.atech.ui_common.common.EditTextEnhance
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.TextItem
 import com.atech.ui_common.common.TitleComposable
+import com.atech.ui_common.common.bottomPaddingLazy
 import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
@@ -221,6 +223,7 @@ private fun EditPersonalDetails(
                 }
             )
         }
+        BottomPadding()
     }
 }
 
@@ -586,6 +589,7 @@ fun AddOrEditEducation(
                 }
             )
         }
+        BottomPadding()
     }
 }
 
@@ -643,6 +647,7 @@ fun AddSkillList(
                     }
                 )
             }
+            bottomPaddingLazy()
         }
     }
 }
