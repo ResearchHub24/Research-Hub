@@ -26,8 +26,14 @@ data class FireStoreUseCases @Inject constructor(
 class GetAllResearchUseCase @Inject constructor(
     private val db: FirebaseFirestore
 ) {
-    operator fun invoke(): Flow<List<ResearchModel>> =
-        db.collection("research").snapshots().map { it.toObjects(ResearchModel::class.java) }
+    operator fun invoke(
+        isEmpty: (Boolean) -> Unit
+    ): Flow<List<ResearchModel>> =
+        db.collection("research").snapshots().map {
+            val researchModels = it.toObjects(ResearchModel::class.java)
+            isEmpty.invoke(researchModels.isEmpty())
+            researchModels
+        }
 }
 
 data class LogInUseCase @Inject constructor(

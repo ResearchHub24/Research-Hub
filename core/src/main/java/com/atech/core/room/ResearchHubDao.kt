@@ -15,6 +15,9 @@ interface ResearchHubDao {
     @Query("SELECT * FROM research_table ORDER BY addedAt DESC")
     fun getAllResearch(): Flow<List<ResearchRoomModel>>
 
+    @Query("SELECT * FROM research_table ORDER BY addedAt DESC")
+    suspend fun getAllResearchList(): List<ResearchRoomModel>
+
     @Query("DELETE FROM research_table")
     suspend fun deleteAllResearch()
 
@@ -23,5 +26,10 @@ interface ResearchHubDao {
 
     @Query("DELETE FROM research_table WHERE `key` = :key")
     suspend fun deleteResearchByKey(key: String)
+
+
+    @Query("DELETE FROM research_table WHERE `key` NOT IN (:keys)")
+    suspend fun deleteResearchNotInKeys(keys: List<String>)
+
 
 }

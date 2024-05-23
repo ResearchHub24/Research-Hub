@@ -44,10 +44,26 @@ fun ResearchScreen(
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
     LaunchedEffect(lifecycleState) {
         when (lifecycleState) {
-            Lifecycle.State.RESUMED -> resumeEvents(ResumeScreenEvents.UpdateUserDetails)
+            Lifecycle.State.RESUMED -> {
+                resumeEvents(ResumeScreenEvents.UpdateUserDetails)
+                onEvent.invoke(ResearchScreenEvents.DeleteResearchNotInKeys(items.map {
+                    it.key ?: ""
+                }))
+            }
 
             else -> {}
         }
+    }
+    LaunchedEffect(
+        items
+    ) {
+        onEvent.invoke(
+            ResearchScreenEvents.DeleteResearchNotInKeys(
+                items.map {
+                    it.key ?: ""
+                }
+            )
+        )
     }
     MainContainer(
         title = stringResource(id = R.string.research),

@@ -14,9 +14,13 @@ import javax.inject.Inject
 @HiltViewModel
 class ResearchViewModel @Inject constructor(
     private val wishListUseCases: WishListUseCases,
-    useCases: FireStoreUseCases
+    useCases: FireStoreUseCases,
 ) : ViewModel() {
-    val research = useCases.getAllResearchUseCase()
+    val research = useCases.getAllResearchUseCase { isEmpty ->
+        if (isEmpty) viewModelScope.launch {
+            wishListUseCases.deleteAll.invoke()
+        }
+    }
 
     private val _clickItem = mutableStateOf<ResearchModel?>(null)
     val clickItem: State<ResearchModel?> get() = _clickItem
@@ -57,6 +61,19 @@ class ResearchViewModel @Inject constructor(
                     _isFromArgs.value = true
                 }
             }
+
+            is ResearchScreenEvents.DeleteResearchNotInKeys ->
+                viewModelScope.launch {
+                    if (event.list.isEmpty()) {
+                        return@launch
+                    }
+                    wishListUseCases.deleteResearchNotInKeysUseCase(
+                        wishListUseCases.getAllList.invoke().filter { model ->
+                            event.list.contains(model.key)
+                        }.map { it.key ?: "" }
+                    )
+                }
+
         }
     }
 

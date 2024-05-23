@@ -9,4 +9,5 @@ sealed interface ResearchScreenEvents {
         ResearchScreenEvents
 
     data class SetDataFromArgs(val key: String) : ResearchScreenEvents
+    data class DeleteResearchNotInKeys(val list: List<String>) : ResearchScreenEvents
 }

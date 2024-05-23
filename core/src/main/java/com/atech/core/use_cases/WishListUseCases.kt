@@ -14,7 +14,9 @@ data class WishListUseCases @Inject constructor(
     val deleteById: DeleteUserByIdUseCase,
     val insert: InsertUserUseCase,
     val deleteAll: DeleteAllUseCases,
-    val isResearchExistUseCase: IsResearchExistUseCase
+    val isResearchExistUseCase: IsResearchExistUseCase,
+    val deleteResearchNotInKeysUseCase: DeleteResearchNotInKeysUseCase,
+    val getAllList: GetAllUserCaseList
 )
 
 data class GetAllUserCase @Inject constructor(
@@ -57,4 +59,18 @@ data class IsResearchExistUseCase @Inject constructor(
     private val dao: ResearchHubDao
 ) {
     suspend operator fun invoke(key: String) = dao.getResearchByKey(key) != null
+}
+
+data class DeleteResearchNotInKeysUseCase @Inject constructor(
+    private val dao: ResearchHubDao
+) {
+    suspend operator fun invoke(keys: List<String>) = dao.deleteResearchNotInKeys(keys)
+}
+
+data class GetAllUserCaseList @Inject constructor(
+    private val dao: ResearchHubDao,
+    private val mapper: ResearchMapper
+) {
+    suspend operator fun invoke(): List<ResearchModel> =
+        dao.getAllResearchList().map { mapper.mapToEntity(it) }
 }
