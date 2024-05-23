@@ -18,6 +18,7 @@ sealed class HomeScreenRoutes(
 
 fun NavGraphBuilder.homeScreenGraph(
     navController: NavHostController,
+    navigateToLogIn: () -> Unit
 ) {
     navigation(
         route = MainScreenRoutes.Home.route,
@@ -30,7 +31,8 @@ fun NavGraphBuilder.homeScreenGraph(
             val userModel by viewModel.userModel
             HomeScreen(
                 model = userModel,
-                navController = navController
+                navController = navController,
+                navigateToLogIn = navigateToLogIn
             )
         }
     }

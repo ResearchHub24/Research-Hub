@@ -2,7 +2,6 @@ package com.atech.research.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.atech.research.ui.screens.main.MainScreen
@@ -15,6 +14,7 @@ enum class TopLevelRoutes(
     HOME("home"),
     LOGIN("login")
 }
+
 
 sealed class ResearchHubNavigation(
     val route: String
@@ -30,7 +30,7 @@ fun ResearchHubNavigation(
     visibleScreens: List<String> = emptyList(),
     navigationItem: List<NavBarModel> = emptyList(),
     startDestination: ResearchHubNavigation = ResearchHubNavigation.MainScreen,
-    mainScreen: @Composable (navController: NavHostController, modifier: Modifier) -> Unit
+    mainScreen: @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -43,7 +43,8 @@ fun ResearchHubNavigation(
             MainScreen(
                 visibleScreens = visibleScreens,
                 navigationItem = navigationItem,
-                mainScreen = mainScreen
+                mainScreen = mainScreen,
+                mainNavHost = navController
             )
         }
         logInScreenGraph(navController)

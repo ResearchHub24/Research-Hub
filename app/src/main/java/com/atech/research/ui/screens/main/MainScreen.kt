@@ -1,6 +1,5 @@
 package com.atech.research.ui.screens.main
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -22,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.atech.research.navigation.LogInScreenRoutes
 import com.atech.research.ui.common.AppBar
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.utils.NavBarModel
@@ -32,45 +32,38 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     visibleScreens: List<String> = emptyList(),
     navigationItem: List<NavBarModel> = emptyList(),
-    mainScreen: @Composable (navController: NavHostController, modifier: Modifier) -> Unit
+    mainNavHost: NavHostController,
+    mainScreen: @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit) -> Unit
 ) {
     val navHostController = rememberNavController()
     val backStackEntry by navHostController.currentBackStackEntryAsState()
-    Scaffold(
-        modifier = modifier,
-        bottomBar = {
-            val currentDestination = backStackEntry?.destination
-            val isTheir = visibleScreens.any { it == currentDestination?.route }
-            val density = LocalDensity.current
-            AnimatedVisibility(
-                visible = isTheir,
-                enter = slideInVertically {
-                    with(density) { -40.dp.roundToPx() }
-                } + expandVertically(
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    initialAlpha = 0.3f
-                ),
-                exit = slideOutVertically() + shrinkVertically() + fadeOut()
-            ) {
-                AppBar(
-                    items = navigationItem,
-                    backStackEntry = navHostController.currentBackStackEntryAsState(),
-                    onClick = {
-                        navHostController.navigate(it)
-                    }
-                )
-            }
+    Scaffold(modifier = modifier, bottomBar = {
+        val currentDestination = backStackEntry?.destination
+        val isTheir = visibleScreens.any { it == currentDestination?.route }
+        val density = LocalDensity.current
+        AnimatedVisibility(visible = isTheir, enter = slideInVertically {
+            with(density) { -40.dp.roundToPx() }
+        } + expandVertically(
+            expandFrom = Alignment.Top
+        ) + fadeIn(
+            initialAlpha = 0.3f
+        ), exit = slideOutVertically() + shrinkVertically() + fadeOut()) {
+            AppBar(items = navigationItem,
+                backStackEntry = navHostController.currentBackStackEntryAsState(),
+                onClick = {
+                    navHostController.navigate(it)
+                })
         }
-    ) {
+    }) {
         mainScreen(
-            navHostController,
-            modifier.padding(
+            navHostController, modifier.padding(
                 start = it.calculateStartPadding(layoutDirection = LayoutDirection.Ltr),
                 end = it.calculateStartPadding(layoutDirection = LayoutDirection.Rtl),
                 bottom = it.calculateBottomPadding()
             )
-        )
+        ) {
+            mainNavHost.navigate(LogInScreenRoutes.LogInScreen.route)
+        }
     }
 }
 

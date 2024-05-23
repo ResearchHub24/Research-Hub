@@ -1,10 +1,13 @@
 package com.atech.research.navigation
 
+import android.content.Intent
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.atech.research.ui.screens.login.LoginViewModel
 import com.atech.research.ui.screens.login.screen.LogInScreen
+import com.atech.ui_common.utils.DeepLinkRoutes
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.sharedViewModel
 
@@ -26,7 +29,13 @@ fun NavGraphBuilder.logInScreenGraph(
     ) {
 
         animatedComposable(
-            route = LogInScreenRoutes.LogInScreen.route
+            route = LogInScreenRoutes.LogInScreen.route,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = DeepLinkRoutes.LOGIN.route
+                    action = Intent.ACTION_VIEW
+                }
+            )
         ) { entry ->
             val viewModel = entry.sharedViewModel<LoginViewModel>(navController = navHostController)
             val logInState = viewModel.logInState.value

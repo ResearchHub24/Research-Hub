@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Groups2
-import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.ScreenSearchDesktop
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,16 +26,17 @@ import com.atech.ui_common.utils.NavigationProvider
 fun MainScreenStudentNavigation(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
-    startDestination: String = MainScreenRoutes.Home.route
+    startDestination: String = MainScreenRoutes.Home.route,
+    navigateToLogIn: () -> Unit
 ) {
     NavHost(
         modifier = modifier,
         navController = navHostController,
         startDestination = startDestination,
     ) {
-        homeScreenGraph(navController = navHostController)
+        homeScreenGraph(navController = navHostController, navigateToLogIn = navigateToLogIn)
         facultiesScreenGraph(navController = navHostController)
-        researchScreenGraph(navController = navHostController)
+        researchScreenGraph(navController = navHostController, navigateToLogIn = navigateToLogIn)
         wishListScreenGraph(navController = navHostController)
     }
 }
@@ -80,11 +80,12 @@ class StudentNavigationProvider : NavigationProvider {
         )
 
     @Composable
-    override fun provideMainScreen(): @Composable (navController: NavHostController, modifier: Modifier) -> Unit =
-        { navController, modifier ->
+    override fun provideMainScreen(): @Composable (NavHostController, Modifier, () -> Unit) -> Unit =
+        { navController, modifier, login ->
             MainScreenStudentNavigation(
                 navHostController = navController,
-                modifier = modifier
+                modifier = modifier,
+                navigateToLogIn = login
             )
         }
 }

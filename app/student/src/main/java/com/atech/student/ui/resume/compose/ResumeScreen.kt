@@ -1,6 +1,5 @@
 package com.atech.student.ui.resume.compose
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -75,21 +74,23 @@ fun ResumeScreen(
     state: ResumeState = ResumeState(),
     navController: NavHostController = rememberNavController(),
     args: ResumeScreenArgs = ResumeScreenArgs("", ""),
+    navigateToLogIn: () -> Unit = {},
     onEvents: (ResumeScreenEvents) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
     val context = LocalContext.current
-    LaunchedEffect(lifecycleState) {
-        when (lifecycleState) {
-            Lifecycle.State.RESUMED -> onEvents(ResumeScreenEvents.UpdateUserDetails)
+    if (isUserLogIn.not()) {
+        LaunchedEffect(lifecycleState) {
+            when (lifecycleState) {
+                Lifecycle.State.RESUMED -> onEvents(ResumeScreenEvents.UpdateUserDetails)
 
-            else -> {}
+                else -> {}
+            }
         }
     }
-    val navIcon = if (args.fromDetailScreen)
-    {
+    val navIcon = if (args.fromDetailScreen) {
         {
             navController.popBackStack()
             Unit
@@ -108,7 +109,7 @@ fun ResumeScreen(
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                //                    Todo: Navigate to login screen
+                navigateToLogIn()
             }
             return@MainContainer
         }

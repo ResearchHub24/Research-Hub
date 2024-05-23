@@ -11,6 +11,7 @@ interface NavigationProvider {
     @Composable
     fun provideMainScreen(): @Composable (
         navController: NavHostController,
-        modifier: Modifier
+        modifier: Modifier,
+        navigateToLogIn: () -> Unit
     ) -> Unit
 }

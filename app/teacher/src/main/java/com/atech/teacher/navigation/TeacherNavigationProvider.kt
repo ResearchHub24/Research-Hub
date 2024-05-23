@@ -18,8 +18,8 @@ class TeacherNavigationProvider : NavigationProvider {
     }
 
     @Composable
-    override fun provideMainScreen(): @Composable (navController: NavHostController, modifier: Modifier) -> Unit =
-        { _, modifier ->
+    override fun provideMainScreen(): @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit) -> Unit =
+        { _, modifier, _ ->
             Column(
                 modifier = modifier
             ) {

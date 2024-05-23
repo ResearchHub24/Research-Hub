@@ -20,6 +20,7 @@ import com.atech.ui_common.theme.ResearchHubTheme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     model: UserModel? = null,
+    navigateToLogIn: () -> Unit={},
     navController: NavHostController = rememberNavController()
 ) {
     MainContainer(
@@ -33,6 +34,8 @@ fun HomeScreen(
                         navController.navigate(
                             ResearchScreenRoutes.ResumeScreen.route
                         )
+                    } else {
+                        navigateToLogIn.invoke()
                     }
                 }
             )

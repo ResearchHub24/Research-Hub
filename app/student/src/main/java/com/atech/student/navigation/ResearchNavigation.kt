@@ -54,7 +54,8 @@ data class QuestionScreenArgs(
 )
 
 fun NavGraphBuilder.researchScreenGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    navigateToLogIn: () -> Unit
 ) {
     navigation(
         route = RouteName.RESEARCH.value,
@@ -123,7 +124,8 @@ fun NavGraphBuilder.researchScreenGraph(
                 navController = navController,
                 onEvents = viewModel::onEvent,
                 args = args,
-                isUserLogIn = viewModel.isUserLogIn
+                isUserLogIn = viewModel.isUserLogIn,
+                navigateToLogIn = navigateToLogIn
             )
         }
         animatedComposableEnh<ResumeScreenArgs> { entry ->
@@ -135,7 +137,8 @@ fun NavGraphBuilder.researchScreenGraph(
                 navController = navController,
                 onEvents = viewModel::onEvent,
                 args = args,
-                isUserLogIn = viewModel.isUserLogIn
+                isUserLogIn = viewModel.isUserLogIn,
+                navigateToLogIn = navigateToLogIn
             )
         }
         animatedComposable(
