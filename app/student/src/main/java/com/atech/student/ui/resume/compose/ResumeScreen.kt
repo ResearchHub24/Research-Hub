@@ -175,7 +175,7 @@ fun ResumeScreen(
                 ) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                     ) {
                         state.userData.skillList?.let { skillList ->
                             fromJsonList<String>(skillList).forEachIndexed { index, item ->
@@ -211,7 +211,6 @@ fun ResumeScreen(
             if (args.fromDetailScreen) {
                 item(key = "apply") {
                     ApplyButton(text = stringResource(R.string.proceed_to_application), action = {
-                        Log.d("AAA", "ResumeScreen:${state.userData.filledForm} ")
                         navController.navigate(
                             QuestionScreenArgs(
                                 key = args.key,

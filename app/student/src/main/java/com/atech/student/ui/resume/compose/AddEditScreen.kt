@@ -1,6 +1,7 @@
 package com.atech.student.ui.resume.compose
 
 import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -87,9 +88,19 @@ fun AddEditScreen(
         AddEditScreenType.EDUCATION -> context.getString(R.string.education)
         AddEditScreenType.SKILL -> context.getString(R.string.skills)
     }
-    MainContainer(modifier = modifier, title = title, onNavigationClick = {
+    BackHandler {
+        onEvent(ResumeScreenEvents.ResetState)
         navController.popBackStack()
-    }) { paddingValue ->
+    }
+    MainContainer(
+        modifier = modifier,
+        title = title,
+        onNavigationClick =
+        {
+            onEvent(ResumeScreenEvents.ResetState)
+            navController.popBackStack()
+        }
+    ) { paddingValue ->
         when (state.screenType) {
             AddEditScreenType.DETAILS -> EditPersonalDetails(
                 modifier = Modifier.padding(paddingValue),

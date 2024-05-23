@@ -2,7 +2,7 @@ package com.atech.student.ui.resume
 
 import com.atech.core.model.EducationDetails
 
-interface ResumeScreenEvents {
+sealed interface ResumeScreenEvents {
     data object OnPersonalDetailsClick : ResumeScreenEvents
     data class OnPersonalDataEdit(
         val name: String,
@@ -24,6 +24,7 @@ interface ResumeScreenEvents {
         val model: EducationDetails
     ) : ResumeScreenEvents
 
+
     data class OnEducationSave(
         val pos: Int? = null,
         val onComplete: (String?) -> Unit
@@ -39,4 +40,5 @@ interface ResumeScreenEvents {
         ResumeScreenEvents
 
     data class FilterResult(val query: String) : ResumeScreenEvents
+    data object ResetState : ResumeScreenEvents
 }

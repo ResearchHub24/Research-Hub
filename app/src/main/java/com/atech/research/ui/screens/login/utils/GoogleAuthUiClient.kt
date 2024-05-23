@@ -42,7 +42,6 @@ class GoogleAuthUiClient(
         }
         Pair(null, Exception("No Google ID token"))
     } catch (e: Exception) {
-        Log.d("AAA", "signInWithIntent: $e")
         Pair(null, e)
     }
 

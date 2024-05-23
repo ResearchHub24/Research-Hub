@@ -41,7 +41,6 @@ fun MainScreen(
         bottomBar = {
             val currentDestination = backStackEntry?.destination
             val isTheir = visibleScreens.any { it == currentDestination?.route }
-            Log.d("AAA", "MainScreen: $isTheir")
             val density = LocalDensity.current
             AnimatedVisibility(
                 visible = isTheir,

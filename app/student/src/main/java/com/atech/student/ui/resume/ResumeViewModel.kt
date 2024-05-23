@@ -3,7 +3,6 @@ package com.atech.student.ui.resume
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atech.core.config.RemoteConfigHelper
@@ -19,8 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ResumeViewModel @Inject constructor(
     private val authUseCases: AuthUseCases,
-    private val conf: RemoteConfigHelper,
-    state: SavedStateHandle
+    private val conf: RemoteConfigHelper
 ) : ViewModel() {
     private val _resumeState = mutableStateOf(ResumeState())
     val resumeState: State<ResumeState> get() = _resumeState
@@ -30,7 +28,6 @@ class ResumeViewModel @Inject constructor(
     private val _addScreenState = mutableStateOf(AddScreenState())
     val addScreenState: State<AddScreenState> get() = _addScreenState
     private var educationClickItemPos: Int? = null
-
 
 
     init {
@@ -54,7 +51,7 @@ class ResumeViewModel @Inject constructor(
             )?.let {
                 _resumeState.value = _resumeState.value.copy(
                     userData = it
-                ).also {details->
+                ).also { details ->
                     _filledForm.value = details.userData.filledForm ?: ""
                 }
             }
@@ -176,6 +173,11 @@ class ResumeViewModel @Inject constructor(
                         event.onComplete.invoke(exception?.message)
                     })
                 updateUserDetails()
+            }
+
+            ResumeScreenEvents.ResetState -> {
+                _addScreenState.value = AddScreenState()
+                educationClickItemPos = null
             }
         }
     }
