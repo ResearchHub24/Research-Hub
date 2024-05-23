@@ -1,5 +1,6 @@
 package com.atech.core.module
 
+import com.atech.core.utils.UserLoggedIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
@@ -36,5 +37,13 @@ object FirebaseModule {
     @Singleton
     @Provides
     fun provideFirebaseRemoteConfig(): FirebaseRemoteConfig = Firebase.remoteConfig
+
+
+    @Provides
+    @Singleton
+    @UserLoggedIn
+    fun provideUserIsLogIn(
+        auth: FirebaseAuth
+    ): Boolean = auth.currentUser != null
 
 }

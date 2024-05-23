@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.atech.core.model.ResearchModel
 import com.atech.core.use_cases.FireStoreUseCases
 import com.atech.core.use_cases.WishListUseCases
+import com.atech.core.utils.UserLoggedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class ResearchViewModel @Inject constructor(
     private val wishListUseCases: WishListUseCases,
     useCases: FireStoreUseCases,
+    @UserLoggedIn val isUserLogIn: Boolean
 ) : ViewModel() {
     val research = useCases.getAllResearchUseCase { isEmpty ->
         if (isEmpty) viewModelScope.launch {

@@ -45,4 +45,8 @@
     <string name="require">Require *</string>
     <string name="skill_added">Skill Added !!</string>
     <string name="already_apply">Already Applied</string>
+    <string name="view_all_applications">View all applications</string>
+    <string name="log_out">Log Out</string>
+    <string name="please_login_to_view_your_resume">Please login to view your resume</string>
+    <string name="login_to_apply">Login to apply</string>
 </resources>

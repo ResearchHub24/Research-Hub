@@ -104,7 +104,8 @@ fun NavGraphBuilder.researchScreenGraph(
                 model = clickedItem ?: return@animatedComposable,
                 isExistInWishList = isExistInWishList,
                 isFromArgs = isFromArgs,
-                filledForm = filledForm
+                filledForm = filledForm,
+                isUserLogIn = viewModel.isUserLogIn
             )
         }
         animatedComposable(
@@ -121,7 +122,8 @@ fun NavGraphBuilder.researchScreenGraph(
                 state = state,
                 navController = navController,
                 onEvents = viewModel::onEvent,
-                args = args
+                args = args,
+                isUserLogIn = viewModel.isUserLogIn
             )
         }
         animatedComposableEnh<ResumeScreenArgs> { entry ->
@@ -132,7 +134,8 @@ fun NavGraphBuilder.researchScreenGraph(
                 state = state,
                 navController = navController,
                 onEvents = viewModel::onEvent,
-                args = args
+                args = args,
+                isUserLogIn = viewModel.isUserLogIn
             )
         }
         animatedComposable(

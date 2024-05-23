@@ -1,6 +1,6 @@
 package com.atech.student.ui.research.detail.compose
 
-import androidx.compose.foundation.horizontalScroll
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -53,6 +53,7 @@ fun ResearchDetailScreen(
     isFromArgs: Boolean = false,
     model: ResearchModel,
     filledForm: String = "",
+    isUserLogIn: Boolean = true,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     MainContainer(title = stringResource(id = R.string.blank),
@@ -118,11 +119,14 @@ fun ResearchDetailScreen(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(MaterialTheme.spacing.medium),
-                enabled = isFilled.not()
+                enabled = isUserLogIn && isFilled.not()
             ) {
                 Text(
                     modifier = Modifier.padding(MaterialTheme.spacing.medium),
-                    text = stringResource(if (isFilled) R.string.already_apply else R.string.apply)
+                    text = stringResource(
+                        if (isUserLogIn.not()) R.string.login_to_apply else
+                            if (isFilled) R.string.already_apply else R.string.apply
+                    )
                 )
             }
             BottomPadding()

@@ -10,6 +10,7 @@ import com.atech.core.model.EducationDetails
 import com.atech.core.use_cases.AuthUseCases
 import com.atech.core.utils.RemoteConfigKeys
 import com.atech.core.utils.TAGS
+import com.atech.core.utils.UserLoggedIn
 import com.atech.core.utils.fromJsonList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ResumeViewModel @Inject constructor(
     private val authUseCases: AuthUseCases,
-    private val conf: RemoteConfigHelper
+    private val conf: RemoteConfigHelper,
+    @UserLoggedIn val isUserLogIn: Boolean
 ) : ViewModel() {
     private val _resumeState = mutableStateOf(ResumeState())
     val resumeState: State<ResumeState> get() = _resumeState

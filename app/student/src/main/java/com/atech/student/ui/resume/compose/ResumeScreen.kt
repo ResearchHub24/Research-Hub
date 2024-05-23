@@ -3,16 +3,23 @@ package com.atech.student.ui.resume.compose
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
+import androidx.compose.material.icons.automirrored.outlined.Login
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.ButtonDefaults
@@ -30,6 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -48,7 +56,9 @@ import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.student.ui.resume.ResumeState
 import com.atech.ui_common.R
 import com.atech.ui_common.common.CustomIconButton
+import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EducationDetailsItems
+import com.atech.ui_common.common.ImageLoaderRounderCorner
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.TextItem
 import com.atech.ui_common.common.bottomPaddingLazy
@@ -61,6 +71,7 @@ import com.atech.ui_common.theme.spacing
 @Composable
 fun ResumeScreen(
     modifier: Modifier = Modifier,
+    isUserLogIn: Boolean = true,
     state: ResumeState = ResumeState(),
     navController: NavHostController = rememberNavController(),
     args: ResumeScreenArgs = ResumeScreenArgs("", ""),
@@ -77,14 +88,51 @@ fun ResumeScreen(
             else -> {}
         }
     }
-    MainContainer(modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        title = stringResource(R.string.resume),
-        scrollBehavior = scrollBehavior) { contentPadding ->
+    val navIcon = if (args.fromDetailScreen)
+    {
+        {
+            navController.popBackStack()
+            Unit
+        }
+    } else null
+
+    MainContainer(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        title = stringResource(if (args.fromDetailScreen) R.string.resume else R.string.profile),
+        scrollBehavior = scrollBehavior,
+        onNavigationClick = navIcon
+    ) { contentPadding ->
+        if (isUserLogIn.not()) {
+            LogInScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding)
+            ) {
+                //                    Todo: Navigate to login screen
+            }
+            return@MainContainer
+        }
         LazyColumn(
             modifier = Modifier.padding(contentPadding)
         ) {
             item(key = "about") {
                 CardSection(title = stringResource(R.string.personal_details)) {
+                    if (args.fromDetailScreen.not()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp),
+                        ) {
+                            ImageLoaderRounderCorner(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .fillMaxHeight(),
+                                imageUrl = state.userData.photoUrl,
+                                isRounderCorner = 100.dp
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                    }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -109,6 +157,16 @@ fun ResumeScreen(
                         }
                         CustomIconButton {
                             onEvents(ResumeScreenEvents.OnPersonalDetailsClick)
+                            navController.navigate(ResearchScreenRoutes.EditScreen.route)
+                        }
+                    }
+                    if (args.fromDetailScreen.not()) {
+                        Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
+                        AddButton(
+                            title = stringResource(R.string.view_all_applications),
+                            imageVector = Icons.AutoMirrored.Outlined.LibraryBooks
+                        ) {
+                            onEvents(ResumeScreenEvents.OnAddEditEducationClick())
                             navController.navigate(ResearchScreenRoutes.EditScreen.route)
                         }
                     }
@@ -221,6 +279,16 @@ fun ResumeScreen(
                     })
                 }
             }
+            if (args.fromDetailScreen.not()) {
+                item(key = "log_out") {
+                    AddButton(
+                        title = stringResource(R.string.log_out),
+                        imageVector = Icons.AutoMirrored.Outlined.Logout
+                    ) {
+//                        TODO: Logout logic
+                    }
+                }
+            }
             bottomPaddingLazy()
         }
     }
@@ -252,14 +320,16 @@ fun ApplyButton(
 
 @Composable
 private fun AddButton(
-    title: String, action: () -> Unit = {}
+    title: String,
+    imageVector: ImageVector = Icons.Outlined.Edit,
+    action: () -> Unit = {}
 ) {
     TextButton(
         onClick = action, modifier = Modifier.fillMaxWidth()
     ) {
         Icon(
             modifier = Modifier.padding(end = MaterialTheme.spacing.medium),
-            imageVector = Icons.Outlined.Edit,
+            imageVector = imageVector,
             contentDescription = title
         )
         Text(text = title)
@@ -298,10 +368,48 @@ fun CardSection(
     }
 }
 
+@Composable
+fun LogInScreen(
+    modifier: Modifier = Modifier,
+    loginClick: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        DisplayCard(
+            modifier = Modifier
+                .padding(MaterialTheme.spacing.medium)
+                .align(Alignment.Center),
+            border = BorderStroke(
+                width = CardDefaults.outlinedCardBorder().width,
+                color = MaterialTheme.colorScheme.primary
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(MaterialTheme.spacing.medium),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(stringResource(R.string.please_login_to_view_your_resume))
+                AddButton(
+                    title = "Log In",
+                    Icons.AutoMirrored.Outlined.Login,
+                    action = loginClick
+                )
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ResumeScreenPreview() {
     ResearchHubTheme {
-        ResumeScreen()
+        ResumeScreen(
+            isUserLogIn = false
+        )
     }
 }
