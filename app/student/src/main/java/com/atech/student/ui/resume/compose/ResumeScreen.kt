@@ -79,10 +79,7 @@ fun ResumeScreen(
     }
     MainContainer(modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         title = stringResource(R.string.resume),
-        scrollBehavior = scrollBehavior,
-        onNavigationClick = {
-            navController.popBackStack()
-        }) { contentPadding ->
+        scrollBehavior = scrollBehavior) { contentPadding ->
         LazyColumn(
             modifier = Modifier.padding(contentPadding)
         ) {

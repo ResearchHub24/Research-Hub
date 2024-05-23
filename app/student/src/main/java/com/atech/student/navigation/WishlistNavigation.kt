@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import com.atech.student.ui.research.main.ResearchViewModel
 import com.atech.student.ui.wishlist.WishListViewModel
 import com.atech.student.ui.wishlist.compose.WishlistScreen
+import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.fadeThroughComposable
 import com.atech.ui_common.utils.sharedViewModel
 
@@ -26,7 +27,7 @@ fun NavGraphBuilder.wishListScreenGraph(
         route = MainScreenRoutes.Wishlist.route,
         startDestination = WishlistScreenRoutes.WishListScreen.route
     ) {
-        fadeThroughComposable(
+        animatedComposable(
             route = WishlistScreenRoutes.WishListScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<WishListViewModel>(navController = navController)

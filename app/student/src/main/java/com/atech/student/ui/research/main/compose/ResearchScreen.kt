@@ -3,7 +3,11 @@ package com.atech.student.ui.research.main.compose
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Bookmarks
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -19,6 +23,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchModel
+import com.atech.student.navigation.MainScreenRoutes
 import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.student.ui.research.main.ResearchScreenEvents
 import com.atech.student.ui.resume.ResumeScreenEvents
@@ -68,6 +73,18 @@ fun ResearchScreen(
     MainContainer(
         title = stringResource(id = R.string.research),
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        actions = {
+            IconButton(onClick = {
+                navController.navigate(
+                    MainScreenRoutes.Wishlist.route
+                )
+            }) {
+                Icon(
+                    imageVector = Icons.Rounded.Bookmarks,
+                    contentDescription = stringResource(R.string.wishlist)
+                )
+            }
+        }
     ) { paddingValues ->
         if (items.isEmpty()) {
             GlobalEmptyScreen(

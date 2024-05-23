@@ -1,8 +1,9 @@
 package com.atech.student.utils
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Checklist
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Dashboard
+import androidx.compose.material.icons.rounded.Groups2
 import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.ScreenSearchDesktop
 import androidx.compose.runtime.Composable
@@ -13,7 +14,6 @@ import com.atech.student.navigation.FacultiesScreenRoutes
 import com.atech.student.navigation.HomeScreenRoutes
 import com.atech.student.navigation.MainScreenRoutes
 import com.atech.student.navigation.ResearchScreenRoutes
-import com.atech.student.navigation.WishlistScreenRoutes
 import com.atech.student.navigation.facultiesScreenGraph
 import com.atech.student.navigation.homeScreenGraph
 import com.atech.student.navigation.researchScreenGraph
@@ -47,7 +47,7 @@ class StudentNavigationProvider : NavigationProvider {
         listOf(
             HomeScreenRoutes.HomeScreen.route,
             FacultiesScreenRoutes.FacultiesScreen.route,
-            WishlistScreenRoutes.WishListScreen.route,
+            ResearchScreenRoutes.ResumeScreen.route,
             ResearchScreenRoutes.ResearchScreen.route
         )
 
@@ -67,15 +67,15 @@ class StudentNavigationProvider : NavigationProvider {
             ),
             NavBarModel(
                 title = R.string.faculties,
-                selectedIcon = Icons.Rounded.PersonPinCircle,
+                selectedIcon = Icons.Rounded.Groups2,
                 route = MainScreenRoutes.Faculties.route,
                 destinationName = FacultiesScreenRoutes.FacultiesScreen.route
             ),
             NavBarModel(
-                title = R.string.wishlist,
-                selectedIcon = Icons.Rounded.Checklist,
-                route = MainScreenRoutes.Wishlist.route,
-                destinationName = WishlistScreenRoutes.WishListScreen.route
+                title = R.string.profile,
+                selectedIcon = Icons.Rounded.AccountCircle,
+                route = ResearchScreenRoutes.ResumeScreen.route,
+                destinationName = ResearchScreenRoutes.ResumeScreen.route
             ),
         )
 

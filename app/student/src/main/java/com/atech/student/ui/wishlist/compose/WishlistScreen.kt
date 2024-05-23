@@ -29,7 +29,10 @@ fun WishlistScreen(
 ) {
     MainContainer(
         title = stringResource(id = R.string.wishlist),
-        modifier = modifier
+        modifier = modifier,
+        onNavigationClick = {
+            navController.popBackStack()
+        }
     ) { paddingValues ->
         if (items.isEmpty()) {
             GlobalEmptyScreen(
