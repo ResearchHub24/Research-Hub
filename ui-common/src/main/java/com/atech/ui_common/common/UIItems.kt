@@ -64,7 +64,7 @@ fun TextItem(
         ) {
             Text(
                 modifier = modifier
-                    .padding(horizontal = MaterialTheme.spacing.medium),
+                    .padding(MaterialTheme.spacing.medium),
                 text = text,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.87f),

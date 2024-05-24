@@ -173,8 +173,7 @@ fun ResumeScreen(
                             title = stringResource(R.string.view_all_applications),
                             imageVector = Icons.AutoMirrored.Outlined.LibraryBooks
                         ) {
-                            onEvents(ResumeScreenEvents.OnAddEditEducationClick())
-                            navController.navigate(ResearchScreenRoutes.EditScreen.route)
+//                            TODO: View Application
                         }
                     }
                 }
@@ -237,7 +236,6 @@ fun ResumeScreen(
                 ) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                     ) {
                         state.userData.skillList?.let { skillList ->
                             fromJsonList<String>(skillList).forEachIndexed { index, item ->

@@ -16,3 +16,11 @@ val ItemTitleColorList = mutableListOf(
     Color(0xFFB2FCA5),
     Color(0xFFC1DFC2)
 )
+
+val SelectedChipContainerColor = Color(
+    0xFFF3FFE6
+)
+
+val SelectedChipContainColor = Color(
+    0xFF3C6C34
+)

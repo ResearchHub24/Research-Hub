@@ -24,7 +24,8 @@ data class UserModel(
     val phone: String? = null,
     val educationDetails: String? = null,
     val skillList: String? = null,
-    val filledForm: String? = null
+    val filledForm: String? = null,
+    val selectedForm: String? = null
 ) {
     @get:Exclude
     val formatedTime: String

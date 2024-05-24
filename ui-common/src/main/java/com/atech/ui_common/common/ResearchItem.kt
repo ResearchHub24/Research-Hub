@@ -7,23 +7,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Celebration
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PublicOff
 import androidx.compose.material.icons.rounded.PublishedWithChanges
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,6 +40,8 @@ import com.atech.core.model.TagModel
 import com.atech.core.utils.fromJsonList
 import com.atech.ui_common.R
 import com.atech.ui_common.theme.ResearchHubTheme
+import com.atech.ui_common.theme.SelectedChipContainColor
+import com.atech.ui_common.theme.SelectedChipContainerColor
 import com.atech.ui_common.theme.spacing
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -48,6 +49,7 @@ import com.atech.ui_common.theme.spacing
 fun ResearchItem(
     modifier: Modifier = Modifier,
     model: ResearchModel,
+    isSelected: Boolean = false,
     onClick: () -> Unit = {}
 ) {
     Surface(
@@ -180,6 +182,29 @@ fun ResearchItem(
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    if (isSelected)
+                        FilterChip(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart),
+                            label = {
+                                Text(stringResource(R.string.selected))
+                            },
+                            onClick = {
+
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Rounded.Celebration,
+                                    contentDescription = null
+                                )
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedLabelColor = SelectedChipContainColor,
+                                selectedLeadingIconColor = SelectedChipContainColor,
+                                selectedContainerColor = SelectedChipContainerColor
+                            ),
+                            selected = true
+                        )
                     TextButton(
                         onClick = onClick,
                         modifier = Modifier.align(Alignment.BottomEnd)
@@ -202,7 +227,8 @@ fun ResearchItemPreview() {
                 title = "Finding the best way to learn",
                 createdBy = "John Doe",
                 created = System.currentTimeMillis(),
-            )
+            ),
+            isSelected = true
         )
     }
 }
