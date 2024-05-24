@@ -48,6 +48,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.EducationDetails
 import com.atech.core.utils.fromJsonList
+import com.atech.student.navigation.HomeScreenRoutes
 import com.atech.student.navigation.QuestionScreenArgs
 import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.student.navigation.ResumeScreenArgs
@@ -75,7 +76,8 @@ fun ResumeScreen(
     navController: NavHostController = rememberNavController(),
     args: ResumeScreenArgs = ResumeScreenArgs("", ""),
     navigateToLogIn: () -> Unit = {},
-    onEvents: (ResumeScreenEvents) -> Unit = {}
+    onEvents: (ResumeScreenEvents) -> Unit = {},
+    logOut: () -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -109,6 +111,10 @@ fun ResumeScreen(
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
+                navController.popBackStack(
+                    HomeScreenRoutes.HomeScreen.route,
+                    inclusive = false
+                )
                 navigateToLogIn()
             }
             return@MainContainer
@@ -284,10 +290,20 @@ fun ResumeScreen(
                 item(key = "log_out") {
                     AddButton(
                         title = stringResource(R.string.log_out),
-                        imageVector = Icons.AutoMirrored.Outlined.Logout
-                    ) {
-//                        TODO: Logout logic
-                    }
+                        imageVector = Icons.AutoMirrored.Outlined.Logout,
+                        action = {
+                            logOut().also {
+                                navController.navigate(
+                                    HomeScreenRoutes.HomeScreen.route,
+                                    builder = {
+                                        popUpTo(HomeScreenRoutes.HomeScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    )
                 }
             }
             bottomPaddingLazy()

@@ -27,7 +27,8 @@ fun MainScreenStudentNavigation(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
     startDestination: String = MainScreenRoutes.Home.route,
-    navigateToLogIn: () -> Unit
+    navigateToLogIn: () -> Unit,
+    logOut: () -> Unit
 ) {
     NavHost(
         modifier = modifier,
@@ -36,7 +37,11 @@ fun MainScreenStudentNavigation(
     ) {
         homeScreenGraph(navController = navHostController, navigateToLogIn = navigateToLogIn)
         facultiesScreenGraph(navController = navHostController)
-        researchScreenGraph(navController = navHostController, navigateToLogIn = navigateToLogIn)
+        researchScreenGraph(
+            navController = navHostController,
+            navigateToLogIn = navigateToLogIn,
+            logOut = logOut
+        )
         wishListScreenGraph(navController = navHostController)
     }
 }
@@ -80,12 +85,13 @@ class StudentNavigationProvider : NavigationProvider {
         )
 
     @Composable
-    override fun provideMainScreen(): @Composable (NavHostController, Modifier, () -> Unit) -> Unit =
-        { navController, modifier, login ->
+    override fun provideMainScreen(): @Composable (NavHostController, Modifier, () -> Unit, logOut: () -> Unit) -> Unit =
+        { navController, modifier, login, logOut ->
             MainScreenStudentNavigation(
                 navHostController = navController,
                 modifier = modifier,
-                navigateToLogIn = login
+                navigateToLogIn = login,
+                logOut = logOut
             )
         }
 }

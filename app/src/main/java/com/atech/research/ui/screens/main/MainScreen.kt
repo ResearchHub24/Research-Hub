@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -23,8 +25,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.atech.research.navigation.LogInScreenRoutes
 import com.atech.research.ui.common.AppBar
+import com.atech.research.ui.screens.login.utils.GoogleAuthUiClient
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.utils.NavBarModel
+import com.google.android.gms.auth.api.identity.Identity
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -33,10 +38,18 @@ fun MainScreen(
     visibleScreens: List<String> = emptyList(),
     navigationItem: List<NavBarModel> = emptyList(),
     mainNavHost: NavHostController,
-    mainScreen: @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit) -> Unit
+    mainScreen: @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit, logOut: () -> Unit) -> Unit,
+    logOut: () -> Unit
 ) {
     val navHostController = rememberNavController()
     val backStackEntry by navHostController.currentBackStackEntryAsState()
+    val context = LocalContext.current
+    val googleAuthUiClient by lazy {
+        GoogleAuthUiClient(
+            oneTapClient = Identity.getSignInClient(context)
+        )
+    }
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(modifier = modifier, bottomBar = {
         val currentDestination = backStackEntry?.destination
         val isTheir = visibleScreens.any { it == currentDestination?.route }
@@ -60,9 +73,16 @@ fun MainScreen(
                 start = it.calculateStartPadding(layoutDirection = LayoutDirection.Ltr),
                 end = it.calculateStartPadding(layoutDirection = LayoutDirection.Rtl),
                 bottom = it.calculateBottomPadding()
-            )
+            ),
+            {
+                mainNavHost.navigate(LogInScreenRoutes.LogInScreen.route)
+            }
         ) {
-            mainNavHost.navigate(LogInScreenRoutes.LogInScreen.route)
+            coroutineScope.launch {
+                googleAuthUiClient.signOut(
+                    action = logOut
+                )
+            }
         }
     }
 }

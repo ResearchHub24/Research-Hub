@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.use_cases.IsUserLoggedInUseCase
+import com.atech.core.use_cases.SignOut
 import com.atech.core.utils.PrefKeys
+import com.atech.core.utils.restartApplication
 import com.atech.research.navigation.ResearchHubNavigation
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.utils.NavigationProvider
@@ -32,6 +34,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var navigationProvider: NavigationProvider
+
+    @Inject
+    lateinit var signOut: SignOut
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +59,11 @@ class MainActivity : ComponentActivity() {
                         mainScreen = navigationProvider.provideMainScreen(),
                         navigationItem = navigationProvider.getNavigationItems(),
                         visibleScreens = navigationProvider.getVisibleScreens()
-                    )
+                    ) {
+                        signOut.invoke {
+                            this.restartApplication()
+                        }
+                    }
                 }
             }
         }

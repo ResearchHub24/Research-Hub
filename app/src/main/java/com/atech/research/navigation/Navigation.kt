@@ -30,7 +30,8 @@ fun ResearchHubNavigation(
     visibleScreens: List<String> = emptyList(),
     navigationItem: List<NavBarModel> = emptyList(),
     startDestination: ResearchHubNavigation = ResearchHubNavigation.MainScreen,
-    mainScreen: @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit) -> Unit
+    mainScreen: @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit,logOut: () -> Unit) -> Unit,
+    logOut: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -44,7 +45,8 @@ fun ResearchHubNavigation(
                 visibleScreens = visibleScreens,
                 navigationItem = navigationItem,
                 mainScreen = mainScreen,
-                mainNavHost = navController
+                mainNavHost = navController,
+                logOut = logOut
             )
         }
         logInScreenGraph(navController)

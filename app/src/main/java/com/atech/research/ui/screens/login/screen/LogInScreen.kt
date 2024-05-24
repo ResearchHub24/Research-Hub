@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.atech.core.utils.restartApplication
 import com.atech.research.R
 import com.atech.research.navigation.ResearchHubNavigation
 import com.atech.research.ui.common.GoogleButton
@@ -95,7 +96,7 @@ fun LogInScreen(
         }
         logInState.uId?.let {
             logInMessage = "Sign Done"
-            navigateToHome(navHostController)
+            context.restartApplication()
         }
     }
     MainContainer(

@@ -16,7 +16,8 @@ data class AuthUseCases @Inject constructor(
     val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     val getUserDetailsUseFromAuthCase: GetUserDetailsUseFromAuthCase,
     val saveDetails: SaveDetails,
-    val publishApplication :PublishApplication
+    val publishApplication :PublishApplication,
+    val signOut: SignOut
 )
 
 data class IsUserLoggedInUseCase @Inject constructor(
@@ -117,5 +118,16 @@ data class PublishApplication @Inject constructor(
             filledForm = filledForm,
             onComplete = onComplete
         )
+    }
+}
+
+data class SignOut @Inject constructor(
+    private val auth: FirebaseAuth
+) {
+    operator fun invoke(
+        action: () -> Unit
+    ) {
+        auth.signOut()
+        action.invoke()
     }
 }
