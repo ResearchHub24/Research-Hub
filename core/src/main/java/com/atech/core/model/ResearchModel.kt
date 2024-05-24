@@ -49,5 +49,6 @@ data class ResearchPublishModel(
     val studentName: String? = null,
     val studentEmail: String? = null,
     val studentPhoneNumber: String? = null,
-    val answers: String? = null
+    val answers: String? = null,
+    val filledDate: Long = System.currentTimeMillis()
 )

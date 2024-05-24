@@ -16,6 +16,7 @@ import com.atech.student.ui.research.main.ResearchViewModel
 import com.atech.student.ui.research.main.compose.ResearchScreen
 import com.atech.student.ui.resume.ResumeViewModel
 import com.atech.student.ui.resume.compose.AddEditScreen
+import com.atech.student.ui.resume.compose.AllApplicationScreen
 import com.atech.student.ui.resume.compose.ResumeScreen
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.animatedComposableEnh
@@ -30,13 +31,12 @@ sealed class ResearchScreenRoutes(
     data object DetailScreen : ResearchScreenRoutes("detail_screen")
     data object ResumeScreen : ResearchScreenRoutes("resume_screen")
     data object EditScreen : ResearchScreenRoutes("edit_screen")
+    data object AllApplicationScreen : ResearchScreenRoutes("all_application_screen")
 }
 
 @Serializable
 data class ResumeScreenArgs(
-    val key: String,
-    val question: String,
-    val fromDetailScreen: Boolean = true
+    val key: String, val question: String, val fromDetailScreen: Boolean = true
 )
 
 
@@ -54,9 +54,7 @@ data class QuestionScreenArgs(
 )
 
 fun NavGraphBuilder.researchScreenGraph(
-    navController: NavHostController,
-    navigateToLogIn: () -> Unit,
-    logOut: () -> Unit
+    navController: NavHostController, navigateToLogIn: () -> Unit, logOut: () -> Unit
 ) {
     navigation(
         route = RouteName.RESEARCH.value,
@@ -79,13 +77,11 @@ fun NavGraphBuilder.researchScreenGraph(
 
         animatedComposable(
             route = ResearchScreenRoutes.DetailScreen.route + "?key={key}",
-            arguments = listOf(
-                navArgument("key") {
-                    type = NavType.StringType
-                    defaultValue = null
-                    nullable = true
-                }
-            ),
+            arguments = listOf(navArgument("key") {
+                type = NavType.StringType
+                defaultValue = null
+                nullable = true
+            }),
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navController = navController)
             entry.arguments?.getString("key")?.let {
@@ -116,9 +112,7 @@ fun NavGraphBuilder.researchScreenGraph(
             val viewModel = entry.sharedViewModel<ResumeViewModel>(navController = navController)
             val state by viewModel.resumeState
             val args = ResumeScreenArgs(
-                key = "",
-                question = "",
-                fromDetailScreen = false
+                key = "", question = "", fromDetailScreen = false
             )
             ResumeScreen(
                 state = state,
@@ -149,9 +143,7 @@ fun NavGraphBuilder.researchScreenGraph(
             val viewModel = entry.sharedViewModel<ResumeViewModel>(navController = navController)
             val state by viewModel.addScreenState
             AddEditScreen(
-                navController = navController,
-                state = state,
-                onEvent = viewModel::onEvent
+                navController = navController, state = state, onEvent = viewModel::onEvent
             )
         }
         animatedComposableEnh<QuestionScreenArgs> { entry ->
@@ -162,11 +154,28 @@ fun NavGraphBuilder.researchScreenGraph(
             )
             val state by viewModel.questionsState
             QuestionScreen(
-                navController = navController,
-                state = state,
-                onEvent = viewModel::onEven
+                navController = navController, state = state, onEvent = viewModel::onEven
             )
         }
-
+        animatedComposable(
+            route = ResearchScreenRoutes.AllApplicationScreen.route
+        ) { entry ->
+            val researchViewModel =
+                entry.sharedViewModel<ResearchViewModel>(navController = navController)
+            val resumeViewModel =
+                entry.sharedViewModel<ResumeViewModel>(navController = navController)
+            val appApplication by researchViewModel.research.collectAsState(emptyList())
+            val resumeState by resumeViewModel.resumeState
+            val filledForm = resumeState.userData.filledForm ?: ""
+            val selectedForm = resumeState.userData.selectedForm ?: ""
+            val filledApplication = appApplication.filter { list ->
+                filledForm.contains(list.key ?: "")
+            }.map { filteredList ->
+                filteredList to selectedForm.contains(filteredList.key ?: "")
+            }
+            AllApplicationScreen(
+                navHostController = navController, state = filledApplication
+            )
+        }
     }
 }

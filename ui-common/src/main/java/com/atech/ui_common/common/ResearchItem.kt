@@ -50,7 +50,8 @@ fun ResearchItem(
     modifier: Modifier = Modifier,
     model: ResearchModel,
     isSelected: Boolean = false,
-    onClick: () -> Unit = {}
+    canShowViewDetailButton: Boolean = true,
+    onClick: () -> Unit = {},
 ) {
     Surface(
         modifier = Modifier
@@ -205,12 +206,13 @@ fun ResearchItem(
                             ),
                             selected = true
                         )
-                    TextButton(
-                        onClick = onClick,
-                        modifier = Modifier.align(Alignment.BottomEnd)
-                    ) {
-                        Text(text = stringResource(id = R.string.view_details))
-                    }
+                    if (canShowViewDetailButton)
+                        TextButton(
+                            onClick = onClick,
+                            modifier = Modifier.align(Alignment.BottomEnd)
+                        ) {
+                            Text(text = stringResource(id = R.string.view_details))
+                        }
                 }
             }
         }

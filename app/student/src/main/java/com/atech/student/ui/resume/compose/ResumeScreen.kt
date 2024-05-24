@@ -112,8 +112,7 @@ fun ResumeScreen(
                     .padding(contentPadding)
             ) {
                 navController.popBackStack(
-                    HomeScreenRoutes.HomeScreen.route,
-                    inclusive = false
+                    HomeScreenRoutes.HomeScreen.route, inclusive = false
                 )
                 navigateToLogIn()
             }
@@ -173,7 +172,7 @@ fun ResumeScreen(
                             title = stringResource(R.string.view_all_applications),
                             imageVector = Icons.AutoMirrored.Outlined.LibraryBooks
                         ) {
-//                            TODO: View Application
+                            navController.navigate(ResearchScreenRoutes.AllApplicationScreen.route)
                         }
                     }
                 }
@@ -239,8 +238,7 @@ fun ResumeScreen(
                     ) {
                         state.userData.skillList?.let { skillList ->
                             fromJsonList<String>(skillList).forEachIndexed { index, item ->
-                                TextItem(
-                                    text = item,
+                                TextItem(text = item,
                                     endIcon = Icons.Outlined.Delete,
                                     onEndIconClick = {
                                         onEvents.invoke(ResumeScreenEvents.OnSkillClick(
@@ -286,22 +284,18 @@ fun ResumeScreen(
             }
             if (args.fromDetailScreen.not()) {
                 item(key = "log_out") {
-                    AddButton(
-                        title = stringResource(R.string.log_out),
+                    AddButton(title = stringResource(R.string.log_out),
                         imageVector = Icons.AutoMirrored.Outlined.Logout,
                         action = {
                             logOut().also {
-                                navController.navigate(
-                                    HomeScreenRoutes.HomeScreen.route,
+                                navController.navigate(HomeScreenRoutes.HomeScreen.route,
                                     builder = {
                                         popUpTo(HomeScreenRoutes.HomeScreen.route) {
                                             inclusive = true
                                         }
-                                    }
-                                )
+                                    })
                             }
-                        }
-                    )
+                        })
                 }
             }
             bottomPaddingLazy()
@@ -335,9 +329,7 @@ fun ApplyButton(
 
 @Composable
 private fun AddButton(
-    title: String,
-    imageVector: ImageVector = Icons.Outlined.Edit,
-    action: () -> Unit = {}
+    title: String, imageVector: ImageVector = Icons.Outlined.Edit, action: () -> Unit = {}
 ) {
     TextButton(
         onClick = action, modifier = Modifier.fillMaxWidth()
@@ -385,12 +377,10 @@ fun CardSection(
 
 @Composable
 fun LogInScreen(
-    modifier: Modifier = Modifier,
-    loginClick: () -> Unit = {}
+    modifier: Modifier = Modifier, loginClick: () -> Unit = {}
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         DisplayCard(
             modifier = Modifier
@@ -410,9 +400,7 @@ fun LogInScreen(
             ) {
                 Text(stringResource(R.string.please_login_to_view_your_resume))
                 AddButton(
-                    title = "Log In",
-                    Icons.AutoMirrored.Outlined.Login,
-                    action = loginClick
+                    title = "Log In", Icons.AutoMirrored.Outlined.Login, action = loginClick
                 )
             }
         }

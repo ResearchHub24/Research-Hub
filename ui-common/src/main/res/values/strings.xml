@@ -10,6 +10,7 @@
     <string name="profile">Profile</string>
     <string name="loaded_image">Loaded Image</string>
     <string name="no_research_found">No Research Found</string>
+    <string name="no_application_found">No Application Found</string>
     <string name="no_faculties_found">No Faculties Available</string>
     <string name="no_wishlist_found">Empty Wishlist</string>
     <string name="resume">Resume</string>
