@@ -39,7 +39,6 @@ fun AppBar(
     items: List<NavBarModel> = emptyList(),
     backStackEntry: State<NavBackStackEntry?> = remember { mutableStateOf(null) },
     onClick: (route: String) -> Unit = { },
-    isSelectionViewActive: Boolean = false,
 ) {
 
     Row(

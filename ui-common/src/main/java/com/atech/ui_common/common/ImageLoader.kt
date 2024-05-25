@@ -7,6 +7,7 @@
 
 package com.atech.ui_common.common
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,14 +56,17 @@ fun ImageLoaderRounderCorner(
     isRounderCorner: Dp = 0.dp,
     onError: () -> Unit = {}
 ) {
-
     AsyncImage(modifier = modifier.clip(shape = RoundedCornerShape(isRounderCorner)),
-        model = ImageRequest.Builder(LocalContext.current).data(imageUrl)
-            .decoderFactory(SvgDecoder.Factory()).crossfade(true).build(),
+        model = ImageRequest
+            .Builder(LocalContext.current)
+            .data(imageUrl)
+            .decoderFactory(SvgDecoder.Factory())
+            .crossfade(true).build(),
         contentDescription = stringResource(id = R.string.loaded_image),
         contentScale = contentScale,
         error = painterResource(id = errorImage),
         onError = {
+            Log.e("AAA", "ImageLoaderRounderCorner: ${it.result.throwable.message}")
             onError()
         })
 }

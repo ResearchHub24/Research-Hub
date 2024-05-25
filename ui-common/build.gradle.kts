@@ -84,6 +84,8 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
 
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.material.icons.extended)
 }
 hilt {
     enableAggregatingTask = true

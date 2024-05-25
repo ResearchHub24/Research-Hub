@@ -74,6 +74,10 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.gson)
+
+    implementation (libs.retrofit)
+    implementation (libs.converter.scalars)
+    implementation (libs.jsoup)
 }
 hilt {
     enableAggregatingTask = true

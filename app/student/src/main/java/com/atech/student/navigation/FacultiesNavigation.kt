@@ -1,10 +1,13 @@
 package com.atech.student.navigation
 
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
+import com.atech.student.ui.faculties.FacultiesViewModel
 import com.atech.student.ui.faculties.compose.FacultiesScreen
 import com.atech.ui_common.utils.fadeThroughComposable
+import com.atech.ui_common.utils.sharedViewModel
 
 
 sealed class FacultiesScreenRoutes(
@@ -23,8 +26,12 @@ fun NavGraphBuilder.facultiesScreenGraph(
     ) {
         fadeThroughComposable(
             route = FacultiesScreenRoutes.FacultiesScreen.route
-        ) {
-            FacultiesScreen()
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<FacultiesViewModel>(navController)
+            val states by viewModel.faculties
+            FacultiesScreen(
+                states = states
+            )
         }
     }
 }
