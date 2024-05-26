@@ -1,6 +1,7 @@
 package com.atech.student.navigation
 
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
@@ -28,7 +29,7 @@ fun NavGraphBuilder.facultiesScreenGraph(
             route = FacultiesScreenRoutes.FacultiesScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<FacultiesViewModel>(navController)
-            val states by viewModel.faculties
+            val states by viewModel.faculties.collectAsStateWithLifecycle(emptyList())
             FacultiesScreen(
                 states = states
             )

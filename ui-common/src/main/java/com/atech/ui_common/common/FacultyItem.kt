@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,55 +17,53 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.AlternateEmail
-import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Work
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.atech.core.retrofit.FacultyModel
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
-
+import com.atech.ui_common.utils.openLink
 
 
 @Composable
-fun TeacherItem(
+fun FacultyItem(
     modifier: Modifier = Modifier,
     model: FacultyModel
 ) {
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
+    var isExpanded by remember { mutableStateOf(false) }
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .toggleable(
                 value = isExpanded,
                 onValueChange = { isExpanded = it }
-            )
+            ),
+        border = BorderStroke(.5.dp, MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f))
     ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize(
-                    animationSpec = spring()
-                )
                 .padding(
                     horizontal = MaterialTheme.spacing.medium,
                     vertical = MaterialTheme.spacing.small
@@ -100,6 +99,8 @@ fun TeacherItem(
                                 text = model.name,
                                 style = if (isExpanded) MaterialTheme.typography.titleMedium
                                 else MaterialTheme.typography.titleSmall,
+                                modifier = Modifier
+                                    .animateContentSize()
                             )
                         }
 
@@ -119,6 +120,8 @@ fun TeacherItem(
                             Text(
                                 text = model.profileData,
                                 style = if (isExpanded) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
+                                modifier = Modifier
+                                    .animateContentSize()
                             )
                         }
                         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
@@ -137,6 +140,8 @@ fun TeacherItem(
                             Text(
                                 text = model.email,
                                 style = if (isExpanded) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
+                                modifier = Modifier
+                                    .animateContentSize()
                             )
                         }
                     }
@@ -145,7 +150,7 @@ fun TeacherItem(
                             .animateContentSize(
                                 animationSpec = spring()
                             )
-                            .height(if (isExpanded) 120.dp else 80.dp),
+                            .height(if (isExpanded) 80.dp else 60.dp),
 
                         imageUrl = model.imageUrl,
                         isRounderCorner = 100.dp
@@ -156,6 +161,7 @@ fun TeacherItem(
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically()
                 ) {
+                    Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -164,22 +170,24 @@ fun TeacherItem(
                     ) {
                         Text(
                             text = model.areaOfInterest,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier
                                 .weight(.9f)
                         )
+                        if (model.profileUrl.isNotBlank())
+                            IconButton(
+                                onClick = {
+                                    context.openLink(model.profileUrl)
+                                },
+                                modifier = Modifier
+                                    .padding(MaterialTheme.spacing.small),
 
-                        FloatingActionButton(
-                            onClick = { /*TODO*/ },
-                            modifier = Modifier
-                                .padding(MaterialTheme.spacing.small),
-                            shape = CircleShape
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.OpenInBrowser,
-                                contentDescription = null,
-                            )
-                        }
+                                ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
+                                    contentDescription = null,
+                                )
+                            }
 
                     }
                 }
@@ -190,9 +198,9 @@ fun TeacherItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun TeacherItemPreview() {
+private fun FacultyItemPreview() {
     ResearchHubTheme {
-        TeacherItem(
+        FacultyItem(
             model = FacultyModel(
                 name = "Dr. Aparna Shukla",
                 email = "a.shukla@bitmesra.ac.in",

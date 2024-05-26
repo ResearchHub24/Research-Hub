@@ -32,4 +32,10 @@ object RoomModule {
         database: ResearchHubDatabase
     ) = database.researchHubDao()
 
+    @Provides
+    @Singleton
+    fun provideFacultyDao(
+        database: ResearchHubDatabase
+    ) = database.facultyDao()
+
 }
