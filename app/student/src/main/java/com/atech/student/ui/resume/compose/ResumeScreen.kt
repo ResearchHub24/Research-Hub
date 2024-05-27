@@ -287,14 +287,7 @@ fun ResumeScreen(
                     AddButton(title = stringResource(R.string.log_out),
                         imageVector = Icons.AutoMirrored.Outlined.Logout,
                         action = {
-                            logOut().also {
-                                navController.navigate(HomeScreenRoutes.HomeScreen.route,
-                                    builder = {
-                                        popUpTo(HomeScreenRoutes.HomeScreen.route) {
-                                            inclusive = true
-                                        }
-                                    })
-                            }
+                            logOut()
                         })
                 }
             }

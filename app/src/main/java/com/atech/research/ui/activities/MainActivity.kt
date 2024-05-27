@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
@@ -18,9 +19,12 @@ import com.atech.core.use_cases.SignOut
 import com.atech.core.utils.PrefKeys
 import com.atech.core.utils.restartApplication
 import com.atech.research.navigation.ResearchHubNavigation
+import com.atech.research.ui.screens.login.utils.GoogleAuthUiClient
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.utils.NavigationProvider
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,6 +42,12 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var signOut: SignOut
 
+    private val googleAuthUiClient by lazy {
+        GoogleAuthUiClient(
+            oneTapClient = Identity.getSignInClient(this)
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -45,6 +55,7 @@ class MainActivity : ComponentActivity() {
             ResearchHubTheme {
                 val navController = rememberNavController()
                 val isLogInSkipp = pref.getBoolean(PrefKeys.IS_LOGIN_SKIP.value, false)
+                val scope = rememberCoroutineScope()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     ResearchHubNavigation(
                         navController = navController,
@@ -60,8 +71,12 @@ class MainActivity : ComponentActivity() {
                         navigationItem = navigationProvider.getNavigationItems(),
                         visibleScreens = navigationProvider.getVisibleScreens()
                     ) {
-                        signOut.invoke {
-                            this.restartApplication()
+                        scope.launch {
+                            googleAuthUiClient.signOut {
+                                signOut.invoke {
+                                    restartApplication()
+                                }
+                            }
                         }
                     }
                 }
