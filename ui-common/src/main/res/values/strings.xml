@@ -17,6 +17,7 @@
     <string name="personal_details">Personal Details</string>
     <string name="education">Education</string>
     <string name="add_education">Add Education</string>
+    <string name="education_details_are_require">Education details are require</string>
     <string name="skills">Skills</string>
     <string name="add_skills">Add Skills</string>
     <string name="proceed_to_application">Proceed to application</string>

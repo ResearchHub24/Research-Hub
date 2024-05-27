@@ -1,5 +1,6 @@
 package com.atech.student.ui.resume.compose
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -83,6 +85,9 @@ fun ResumeScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
     val context = LocalContext.current
+    val canFillApplication = state.userData.phone.isNullOrBlank() ||
+            state.userData.educationDetails.isNullOrBlank() ||
+            state.userData.educationDetails == "[]"
     if (isUserLogIn.not()) {
         LaunchedEffect(lifecycleState) {
             when (lifecycleState) {
@@ -166,7 +171,37 @@ fun ResumeScreen(
                             navController.navigate(ResearchScreenRoutes.EditScreen.route)
                         }
                     }
-                    if (args.fromDetailScreen.not()) {
+                    if (state.userData.phone.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
+                        DisplayCard(
+                            modifier = Modifier.fillMaxSize(),
+                            border = BorderStroke(
+                                width = CardDefaults.outlinedCardBorder().width,
+                                color = MaterialTheme.colorScheme.error
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ErrorOutline,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                                Text(
+                                    text = stringResource(R.string.phone_number_is_required),
+                                    modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+                    }
+                    if (args.fromDetailScreen.not() && state.userData.filledForm.isNullOrBlank()
+                            .not()
+                    ) {
                         Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
                         AddButton(
                             title = stringResource(R.string.view_all_applications),
@@ -220,6 +255,37 @@ fun ResumeScreen(
                                 }
                         }
                     }
+                    AnimatedVisibility(
+                        state.userData.educationDetails.isNullOrBlank() ||
+                                state.userData.educationDetails == "[]"
+                    ) {
+                        Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
+                        DisplayCard(
+                            modifier = Modifier.fillMaxSize(),
+                            border = BorderStroke(
+                                width = CardDefaults.outlinedCardBorder().width,
+                                color = MaterialTheme.colorScheme.error
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ErrorOutline,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                                Text(
+                                    text = stringResource(R.string.education_details_are_require),
+                                    modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+                    }
                     AddButton(
                         title = stringResource(R.string.add_education),
                     ) {
@@ -268,18 +334,22 @@ fun ResumeScreen(
             }
             if (args.fromDetailScreen) {
                 item(key = "apply") {
-                    ApplyButton(text = stringResource(R.string.proceed_to_application), action = {
-                        navController.navigate(
-                            QuestionScreenArgs(
-                                key = args.key,
-                                userEmail = state.userData.email,
-                                question = args.question,
-                                userName = state.userData.name,
-                                userPhone = state.userData.phone ?: "",
-                                filledForm = state.userData.filledForm ?: "[]"
+                    ApplyButton(
+                        text = stringResource(R.string.proceed_to_application),
+                        enable = canFillApplication.not(),
+                        action = {
+                            navController.navigate(
+                                QuestionScreenArgs(
+                                    key = args.key,
+                                    userEmail = state.userData.email,
+                                    question = args.question,
+                                    userName = state.userData.name,
+                                    userPhone = state.userData.phone ?: "N/A",
+                                    filledForm = state.userData.filledForm ?: "[]",
+                                )
                             )
-                        )
-                    })
+                        }
+                    )
                 }
             }
             if (args.fromDetailScreen.not()) {
