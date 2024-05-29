@@ -100,7 +100,7 @@ fun FacultyItem(
                                 style = if (isExpanded) MaterialTheme.typography.titleMedium
                                 else MaterialTheme.typography.titleSmall,
                                 modifier = Modifier
-                                    .animateContentSize()
+//                                    .animateContentSize()
                             )
                         }
 
@@ -121,7 +121,7 @@ fun FacultyItem(
                                 text = model.profileData,
                                 style = if (isExpanded) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
                                 modifier = Modifier
-                                    .animateContentSize()
+//                                    .animateContentSize()
                             )
                         }
                         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
@@ -141,7 +141,7 @@ fun FacultyItem(
                                 text = model.email,
                                 style = if (isExpanded) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
                                 modifier = Modifier
-                                    .animateContentSize()
+//                                    .animateContentSize()
                             )
                         }
                     }
