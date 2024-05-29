@@ -1,8 +1,8 @@
 package com.atech.student.ui.resume
 
 import com.atech.core.model.EMPTY_USER
-import com.atech.core.model.UserModel
+import com.atech.core.model.StudentUserModel
 
 data class ResumeState(
-    val userData : UserModel = EMPTY_USER
+    val userData : StudentUserModel = EMPTY_USER
 )

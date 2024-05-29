@@ -4,7 +4,9 @@ import android.util.Log
 import com.atech.core.model.EducationDetails
 import com.atech.core.model.ResearchModel
 import com.atech.core.model.ResearchPublishModel
-import com.atech.core.model.UserModel
+import com.atech.core.model.StudentUserModel
+import com.atech.core.model.TeacherUserModel
+import com.atech.core.model.UserType
 import com.atech.core.utils.CollectionName
 import com.atech.core.utils.State
 import com.atech.core.utils.TAGS
@@ -40,7 +42,7 @@ data class LogInUseCase @Inject constructor(
     private val db: FirebaseFirestore, private val hasUserUseCase: HasUserUseCase
 ) {
     suspend operator fun invoke(
-        uid: String, model: UserModel, state: (State<String>) -> Unit = { _ -> }
+        uid: String, model: StudentUserModel, state: (State<String>) -> Unit = { _ -> }
     ) {
         try {
             hasUserUseCase.invoke(uid) { state1 ->
@@ -88,9 +90,9 @@ data class HasUserUseCase @Inject constructor(
 data class GetUserDataUseCase @Inject constructor(
     private val db: FirebaseFirestore
 ) {
-    suspend operator fun invoke(uid: String): UserModel? = try {
+    suspend operator fun invoke(uid: String): StudentUserModel? = try {
         db.collection(CollectionName.USER.value).document(uid).get().await()
-            .toObject(UserModel::class.java)
+            .toObject(StudentUserModel::class.java)
     } catch (e: Exception) {
         Log.e(TAGS.ERROR.name, "invoke: $e")
         null
@@ -205,4 +207,16 @@ data class PublishApplicationToDb @Inject constructor(
             onComplete(e)
         }
     }
+}
+
+data class GetAllFaculties @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    operator fun invoke(): Flow<List<TeacherUserModel>> =
+        db.collection(CollectionName.USER.value)
+            .whereEqualTo("userType", UserType.PROFESSORS.name)
+            .whereEqualTo("isVerified", true)
+            .snapshots()
+            .map { it.toObjects(TeacherUserModel::class.java) }
+
 }

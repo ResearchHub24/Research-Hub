@@ -28,7 +28,7 @@ fun NavGraphBuilder.homeScreenGraph(
             route = HomeScreenRoutes.HomeScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<HomeViewModel>(navController = navController)
-            val userModel by viewModel.userModel
+            val userModel by viewModel.studentUserModel
             HomeScreen(
                 model = userModel,
                 navController = navController,

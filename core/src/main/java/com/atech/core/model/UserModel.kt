@@ -13,7 +13,7 @@ enum class UserType {
 
 
 @Keep
-data class UserModel(
+data class StudentUserModel(
     val uid: String = "",
     val email: String = "",
     val name: String = "",
@@ -26,6 +26,23 @@ data class UserModel(
     val skillList: String? = null,
     val filledForm: String? = null,
     val selectedForm: String? = null
+) {
+    @get:Exclude
+    val formatedTime: String
+        get() = created.convertLongToTime(DateFormat.DD_MMM_YYYY.format)
+}
+
+@Keep
+data class TeacherUserModel(
+    val uid: String = "",
+    val email: String = "",
+    val name: String = "",
+    val photoUrl: String? = null,
+    val userType: String = UserType.PROFESSORS.name,
+    val password: String? = null,
+    val isVerified: Boolean = false,
+    val links: String? = null,
+    val created: Long = System.currentTimeMillis()
 ) {
     @get:Exclude
     val formatedTime: String
@@ -45,7 +62,7 @@ val DUMMY_EDUCATION_DETAILS = listOf(
     EducationDetails("MCA", "XYZ Institute", "2022", "2024", "8.0"),
     EducationDetails("PhD", "XYZ Institute", "2024", percentage = "8.0"),
 )
-val EMPTY_USER = UserModel(
+val EMPTY_USER = StudentUserModel(
     uid = "",
     email = "",
     name = "",

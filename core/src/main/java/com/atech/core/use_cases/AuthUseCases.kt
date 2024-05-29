@@ -2,7 +2,7 @@ package com.atech.core.use_cases
 
 import com.atech.core.model.EducationDetails
 import com.atech.core.model.ResearchPublishModel
-import com.atech.core.model.UserModel
+import com.atech.core.model.StudentUserModel
 import com.atech.core.model.UserType
 import com.atech.core.utils.State
 import com.google.firebase.auth.FirebaseAuth
@@ -32,9 +32,9 @@ data class GetUserDetailsUseFromAuthCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         fromDatabase: Boolean = false
-    ): UserModel? = if (!fromDatabase && auth.currentUser != null) {
+    ): StudentUserModel? = if (!fromDatabase && auth.currentUser != null) {
         val user = auth.currentUser
-        UserModel(
+        StudentUserModel(
             uid = user!!.uid,
             email = user.email ?: "",
             name = user.displayName ?: "",
@@ -68,14 +68,14 @@ data class LogInWithGoogle @Inject constructor(
                 val userName = logInUser.displayName
                 val userEmail = logInUser.email
                 val userPhoto = logInUser.photoUrl
-                val userModel = UserModel(
+                val studentUserModel = StudentUserModel(
                     uid = userId,
                     email = userEmail ?: "",
                     name = userName ?: "",
                     photoUrl = userPhoto?.toString() ?: "",
                     userType = userType.name
                 )
-                logInUseCase.invoke(userId, userModel, state)
+                logInUseCase.invoke(userId, studentUserModel, state)
             }
         } catch (e: Exception) {
             state(State.Error(e))

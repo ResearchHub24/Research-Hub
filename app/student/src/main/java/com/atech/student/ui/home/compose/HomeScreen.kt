@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.atech.core.model.UserModel
+import com.atech.core.model.StudentUserModel
 import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.ui_common.R
 import com.atech.ui_common.common.MainContainer
@@ -19,7 +19,7 @@ import com.atech.ui_common.theme.ResearchHubTheme
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    model: UserModel? = null,
+    model: StudentUserModel? = null,
     navigateToLogIn: () -> Unit={},
     navController: NavHostController = rememberNavController()
 ) {

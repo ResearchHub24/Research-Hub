@@ -52,4 +52,5 @@
     <string name="please_login_to_view_your_resume">Please login to view your resume</string>
     <string name="login_to_apply">Login to apply</string>
     <string name="selected">Selected</string>
+    <string name="link">Links</string>
 </resources>

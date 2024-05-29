@@ -30,8 +30,12 @@ fun NavGraphBuilder.facultiesScreenGraph(
         ) { entry ->
             val viewModel = entry.sharedViewModel<FacultiesViewModel>(navController)
             val states by viewModel.faculties.collectAsStateWithLifecycle(emptyList())
+            val registerTeacherState by viewModel.registerFaculties.collectAsStateWithLifecycle(
+                emptyList()
+            )
             FacultiesScreen(
-                states = states
+                states = states,
+                registerTeacherState = registerTeacherState
             )
         }
     }
