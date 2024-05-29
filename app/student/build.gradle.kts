@@ -21,9 +21,6 @@ android {
         create("student") {
             dimension = "role"
         }
-        create("teacher") {
-            dimension = "role"
-        }
     }
     buildTypes {
         release {

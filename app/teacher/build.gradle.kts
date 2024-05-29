@@ -17,9 +17,6 @@ android {
     }
     flavorDimensions += "role"
     productFlavors {
-        create("student") {
-            dimension = "role"
-        }
         create("teacher") {
             dimension = "role"
         }

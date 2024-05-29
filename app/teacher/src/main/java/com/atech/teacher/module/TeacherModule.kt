@@ -1,6 +1,6 @@
 package com.atech.teacher.module
 
-import com.atech.teacher.navigation.TeacherNavigationProvider
+import com.atech.teacher.utils.TeacherNavigationProvider
 import com.atech.ui_common.utils.NavigationProvider
 import dagger.Module
 import dagger.Provides
