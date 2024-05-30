@@ -1,5 +1,7 @@
 package com.atech.core.utils
 
+import com.atech.core.BuildConfig
+
 enum class CollectionName(
     val value: String
 ) {
@@ -22,3 +24,13 @@ enum class RemoteConfigKeys(val value: String) {
 enum class TAGS {
     ERROR
 }
+
+enum class FlavourDimensions(val value: String) {
+    Student("student"),
+    Teacher("teacher")
+}
+
+fun <T> coreCheckIsAdmin(invoke: () -> T): T? =
+    if (BuildConfig.IS_ADMIN)
+        invoke()
+    else null

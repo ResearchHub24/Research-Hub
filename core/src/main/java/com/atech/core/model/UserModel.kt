@@ -11,6 +11,9 @@ enum class UserType {
     STUDENTS,
 }
 
+interface UserModel {
+    val formatedTime: String
+}
 
 @Keep
 data class StudentUserModel(
@@ -26,9 +29,9 @@ data class StudentUserModel(
     val skillList: String? = null,
     val filledForm: String? = null,
     val selectedForm: String? = null
-) {
+) : UserModel {
     @get:Exclude
-    val formatedTime: String
+    override val formatedTime: String
         get() = created.convertLongToTime(DateFormat.DD_MMM_YYYY.format)
 }
 
@@ -43,9 +46,9 @@ data class TeacherUserModel(
     val isVerified: Boolean = false,
     val links: String? = null,
     val created: Long = System.currentTimeMillis()
-) {
+) : UserModel {
     @get:Exclude
-    val formatedTime: String
+    override val formatedTime: String
         get() = created.convertLongToTime(DateFormat.DD_MMM_YYYY.format)
 }
 

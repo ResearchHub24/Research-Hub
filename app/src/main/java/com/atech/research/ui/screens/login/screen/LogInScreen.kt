@@ -44,6 +44,7 @@ import com.atech.research.ui.screens.login.utils.GoogleAuthUiClient
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
+import com.atech.ui_common.utils.IsStudent
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
@@ -87,6 +88,9 @@ fun LogInScreen(
         logInState.errorMessage?.let { error ->
             hasClick = false
             Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+            googleAuthUiClient.signOut {
+                onEvent.invoke(LogInScreenEvents.PreformLogOutOnError)
+            }
         }
     }
     LaunchedEffect(key1 = logInState) {
@@ -130,8 +134,13 @@ fun LogInScreen(
                 Text(text = stringResource(id = R.string.app_welcome))
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
                 GoogleButton(
-                    loadingText = logInMessage
+                    loadingText = logInMessage,
+                    hasClick = hasClick,
+                    hasClickChange = { value ->
+                        hasClick = value
+                    }
                 ) {
+                    hasClick = true
                     coroutineScope.launch {
                         val sigInIntentSender = googleAuthUiClient.signIn()
                         launcher.launch(
@@ -141,14 +150,16 @@ fun LogInScreen(
                         )
                     }
                 }
-                TextButton(
-                    modifier = Modifier.padding(MaterialTheme.spacing.medium),
-                    onClick = {
-                        navigateToHome(navHostController)
-                        onEvent(LogInScreenEvents.OnSkipClick)
+                IsStudent {
+                    TextButton(
+                        modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                        onClick = {
+                            navigateToHome(navHostController)
+                            onEvent(LogInScreenEvents.OnSkipClick)
+                        }
+                    ) {
+                        Text(text = stringResource(id = R.string.skip))
                     }
-                ) {
-                    Text(text = stringResource(id = R.string.skip))
                 }
             }
         }

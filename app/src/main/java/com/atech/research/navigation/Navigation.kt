@@ -12,7 +12,8 @@ enum class TopLevelRoutes(
     val route: String,
 ) {
     HOME("home"),
-    LOGIN("login")
+    LOGIN("login"),
+    Verify("Verify")
 }
 
 
@@ -21,6 +22,7 @@ sealed class ResearchHubNavigation(
 ) {
     data object MainScreen : ResearchHubNavigation(TopLevelRoutes.HOME.route)
     data object LogInScreen : ResearchHubNavigation(TopLevelRoutes.LOGIN.route)
+    data object VerifyScreen : ResearchHubNavigation(TopLevelRoutes.Verify.route)
 }
 
 @Composable
@@ -30,7 +32,7 @@ fun ResearchHubNavigation(
     visibleScreens: List<String> = emptyList(),
     navigationItem: List<NavBarModel> = emptyList(),
     startDestination: ResearchHubNavigation = ResearchHubNavigation.MainScreen,
-    mainScreen: @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit,logOut: () -> Unit) -> Unit,
+    mainScreen: @Composable (navController: NavHostController, modifier: Modifier, navigateToLogIn: () -> Unit, logOut: () -> Unit) -> Unit,
     logOut: () -> Unit
 ) {
     NavHost(
@@ -50,6 +52,7 @@ fun ResearchHubNavigation(
             )
         }
         logInScreenGraph(navController)
+        verifyScreenGraph(navController)
     }
 }
 

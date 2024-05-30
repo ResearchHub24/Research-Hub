@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.atech.core.use_cases.IsUserLoggedInUseCase
 import com.atech.core.use_cases.SignOut
 import com.atech.core.utils.PrefKeys
+import com.atech.core.utils.coreCheckIsAdmin
 import com.atech.core.utils.restartApplication
 import com.atech.research.navigation.ResearchHubNavigation
 import com.atech.research.ui.screens.login.utils.GoogleAuthUiClient
@@ -66,7 +67,8 @@ class MainActivity : ComponentActivity() {
                         ),
                         startDestination = if (isUserLogIn.invoke() == null && !isLogInSkipp)
                             ResearchHubNavigation.LogInScreen
-                        else ResearchHubNavigation.MainScreen,
+                        else coreCheckIsAdmin { ResearchHubNavigation.VerifyScreen }
+                            ?: ResearchHubNavigation.MainScreen,
                         mainScreen = navigationProvider.provideMainScreen(),
                         navigationItem = navigationProvider.getNavigationItems(),
                         visibleScreens = navigationProvider.getVisibleScreens()

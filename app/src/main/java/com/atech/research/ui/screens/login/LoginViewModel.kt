@@ -13,8 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authUseCases: AuthUseCases,
-    private val pref: SharedPreferences
+    private val authUseCases: AuthUseCases, private val pref: SharedPreferences
 ) : ViewModel() {
 
     private val _logInState = mutableStateOf(LogInState())
@@ -27,10 +26,10 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun logIn(token: String) = viewModelScope.launch {
-        authUseCases.logInWithGoogle(token) { state ->
+        authUseCases.logInWithGoogleStudent(token) { state ->
             when (state) {
-                is com.atech.core.utils.State.Error ->
-                    _logInState.value = LogInState(errorMessage = state.exception.message)
+                is com.atech.core.utils.State.Error -> _logInState.value =
+                    LogInState(errorMessage = state.exception.message)
 
                 com.atech.core.utils.State.Loading -> {}
                 is com.atech.core.utils.State.Success -> {
@@ -44,10 +43,11 @@ class LoginViewModel @Inject constructor(
         when (event) {
             is LogInScreenEvents.OnSignInResult -> _logInState.value = event.state
             is LogInScreenEvents.TriggerAuth -> logIn(event.token)
-            LogInScreenEvents.OnSkipClick -> pref.edit()
-                .apply {
+            LogInScreenEvents.OnSkipClick -> pref.edit().apply {
                     putBoolean(PrefKeys.IS_LOGIN_SKIP.value, true)
                 }.apply()
+
+            LogInScreenEvents.PreformLogOutOnError -> authUseCases.signOut {}
         }
     }
 }

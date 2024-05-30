@@ -20,9 +20,11 @@ android {
     productFlavors {
         create("student") {
             dimension = "role"
+            buildConfigField("boolean", "IS_ADMIN", "false")
         }
         create("teacher") {
             dimension = "role"
+            buildConfigField("boolean", "IS_ADMIN", "true")
         }
     }
     buildTypes {
@@ -43,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"

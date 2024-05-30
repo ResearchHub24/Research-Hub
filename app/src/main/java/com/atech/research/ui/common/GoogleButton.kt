@@ -24,10 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,12 +45,13 @@ fun GoogleButton(
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
     hasClick: Boolean = false,
+    hasClickChange: (Boolean) -> Unit = { _ -> },
     onClicked: () -> Unit
 ) {
-    var clicked by remember { mutableStateOf(hasClick) }
+//    var clicked by remember { mutableStateOf(hasClick) }
     Surface(
         modifier = modifier.clickable {
-            clicked = !clicked
+            hasClickChange(!hasClick)
             onClicked()
         },
         shape = shape,
@@ -84,8 +81,8 @@ fun GoogleButton(
                 tint = Color.Unspecified
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = if (clicked) loadingText else text)
-            if (clicked) {
+            Text(text = if (hasClick) loadingText else text)
+            if (hasClick) {
                 Spacer(modifier = Modifier.width(16.dp))
                 CircularProgressIndicator(
                     modifier = Modifier

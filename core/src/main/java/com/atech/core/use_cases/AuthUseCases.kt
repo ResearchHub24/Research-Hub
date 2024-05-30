@@ -3,8 +3,10 @@ package com.atech.core.use_cases
 import com.atech.core.model.EducationDetails
 import com.atech.core.model.ResearchPublishModel
 import com.atech.core.model.StudentUserModel
+import com.atech.core.model.TeacherUserModel
 import com.atech.core.model.UserType
 import com.atech.core.utils.State
+import com.atech.core.utils.coreCheckIsAdmin
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.tasks.await
@@ -12,11 +14,11 @@ import javax.inject.Inject
 
 
 data class AuthUseCases @Inject constructor(
-    val logInWithGoogle: LogInWithGoogle,
+    val logInWithGoogleStudent: LogInWithGoogleStudent,
     val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     val getUserDetailsUseFromAuthCase: GetUserDetailsUseFromAuthCase,
     val saveDetails: SaveDetails,
-    val publishApplication :PublishApplication,
+    val publishApplication: PublishApplication,
     val signOut: SignOut
 )
 
@@ -46,14 +48,13 @@ data class GetUserDetailsUseFromAuthCase @Inject constructor(
     }
 }
 
-data class LogInWithGoogle @Inject constructor(
+data class LogInWithGoogleStudent @Inject constructor(
     private val auth: FirebaseAuth,
     private val logInUseCase: LogInUseCase,
     private val hasUserData: HasUserUseCase,
 ) {
     suspend operator fun invoke(
         token: String,
-        userType: UserType = UserType.STUDENTS,
         state: (State<String>) -> Unit = { _ -> }
     ) {
         try {
@@ -68,12 +69,21 @@ data class LogInWithGoogle @Inject constructor(
                 val userName = logInUser.displayName
                 val userEmail = logInUser.email
                 val userPhoto = logInUser.photoUrl
-                val studentUserModel = StudentUserModel(
+                val studentUserModel = coreCheckIsAdmin {
+                    TeacherUserModel(
+                        uid = userId,
+                        email = userEmail ?: "",
+                        name = userName ?: "",
+                        photoUrl = userPhoto?.toString() ?: "",
+                        userType = UserType.PROFESSORS.name,
+                        isVerified = false
+                    )
+                } ?: StudentUserModel(
                     uid = userId,
                     email = userEmail ?: "",
                     name = userName ?: "",
                     photoUrl = userPhoto?.toString() ?: "",
-                    userType = userType.name
+                    userType = UserType.STUDENTS.name
                 )
                 logInUseCase.invoke(userId, studentUserModel, state)
             }

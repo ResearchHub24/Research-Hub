@@ -6,10 +6,12 @@ import com.atech.core.model.ResearchModel
 import com.atech.core.model.ResearchPublishModel
 import com.atech.core.model.StudentUserModel
 import com.atech.core.model.TeacherUserModel
+import com.atech.core.model.UserModel
 import com.atech.core.model.UserType
 import com.atech.core.utils.CollectionName
 import com.atech.core.utils.State
 import com.atech.core.utils.TAGS
+import com.atech.core.utils.coreCheckIsAdmin
 import com.atech.core.utils.fromJsonList
 import com.atech.core.utils.toJSON
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,8 +43,10 @@ class GetAllResearchUseCase @Inject constructor(
 data class LogInUseCase @Inject constructor(
     private val db: FirebaseFirestore, private val hasUserUseCase: HasUserUseCase
 ) {
-    suspend operator fun invoke(
-        uid: String, model: StudentUserModel, state: (State<String>) -> Unit = { _ -> }
+    suspend operator fun <T : UserModel> invoke(
+        uid: String,
+        model: T,
+        state: (State<String>) -> Unit = { _ -> }
     ) {
         try {
             hasUserUseCase.invoke(uid) { state1 ->
@@ -59,7 +63,20 @@ data class LogInUseCase @Inject constructor(
                                 state(State.Success(uid))
                             }
                         } else {
-                            state(State.Success(uid))
+                            coreCheckIsAdmin {
+                                runBlocking {
+                                    db.collection(CollectionName.USER.value).document(uid).get()
+                                        .await().toObject(TeacherUserModel::class.java)
+                                        ?.let { userModel ->
+                                            if (userModel.userType != UserType.PROFESSORS.name)
+                                                state.invoke(
+                                                    State.Error(Exception("This mail is linked with student account & can't be used for faculty account"))
+                                                )
+                                            else
+                                                state(State.Success(uid))
+                                        }
+                                }
+                            } ?: state(State.Success(uid))
                         }
                     }
 
