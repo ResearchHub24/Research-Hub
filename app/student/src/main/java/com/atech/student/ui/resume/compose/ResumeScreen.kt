@@ -23,7 +23,6 @@ import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,6 +56,7 @@ import com.atech.student.navigation.ResumeScreenArgs
 import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.student.ui.resume.ResumeState
 import com.atech.ui_common.R
+import com.atech.ui_common.common.ApplyButton
 import com.atech.ui_common.common.CustomIconButton
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EducationDetailsItems
@@ -363,30 +363,6 @@ fun ResumeScreen(
             }
             bottomPaddingLazy()
         }
-    }
-}
-
-@Composable
-fun ApplyButton(
-    text: String,
-    enable: Boolean = true,
-    action: () -> Unit,
-) {
-    TextButton(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = MaterialTheme.spacing.medium),
-        onClick = action,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        ),
-        shape = RoundedCornerShape(MaterialTheme.spacing.medium),
-        enabled = enable
-    ) {
-        Text(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium), text = text
-        )
     }
 }
 

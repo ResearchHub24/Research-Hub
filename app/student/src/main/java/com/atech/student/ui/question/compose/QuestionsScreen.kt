@@ -36,7 +36,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.student.ui.question.QuestionStateEvent
-import com.atech.student.ui.resume.compose.ApplyButton
+import com.atech.ui_common.common.ApplyButton
 import com.atech.ui_common.R
 import com.atech.ui_common.common.AppAlertDialog
 import com.atech.ui_common.common.DisplayCard

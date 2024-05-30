@@ -59,6 +59,7 @@ import com.atech.student.ui.resume.AddEditScreenType
 import com.atech.student.ui.resume.AddScreenState
 import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.ui_common.R
+import com.atech.ui_common.common.ApplyButton
 import com.atech.ui_common.common.BottomPadding
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EditText
