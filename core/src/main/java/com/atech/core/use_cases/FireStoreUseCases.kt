@@ -104,7 +104,7 @@ data class HasUserUseCase @Inject constructor(
     }
 }
 
-data class GetUserDataUseCase @Inject constructor(
+data class GetStudentUserDataUseCase @Inject constructor(
     private val db: FirebaseFirestore
 ) {
     suspend operator fun invoke(uid: String): StudentUserModel? = try {
@@ -116,8 +116,46 @@ data class GetUserDataUseCase @Inject constructor(
     }
 }
 
+data class GetTeacherUserDataUseCase @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    suspend operator fun invoke(uid: String): TeacherUserModel? = try {
+        db.collection(CollectionName.USER.value).document(uid).get().await()
+            .toObject(TeacherUserModel::class.java)
+    } catch (e: Exception) {
+        Log.e(TAGS.ERROR.name, "invoke: $e")
+        null
+    }
+}
 
-data class SaveUserDetails @Inject constructor(
+
+data class SaveTeacherUserData @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    suspend fun savePassword(
+        uid: String,
+        password: String,
+        onComplete: (Exception?) -> Unit = {}
+    ) {
+        try {
+            db.collection(
+                CollectionName.USER.value
+            ).document(uid)
+                .update(
+                    mapOf(
+                        "password" to password
+                    )
+                ).await()
+            onComplete(null)
+        } catch (e: Exception) {
+            Log.e(TAGS.ERROR.name, "savePassword: $e")
+            onComplete(e)
+        }
+    }
+}
+
+
+data class SaveStudentUserDetails @Inject constructor(
     private val db: FirebaseFirestore
 ) {
     suspend fun saveProfileData(
@@ -196,7 +234,7 @@ data class SaveUserDetails @Inject constructor(
 
 data class PublishApplicationToDb @Inject constructor(
     private val db: FirebaseFirestore,
-    private val saveUserDetails: SaveUserDetails
+    private val saveStudentUserDetails: SaveStudentUserDetails
 ) {
     suspend operator fun invoke(
         uid: String,
@@ -212,7 +250,7 @@ data class PublishApplicationToDb @Inject constructor(
                 .document(uid)
                 .set(model)
                 .await()
-            saveUserDetails.saveFilledForm(
+            saveStudentUserDetails.saveFilledForm(
                 uid = uid,
                 key = key,
                 filledForm = filledForm,

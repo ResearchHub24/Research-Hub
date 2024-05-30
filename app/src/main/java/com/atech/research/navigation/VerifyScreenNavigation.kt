@@ -1,5 +1,6 @@
 package com.atech.research.navigation
 
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
@@ -18,14 +19,16 @@ fun NavGraphBuilder.verifyScreenGraph(
     navigation(
         route = ResearchHubNavigation.VerifyScreen.route,
         startDestination = VerifyScreenRoute.VerifyScreen.route
-    ){
+    ) {
         animatedComposable(
             route = VerifyScreenRoute.VerifyScreen.route,
         ) { entry ->
             val viewModel =
                 entry.sharedViewModel<VerifyViewModel>(navController = navHostController)
+            val state by viewModel.verifyScreenState
             VerifyScreen(
-
+                state = state,
+                onEvent = viewModel::onEvent
             )
         }
     }

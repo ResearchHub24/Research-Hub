@@ -19,7 +19,12 @@ data class AuthUseCases @Inject constructor(
     val getUserDetailsUseFromAuthCase: GetUserDetailsUseFromAuthCase,
     val saveDetails: SaveDetails,
     val publishApplication: PublishApplication,
-    val signOut: SignOut
+    val signOut: SignOut,
+)
+
+data class TeacherAuthUserCase @Inject constructor(
+    val getTeacherData: GetTeacherData,
+    val saveData: SaveTeacherData
 )
 
 data class IsUserLoggedInUseCase @Inject constructor(
@@ -29,8 +34,7 @@ data class IsUserLoggedInUseCase @Inject constructor(
 }
 
 data class GetUserDetailsUseFromAuthCase @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val getUserUseCase: GetUserDataUseCase
+    private val auth: FirebaseAuth, private val getUserUseCase: GetStudentUserDataUseCase
 ) {
     suspend operator fun invoke(
         fromDatabase: Boolean = false
@@ -54,8 +58,7 @@ data class LogInWithGoogleStudent @Inject constructor(
     private val hasUserData: HasUserUseCase,
 ) {
     suspend operator fun invoke(
-        token: String,
-        state: (State<String>) -> Unit = { _ -> }
+        token: String, state: (State<String>) -> Unit = { _ -> }
     ) {
         try {
             val credential = GoogleAuthProvider.getCredential(token, null)
@@ -94,8 +97,7 @@ data class LogInWithGoogleStudent @Inject constructor(
 }
 
 data class SaveDetails @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val saveData: SaveUserDetails
+    private val auth: FirebaseAuth, private val saveData: SaveStudentUserDetails
 ) {
     suspend fun saveProfileData(
         name: String, phone: String, onComplete: (Exception?) -> Unit = {}
@@ -112,8 +114,7 @@ data class SaveDetails @Inject constructor(
 }
 
 data class PublishApplication @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val publishApplication: PublishApplicationToDb
+    private val auth: FirebaseAuth, private val publishApplication: PublishApplicationToDb
 ) {
     suspend operator fun invoke(
         key: String,
@@ -139,5 +140,25 @@ data class SignOut @Inject constructor(
     ) {
         auth.signOut()
         action.invoke()
+    }
+}
+
+// --------------------------------------------- Teacher -------------------------------------------------------------
+
+data class GetTeacherData @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val getTeacherData: GetTeacherUserDataUseCase
+) {
+    suspend operator fun invoke(): TeacherUserModel? =
+        getTeacherData.invoke(auth.currentUser?.uid ?: "")
+}
+
+data class SaveTeacherData @Inject constructor(
+    private val auth: FirebaseAuth, private val saveData: SaveTeacherUserData
+) {
+    suspend fun savePassword(
+        password: String, onComplete: (Exception?) -> Unit = {}
+    ) {
+        saveData.savePassword(auth.currentUser?.uid ?: "", password, onComplete)
     }
 }
