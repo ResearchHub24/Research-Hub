@@ -3,6 +3,7 @@ package com.atech.research.ui.screens.verify.compose
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,10 +34,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.atech.core.utils.isValidPassword
 import com.atech.research.R
+import com.atech.research.navigation.ResearchHubNavigation
 import com.atech.research.ui.screens.verify.VerifyScreenEvents
 import com.atech.research.ui.screens.verify.VerifyScreenState
 import com.atech.ui_common.common.ApplyButton
@@ -51,11 +56,13 @@ import com.atech.ui_common.theme.spacing
 @Composable
 fun VerifyScreen(
     modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
     state: VerifyScreenState = VerifyScreenState(),
     onEvent: (VerifyScreenEvents) -> Unit = {}
 ) {
     var hasError by rememberSaveable { mutableStateOf(Pair(false, "")) }
     val context = LocalContext.current
+    var title by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(key1 = state.errorMessage) {
         if (state.errorMessage != null) {
             toast(context, state.errorMessage)
@@ -63,7 +70,7 @@ fun VerifyScreen(
     }
     MainContainer(
         modifier = modifier,
-        title = "Password",
+        title = title,
     ) { contentPadding ->
         Column(
             modifier = Modifier
@@ -75,6 +82,7 @@ fun VerifyScreen(
                 ProgressBar()
                 return@Column
             }
+            title = "Password"
             if (state.userData.password == null) {
                 SetPasswordScreen(modifier = Modifier.fillMaxSize(),
                     password = state.passwordPair.first,
@@ -113,8 +121,15 @@ fun VerifyScreen(
                     })
                 return@Column
             }
-            if (state.userData.isVerified.not()) {
-
+            title = "Verification"
+            if (state.userData.verified.not()) {
+                VerifyAccount()
+                return@Column
+            }
+            navController.navigate(
+                ResearchHubNavigation.MainScreen.route
+            ) {
+                popUpTo(0)
             }
         }
     }
@@ -205,11 +220,40 @@ private fun SetPasswordScreen(
     }
 }
 
+@Composable
+private fun VerifyAccount() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(R.drawable.img_verify),
+            contentDescription = "Add Password",
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+        )
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        Text(
+            text = "To maintain the integrity of the platform, we need to verify your account.This will help us to ensure that only teachers are using the platform.",
+            textAlign = TextAlign.Justify,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        Text(
+            text = "This process will take a few hours. We will notify you once your account is verified.",
+            textAlign = TextAlign.Justify,
+            style = MaterialTheme.typography.bodySmall
+        )
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
 private fun VerifyScreenPreview() {
     ResearchHubTheme {
-        VerifyScreen()
+        VerifyAccount()
     }
 }

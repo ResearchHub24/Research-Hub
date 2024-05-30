@@ -43,7 +43,7 @@ data class TeacherUserModel(
     val photoUrl: String? = null,
     val userType: String = UserType.PROFESSORS.name,
     val password: String? = null,
-    val isVerified: Boolean = false,
+    val verified: Boolean = false,
     val links: String? = null,
     val created: Long = System.currentTimeMillis()
 ) : UserModel {

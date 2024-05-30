@@ -79,7 +79,7 @@ data class LogInWithGoogleStudent @Inject constructor(
                         name = userName ?: "",
                         photoUrl = userPhoto?.toString() ?: "",
                         userType = UserType.PROFESSORS.name,
-                        isVerified = false
+                        verified = false
                     )
                 } ?: StudentUserModel(
                     uid = userId,

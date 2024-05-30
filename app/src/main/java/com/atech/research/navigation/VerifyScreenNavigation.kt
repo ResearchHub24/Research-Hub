@@ -27,6 +27,7 @@ fun NavGraphBuilder.verifyScreenGraph(
                 entry.sharedViewModel<VerifyViewModel>(navController = navHostController)
             val state by viewModel.verifyScreenState
             VerifyScreen(
+                navController = navHostController,
                 state = state,
                 onEvent = viewModel::onEvent
             )
