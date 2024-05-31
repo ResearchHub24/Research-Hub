@@ -11,7 +11,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchModel
+import com.atech.teacher.navigation.AddEditScreenArgs
 import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.ResearchTeacherItem
@@ -21,6 +24,7 @@ import com.atech.ui_common.theme.ResearchHubTheme
 @Composable
 fun ResearchScreen(
     modifier: Modifier = Modifier,
+    navHostController: NavHostController = rememberNavController(),
     state: List<ResearchModel> = emptyList()
 ) {
     MainContainer(
@@ -28,7 +32,9 @@ fun ResearchScreen(
         title = "All Research",
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {}
+                onClick = {
+                    navHostController.navigate(AddEditScreenArgs(key = null))
+                }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Add,
@@ -43,10 +49,10 @@ fun ResearchScreen(
             )
             return@MainContainer
         }
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier,
             contentPadding = paddingValues
-        ){
+        ) {
             items(state) {
                 ResearchTeacherItem(
                     model = it
