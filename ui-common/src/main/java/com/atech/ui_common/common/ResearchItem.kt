@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Notes
 import androidx.compose.material.icons.rounded.Celebration
 import androidx.compose.material.icons.rounded.FilterList
+import androidx.compose.material.icons.rounded.PendingActions
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PublicOff
 import androidx.compose.material.icons.rounded.PublishedWithChanges
@@ -220,17 +222,172 @@ fun ResearchItem(
 
 }
 
+@Composable
+fun ResearchTeacherItem(
+    modifier: Modifier = Modifier,
+    model: ResearchModel,
+    onClick: () -> Unit = {},
+    onViewAllApplication : () -> Unit = {}
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        border = BorderStroke(.5.dp, MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f))
+    ) {
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = MaterialTheme.spacing.medium,
+                ),
+            shape = RoundedCornerShape(0.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = MaterialTheme.spacing.medium,
+                        vertical = MaterialTheme.spacing.small
+                    ),
+                verticalArrangement = Arrangement.Top
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = model.title ?: "No Title",
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 4,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.Notes,
+                        contentDescription = null,
+                        modifier = Modifier.size(
+                            MaterialTheme.typography.bodyMedium.fontSize.value.dp
+                        )
+                    )
+                    Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
+                    Text(
+                        text = model.description ?: "No Author",
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.FilterList,
+                        contentDescription = null,
+                        modifier = Modifier.size(
+                            MaterialTheme.typography.bodyLarge.fontSize.value.dp
+                        )
+                    )
+                    Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
+                    model.tags?.let {
+                        val tags = fromJsonList<TagModel>(it)
+                        Text(
+                            modifier = Modifier.basicMarquee(),
+                            text = tags.take(5).joinToString(", ") { tagModel -> tagModel.name },
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    } ?: Text(
+                        text = "No Tags",
+                        style = MaterialTheme.typography.labelSmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Row(
+                        modifier = Modifier,
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.PublishedWithChanges,
+                            contentDescription = null,
+                            modifier = Modifier.size(
+                                MaterialTheme.typography.bodyLarge.fontSize.value.dp
+                            )
+                        )
+                        Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
+                        Text(
+                            text = model.formattedTime,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
+                    Row(
+                        modifier = Modifier,
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.PublicOff,
+                            contentDescription = null,
+                            modifier = Modifier.size(
+                                MaterialTheme.typography.bodyLarge.fontSize.value.dp
+                            )
+                        )
+                        Spacer(modifier = Modifier.padding(MaterialTheme.spacing.small))
+                        Text(
+                            text = model.formattedDeadline,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
+                }
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextButton(
+                        onClick = onViewAllApplication,
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.PendingActions,
+                            contentDescription = null,
+                        )
+                        Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
+                        Text(text = stringResource(id = R.string.view_all_applications))
+                    }
+                }
+            }
+        }
+    }
+
+}
+
 @Preview(showBackground = true)
 @Composable
 fun ResearchItemPreview() {
     ResearchHubTheme {
-        ResearchItem(
+        ResearchTeacherItem(
             model = ResearchModel(
                 title = "Finding the best way to learn",
                 createdBy = "John Doe",
+                description = "This is only for test",
                 created = System.currentTimeMillis(),
             ),
-            isSelected = true
         )
     }
 }

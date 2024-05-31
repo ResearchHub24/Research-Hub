@@ -1,6 +1,7 @@
 package com.atech.core.use_cases
 
 import com.atech.core.model.EducationDetails
+import com.atech.core.model.ResearchModel
 import com.atech.core.model.ResearchPublishModel
 import com.atech.core.model.StudentUserModel
 import com.atech.core.model.TeacherUserModel
@@ -9,6 +10,7 @@ import com.atech.core.utils.State
 import com.atech.core.utils.coreCheckIsAdmin
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -22,10 +24,6 @@ data class AuthUseCases @Inject constructor(
     val signOut: SignOut,
 )
 
-data class TeacherAuthUserCase @Inject constructor(
-    val getTeacherData: GetTeacherData,
-    val saveData: SaveTeacherData
-)
 
 data class IsUserLoggedInUseCase @Inject constructor(
     private val auth: FirebaseAuth
@@ -145,9 +143,21 @@ data class SignOut @Inject constructor(
 
 // --------------------------------------------- Teacher -------------------------------------------------------------
 
+data class TeacherAuthUserCase @Inject constructor(
+    val getTeacherData: GetTeacherData,
+    val saveData: SaveTeacherData,
+    val getAllPosted: GetAllPosted
+)
+
+data class GetAllPosted @Inject constructor(
+    private val auth: FirebaseAuth, private val getAllPostedResearch: GetAllPostedResearch
+) {
+    operator fun invoke(): Flow<List<ResearchModel>> =
+        getAllPostedResearch.invoke(auth.currentUser?.uid ?: "")
+}
+
 data class GetTeacherData @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val getTeacherData: GetTeacherUserDataUseCase
+    private val auth: FirebaseAuth, private val getTeacherData: GetTeacherUserDataUseCase
 ) {
     suspend operator fun invoke(): TeacherUserModel? =
         getTeacherData.invoke(auth.currentUser?.uid ?: "")

@@ -72,6 +72,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.fragment)
     ksp(libs.androidx.hilt.compiler)
 
+    implementation(libs.richeditor.compose)
+
 }
 hilt {
     enableAggregatingTask = true

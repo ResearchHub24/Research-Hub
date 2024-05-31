@@ -275,3 +275,13 @@ data class GetAllFaculties @Inject constructor(
             .map { it.toObjects(TeacherUserModel::class.java) }
 
 }
+
+data class GetAllPostedResearch @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    operator fun invoke(ui: String): Flow<List<ResearchModel>> =
+        db.collection(CollectionName.RESEARCH.value)
+            .whereEqualTo("created_by_UID", ui)
+            .snapshots()
+            .map { it.toObjects(ResearchModel::class.java) }
+}
