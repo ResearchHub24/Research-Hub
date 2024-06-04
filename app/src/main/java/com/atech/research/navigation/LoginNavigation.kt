@@ -7,8 +7,6 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.atech.research.ui.screens.login.LoginViewModel
 import com.atech.research.ui.screens.login.screen.LogInScreen
-import com.atech.research.ui.screens.verify.VerifyViewModel
-import com.atech.research.ui.screens.verify.compose.VerifyScreen
 import com.atech.ui_common.utils.DeepLinkRoutes
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.sharedViewModel

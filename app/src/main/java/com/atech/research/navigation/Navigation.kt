@@ -13,7 +13,6 @@ enum class TopLevelRoutes(
 ) {
     HOME("home"),
     LOGIN("login"),
-    Verify("Verify")
 }
 
 
@@ -22,7 +21,6 @@ sealed class ResearchHubNavigation(
 ) {
     data object MainScreen : ResearchHubNavigation(TopLevelRoutes.HOME.route)
     data object LogInScreen : ResearchHubNavigation(TopLevelRoutes.LOGIN.route)
-    data object VerifyScreen : ResearchHubNavigation(TopLevelRoutes.Verify.route)
 }
 
 @Composable
@@ -52,7 +50,6 @@ fun ResearchHubNavigation(
             )
         }
         logInScreenGraph(navController)
-        verifyScreenGraph(navController)
     }
 }
 

@@ -67,8 +67,7 @@ class MainActivity : ComponentActivity() {
                         ),
                         startDestination = if (isUserLogIn.invoke() == null && !isLogInSkipp)
                             ResearchHubNavigation.LogInScreen
-                        else coreCheckIsAdmin { ResearchHubNavigation.VerifyScreen }
-                            ?: ResearchHubNavigation.MainScreen,
+                        else ResearchHubNavigation.MainScreen,
                         mainScreen = navigationProvider.provideMainScreen(),
                         navigationItem = navigationProvider.getNavigationItems(),
                         visibleScreens = navigationProvider.getVisibleScreens()

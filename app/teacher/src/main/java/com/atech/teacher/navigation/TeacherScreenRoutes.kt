@@ -78,9 +78,12 @@ fun MainScreenTeacherNavigation(
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navHostController)
             val research by viewModel.research.collectAsStateWithLifecycle(emptyList())
+            val verifyScreenState by viewModel.verifyScreenState
             ResearchScreen(
                 navHostController = navHostController,
-                state = research
+                state = research,
+                verifyScreen = verifyScreenState,
+                onVerifyScreenEvent = viewModel::onVerifyScreenEvent
             )
         }
         fadeThroughComposableEnh<AddEditScreenArgs> { entry ->
