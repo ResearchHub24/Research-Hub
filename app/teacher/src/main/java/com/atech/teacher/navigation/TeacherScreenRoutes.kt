@@ -13,6 +13,8 @@ import com.atech.teacher.ui.add.compose.AddEditScreen
 import com.atech.teacher.ui.profile.compose.ProfileScreen
 import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
+import com.atech.teacher.ui.tag.TagViewModel
+import com.atech.teacher.ui.tag.compose.TagScreen
 import com.atech.ui_common.utils.fadeThroughComposable
 import com.atech.ui_common.utils.fadeThroughComposableEnh
 import com.atech.ui_common.utils.sharedViewModel
@@ -23,6 +25,7 @@ sealed class TeacherScreenRoutes(
 ) {
     data object ResearchScreen : TeacherScreenRoutes("research_screen")
     data object ProfileScreen : TeacherScreenRoutes("profile_screen")
+    data object TagScreen : TeacherScreenRoutes("tag_screen")
 }
 
 @Serializable
@@ -65,7 +68,7 @@ fun ResearchModel.fromResearchModel() = this.let { model ->
 fun MainScreenTeacherNavigation(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
-    startDestination: String = TeacherScreenRoutes.ResearchScreen.route,
+    startDestination: String = TeacherScreenRoutes.TagScreen.route,
     logOut: () -> Unit
 ) {
     NavHost(
@@ -102,6 +105,18 @@ fun MainScreenTeacherNavigation(
         ) {
             ProfileScreen(
                 logOut = logOut
+            )
+        }
+        fadeThroughComposable(
+            route = TeacherScreenRoutes.TagScreen.route
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<TagViewModel>(navHostController)
+            val tags by viewModel.tags
+            val errorMessage by viewModel.errorMessage
+            TagScreen(
+                navController = navHostController,
+                tags = tags,
+                errorMessage = errorMessage
             )
         }
     }

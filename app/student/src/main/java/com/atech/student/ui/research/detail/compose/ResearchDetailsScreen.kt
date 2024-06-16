@@ -1,6 +1,5 @@
 package com.atech.student.ui.research.detail.compose
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -143,16 +142,16 @@ fun DetailScreenPreview() {
             model = ResearchModel(
                 title = "This is only for preview", description = "des", tags = toJSON(
                     listOf(
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
-                        TagModel(createdBy = "", name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
+                        TagModel(name = "Tag 1"),
                     )
                 ), created = System.currentTimeMillis(), createdBy = "Dr. Aparna Sukla"
             ),

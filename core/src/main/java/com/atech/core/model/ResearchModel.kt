@@ -7,16 +7,6 @@ import com.google.firebase.firestore.PropertyName
 
 import com.google.gson.annotations.SerializedName
 
-@Keep
-data class TagModel(
-    @SerializedName("created_by") val createdBy: String,
-    val name: String,
-    val created: Long = System.currentTimeMillis(),
-) {
-    val formattedTime: String
-        get() = created.convertLongToTime(DateFormat.DD_MMM_YYYY.format)
-
-}
 
 @Keep
 data class ResearchModel(

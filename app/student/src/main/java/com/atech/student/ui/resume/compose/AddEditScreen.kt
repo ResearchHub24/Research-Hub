@@ -633,7 +633,10 @@ fun AddSkillList(
                 query = value
                 onEvent.invoke(ResumeScreenEvents.FilterResult(value))
             },
-            clearIconClick = {})
+            clearIconClick = {
+                query = ""
+                onEvent.invoke(ResumeScreenEvents.FilterResult(""))
+            })
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {

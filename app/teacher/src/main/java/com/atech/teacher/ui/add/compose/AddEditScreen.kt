@@ -1,6 +1,7 @@
 package com.atech.teacher.ui.add.compose
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -24,9 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.atech.teacher.R
 import com.atech.teacher.navigation.AddEditScreenArgs
+import com.atech.teacher.navigation.TeacherScreenRoutes
 import com.atech.teacher.navigation.replaceNA
 import com.atech.teacher.ui.add.AddEditScreenEvent
+import com.atech.ui_common.common.ApplyButton
 import com.atech.ui_common.common.EditText
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.theme.ResearchHubTheme
@@ -120,9 +125,18 @@ fun AddEditScreen(
                     Text("Description")
                 },
             )
+            Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
+            ApplyButton(
+                text = stringResource(R.string.add_tag)
+            ) {
+                navHostController.navigate(
+                    TeacherScreenRoutes.TagScreen.route
+                )
+            }
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun AddEditScreenPreview() {
