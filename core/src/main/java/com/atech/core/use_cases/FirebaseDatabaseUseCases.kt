@@ -9,7 +9,8 @@ import com.google.firebase.database.ValueEventListener
 import javax.inject.Inject
 
 data class FirebaseDatabaseUseCases @Inject constructor(
-    val getAllTags: GetAllUserCreatedTagsUseCase
+    val getAllTags: GetAllUserCreatedTagsUseCase,
+    val createNewTag: CreateNewTag
 )
 
 
@@ -34,5 +35,28 @@ data class GetAllUserCreatedTagsUseCase @Inject constructor(
             }
 
         })
+    }
+}
+
+data class CreateNewTag @Inject constructor(
+    private val db: FirebaseDatabase,
+    private val auth: FirebaseAuth
+) {
+    operator fun invoke(
+        tagModel: TagModel,
+        onError: (String) -> Unit = {},
+        onSuccess: () -> Unit
+    ) {
+        val uid = auth.currentUser?.uid ?: return
+        db.reference.child("tags").child(tagModel.name.uppercase())
+            .setValue(tagModel.copy(createdBy = uid))
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError(it.exception?.message ?: "Something went wrong")
+                }
+            }
+
     }
 }

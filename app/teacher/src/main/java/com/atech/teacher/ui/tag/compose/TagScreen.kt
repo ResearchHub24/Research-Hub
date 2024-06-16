@@ -30,10 +30,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.TagModel
+import com.atech.teacher.ui.tag.TagScreenEvents
 import com.atech.ui_common.R
 import com.atech.ui_common.common.ApplyButton
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EditText
+import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
@@ -44,7 +46,8 @@ fun TagScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     tags: List<Pair<TagModel, Boolean>> = emptyList(),
-    errorMessage: String? = null
+    errorMessage: String? = null,
+    onEvent: (TagScreenEvents) -> Unit = {}
 
 ) {
     var query by remember { mutableStateOf("") }
@@ -88,8 +91,19 @@ fun TagScreen(
                 Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
                 ApplyButton(
                     text = stringResource(R.string.create_new_tag),
-                ) { }
+                ) {
+                    onEvent(
+                        TagScreenEvents.CreateNewTag(
+                            TagModel(
+                                name = query
+                            )
+                        ) {
+                            query = ""
+                        }
+                    )
+                }
             }
+            Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
             AnimatedVisibility(
                 visible = errorMessage != null
             ) {
@@ -124,7 +138,9 @@ fun TagScreen(
             AnimatedVisibility(
                 visible = tags.isEmpty()
             ) {
-                
+                GlobalEmptyScreen(
+                    title = stringResource(R.string.no_tags_found),
+                )
             }
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),

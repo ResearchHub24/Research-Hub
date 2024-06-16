@@ -56,4 +56,5 @@
     <string name="tag">Tag Name</string>
     <string name="add_or_remove_tag">Add or Remove Tag</string>
     <string name="create_new_tag">Create new tag</string>
+    <string name="no_tags_found">No tags found</string>
 </resources>

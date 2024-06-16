@@ -116,7 +116,8 @@ fun MainScreenTeacherNavigation(
             TagScreen(
                 navController = navHostController,
                 tags = tags,
-                errorMessage = errorMessage
+                errorMessage = errorMessage,
+                onEvent = viewModel::onEvent
             )
         }
     }

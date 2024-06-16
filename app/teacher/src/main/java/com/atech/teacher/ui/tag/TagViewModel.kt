@@ -12,8 +12,8 @@ import javax.inject.Inject
 class TagViewModel @Inject constructor(
     private val useCase: FirebaseDatabaseUseCases
 ) : ViewModel() {
-    private val _tagList = mutableStateOf<List<Pair<TagModel,Boolean>>>(emptyList())
-    val tags: State<List<Pair<TagModel,Boolean>>> get() = _tagList
+    private val _tagList = mutableStateOf<List<Pair<TagModel, Boolean>>>(emptyList())
+    val tags: State<List<Pair<TagModel, Boolean>>> get() = _tagList
 
     private val _errorMessage = mutableStateOf<String?>(null)
     val errorMessage: State<String?> get() = _errorMessage
@@ -33,4 +33,21 @@ class TagViewModel @Inject constructor(
                 }
             )
     }
+
+    fun onEvent(event: TagScreenEvents) {
+        when (event) {
+            is TagScreenEvents.CreateNewTag ->
+                useCase.createNewTag(event.tagModel,
+                    onError = {
+                        _errorMessage.value = it
+                    },
+                    onSuccess = {
+                        _errorMessage.value = null
+                        getAllTags()
+                        event.onSuccess()
+                    }
+                )
+        }
+    }
+
 }
