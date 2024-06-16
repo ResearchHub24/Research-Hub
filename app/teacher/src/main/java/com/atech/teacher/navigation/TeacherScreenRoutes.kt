@@ -68,7 +68,7 @@ fun ResearchModel.fromResearchModel() = this.let { model ->
 fun MainScreenTeacherNavigation(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
-    startDestination: String = TeacherScreenRoutes.TagScreen.route,
+    startDestination: String = TeacherScreenRoutes.ResearchScreen.route,
     logOut: () -> Unit
 ) {
     NavHost(

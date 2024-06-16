@@ -4,8 +4,12 @@ import com.atech.core.model.TagModel
 
 
 sealed interface TagScreenEvents {
-    data class CreateNewTag(
+    data class OnCreateNewTag(
         val tagModel: TagModel,
-        val onSuccess: () -> Unit
+        val onSuccess : () -> Unit
+    ) : TagScreenEvents
+
+    data class OnDeleteTagClick(
+        val tagModel: TagModel
     ) : TagScreenEvents
 }

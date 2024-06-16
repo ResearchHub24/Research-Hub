@@ -36,7 +36,7 @@ class TagViewModel @Inject constructor(
 
     fun onEvent(event: TagScreenEvents) {
         when (event) {
-            is TagScreenEvents.CreateNewTag ->
+            is TagScreenEvents.OnCreateNewTag ->
                 useCase.createNewTag(event.tagModel,
                     onError = {
                         _errorMessage.value = it
@@ -45,6 +45,18 @@ class TagViewModel @Inject constructor(
                         _errorMessage.value = null
                         getAllTags()
                         event.onSuccess()
+                    }
+                )
+
+            is TagScreenEvents.OnDeleteTagClick ->
+                useCase.deleteTag.invoke(
+                    event.tagModel,
+                    onError = {
+                        _errorMessage.value = it
+                    },
+                    onSuccess = {
+                        _errorMessage.value = null
+                        getAllTags()
                     }
                 )
         }

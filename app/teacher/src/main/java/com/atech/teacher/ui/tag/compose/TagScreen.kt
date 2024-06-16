@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.CardDefaults
@@ -20,18 +22,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.TagModel
 import com.atech.teacher.ui.tag.TagScreenEvents
 import com.atech.ui_common.R
+import com.atech.ui_common.common.AppAlertDialog
 import com.atech.ui_common.common.ApplyButton
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EditText
@@ -51,13 +56,33 @@ fun TagScreen(
 
 ) {
     var query by remember { mutableStateOf("") }
-    MainContainer(
-        modifier = modifier,
+    var isDeleteDialogVisible by remember { mutableStateOf(false) }
+    var currentClickItemIndex by remember { mutableIntStateOf(-1) }
+    MainContainer(modifier = modifier,
         title = stringResource(R.string.add_or_remove_tag),
         onNavigationClick = {
             navController.popBackStack()
+        }) { paddingValue ->
+        AnimatedVisibility(
+            isDeleteDialogVisible
+        ) {
+            AppAlertDialog(
+                dialogTitle = stringResource(R.string.remove_tag),
+                dialogText = stringResource(R.string.add_or_remove_tag_message),
+                icon = Icons.Outlined.Error,
+                onDismissRequest = {
+                    isDeleteDialogVisible = false
+                    currentClickItemIndex = -1
+                },
+            ) {
+                if (currentClickItemIndex == -1) {
+                    isDeleteDialogVisible = false
+                    return@AppAlertDialog
+                }
+                isDeleteDialogVisible = false
+                onEvent(TagScreenEvents.OnDeleteTagClick(tags[currentClickItemIndex].first))
+            }
         }
-    ) { paddingValue ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,7 +92,8 @@ fun TagScreen(
                 )
         ) {
 
-            EditText(modifier = Modifier.fillMaxWidth(),
+            EditText(
+                modifier = Modifier.fillMaxWidth(),
                 value = query,
                 placeholder = stringResource(R.string.tag),
                 supportingMessage = stringResource(R.string.require),
@@ -84,7 +110,12 @@ fun TagScreen(
                 clearIconClick = {
                     query = ""
 
-                })
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    )
+            )
             AnimatedVisibility(
                 visible = query.isNotEmpty()
             ) {
@@ -92,15 +123,13 @@ fun TagScreen(
                 ApplyButton(
                     text = stringResource(R.string.create_new_tag),
                 ) {
-                    onEvent(
-                        TagScreenEvents.CreateNewTag(
-                            TagModel(
-                                name = query
-                            )
-                        ) {
-                            query = ""
-                        }
-                    )
+                    onEvent(TagScreenEvents.OnCreateNewTag(
+                        TagModel(
+                            name = query.trim()
+                        )
+                    ) {
+                        query = ""
+                    })
                 }
             }
             Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
@@ -116,8 +145,7 @@ fun TagScreen(
                     ),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
@@ -143,15 +171,15 @@ fun TagScreen(
                 )
             }
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(
+                modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(
                     MaterialTheme.spacing.medium
                 )
             ) {
                 items(tags.size) { index ->
-                    TagItem(
-                        item = tags[index]
-                    )
+                    TagItem(item = tags[index], onDeleteClick = {
+                        currentClickItemIndex = index
+                        isDeleteDialogVisible = true
+                    })
                 }
             }
         }
