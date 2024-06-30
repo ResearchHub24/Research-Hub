@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.TagModel
+import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.teacher.ui.tag.TagScreenEvents
 import com.atech.ui_common.R
 import com.atech.ui_common.common.AppAlertDialog
@@ -51,13 +52,16 @@ fun TagScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     tags: List<Pair<TagModel, Boolean>> = emptyList(),
+    selectedTags: List<TagModel> = emptyList(),
     errorMessage: String? = null,
-    onEvent: (TagScreenEvents) -> Unit = {}
+    onEvent: (TagScreenEvents) -> Unit = {},
+    onTagChangeEvents: (AddEditScreenEvent) -> Unit = {}
 
 ) {
     var query by remember { mutableStateOf("") }
     var isDeleteDialogVisible by remember { mutableStateOf(false) }
     var currentClickItemIndex by remember { mutableIntStateOf(-1) }
+    var tagList by remember { mutableStateOf(selectedTags) }
     MainContainer(modifier = modifier,
         title = stringResource(R.string.add_or_remove_tag),
         onNavigationClick = {
@@ -113,8 +117,8 @@ fun TagScreen(
                 },
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done
-                    )
+                    imeAction = ImeAction.Done
+                )
             )
             AnimatedVisibility(
                 visible = query.isNotEmpty()
@@ -171,15 +175,28 @@ fun TagScreen(
                 )
             }
             LazyColumn(
-                modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(
                     MaterialTheme.spacing.medium
                 )
             ) {
                 items(tags.size) { index ->
-                    TagItem(item = tags[index], onDeleteClick = {
-                        currentClickItemIndex = index
-                        isDeleteDialogVisible = true
-                    })
+                    TagItem(
+                        item = tags[index],
+                        onDeleteClick = {
+                            currentClickItemIndex = index
+                            isDeleteDialogVisible = true
+                        },
+                        checked = selectedTags.contains(tags[index].first),
+                        onCheckedChange = {isSelected ->
+                            if (isSelected) {
+                                tagList = tagList + tags[index].first
+                            } else {
+                                tagList = tagList - tags[index].first
+                            }
+                            onTagChangeEvents(AddEditScreenEvent.AddOrRemoveTag(tagList))
+                        }
+                    )
                 }
             }
         }

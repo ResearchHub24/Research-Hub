@@ -8,6 +8,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     id("com.google.firebase.crashlytics")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -49,7 +50,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-            isShrinkResources =true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -65,10 +66,14 @@ android {
     }
     buildFeatures {
         compose = true
-         buildConfig = true
+        buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+    composeCompiler {
+        enableStrongSkippingMode = true
+
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+        stabilityConfigurationFile =
+            rootProject.layout.projectDirectory.file("stability_config.conf")
     }
     packaging {
         resources {

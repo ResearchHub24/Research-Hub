@@ -1,8 +1,12 @@
 package com.atech.teacher.ui.add
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.atech.core.model.TagModel
+import com.atech.core.utils.fromJsonList
+import com.atech.core.utils.toJSON
 import com.atech.teacher.navigation.AddEditScreenArgs
 import com.atech.teacher.navigation.replaceNA
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,13 +36,20 @@ class AddOrEditViewModel @Inject constructor(
             is AddEditScreenEvent.OnQuestionsChange ->
                 _state.value = _state.value.copy(questions = event.questions)
 
-            is AddEditScreenEvent.OnTagsChange ->
-                _state.value = _state.value.copy(tags = event.tags)
-
             is AddEditScreenEvent.OnTitleChange ->
                 _state.value = _state.value.copy(title = event.title)
 
             is AddEditScreenEvent.SetArgs -> _state.value = event.args.replaceNA()
+            is AddEditScreenEvent.AddOrRemoveTag -> {
+                Log.d("AAA", "onEvent: ${event.tags}")
+                _state.value = _state.value.copy(tags = tagsToJson(event.tags))
+            }
         }
     }
+
+    internal fun getTagsFromString(json: String) =
+        fromJsonList<TagModel>(json)
+
+    private fun tagsToJson(tags: List<TagModel>) =
+        toJSON(tags)
 }

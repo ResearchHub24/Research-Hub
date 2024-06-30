@@ -4,6 +4,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp")
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -41,9 +42,12 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
+//    composeCompiler {
+//        enableStrongSkippingMode = true
+//
+//        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//        stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+//    }
 }
 
 dependencies {

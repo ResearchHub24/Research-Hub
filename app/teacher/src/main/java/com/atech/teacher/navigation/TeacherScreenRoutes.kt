@@ -111,13 +111,18 @@ fun MainScreenTeacherNavigation(
             route = TeacherScreenRoutes.TagScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<TagViewModel>(navHostController)
+            val addOrEditViewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
             val tags by viewModel.tags
             val errorMessage by viewModel.errorMessage
+            val addEditScreenState by addOrEditViewModel.state
+            val selectedTags = addOrEditViewModel.getTagsFromString(addEditScreenState.tags)
             TagScreen(
                 navController = navHostController,
                 tags = tags,
                 errorMessage = errorMessage,
-                onEvent = viewModel::onEvent
+                onEvent = viewModel::onEvent,
+                selectedTags = selectedTags,
+                onTagChangeEvents = addOrEditViewModel::onEvent
             )
         }
     }
