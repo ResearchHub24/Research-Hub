@@ -146,7 +146,8 @@ data class SignOut @Inject constructor(
 data class TeacherAuthUserCase @Inject constructor(
     val getTeacherData: GetTeacherData,
     val saveData: SaveTeacherData,
-    val getAllPosted: GetAllPosted
+    val getAllPosted: GetAllPosted,
+    val saveResearch: SaveResearch,
 )
 
 data class GetAllPosted @Inject constructor(
@@ -170,5 +171,24 @@ data class SaveTeacherData @Inject constructor(
         password: String, onComplete: (Exception?) -> Unit = {}
     ) {
         saveData.savePassword(auth.currentUser?.uid ?: "", password, onComplete)
+    }
+}
+
+data class SaveResearch @Inject constructor(
+    private val auth: FirebaseAuth, private val saveResearchData: SaveResearchData
+) {
+    operator fun invoke(
+        model: ResearchModel, onComplete: (Exception?) -> Unit
+    ) {
+        try {
+            saveResearchData.invoke(
+                uid = auth.currentUser?.uid ?: return,
+                name = auth.currentUser?.displayName ?: "User ${auth.currentUser?.uid?.take(4)}",
+                model = model,
+                onComplete = onComplete
+            )
+        } catch (e: Exception) {
+            onComplete.invoke(e)
+        }
     }
 }

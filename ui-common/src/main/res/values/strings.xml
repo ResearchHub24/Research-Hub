@@ -59,4 +59,6 @@
     <string name="no_tags_found">No tags found</string>
     <string name="remove_tag">Remove Tag</string>
     <string name="add_or_remove_tag_message">Confirm Deletion</string>
+    <string name="add_tag">Add Tag</string>
+    <string name="save">Save</string>
 </resources>

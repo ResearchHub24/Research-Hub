@@ -38,6 +38,18 @@ data class AddEditScreenArgs(
     val questions: String = "N/A"
 )
 
+infix fun AddEditScreenArgs.areEqual(other: AddEditScreenArgs) =
+    this.key == other.key &&
+            this.title == other.title &&
+            this.description == other.description &&
+            this.createdBy == other.createdBy &&
+            this.createdByUID == other.createdByUID &&
+            this.created == other.created &&
+            this.deadLine == other.deadLine &&
+            this.tags == other.tags &&
+            this.questions == other.questions
+
+
 fun AddEditScreenArgs.replaceNA() = this.copy(
     title = if (title == "N/A") "" else title,
     description = if (description == "N/A") "" else description,
@@ -58,6 +70,20 @@ fun ResearchModel.fromResearchModel() = this.let { model ->
         deadLine = model.deadLine ?: 0L,
         tags = model.tags ?: "[ ]",
         questions = model.questions ?: "[ ]"
+    )
+}
+
+fun AddEditScreenArgs.toResearchModel() = this.let { model ->
+    ResearchModel(
+        key = model.key,
+        title = model.title,
+        description = model.description,
+        createdBy = model.createdBy,
+        createdByUID = model.createdByUID,
+        created = if (created == 0L) System.currentTimeMillis() else created,
+        deadLine = if (created == 0L) null else deadLine,
+        tags = model.tags,
+        questions = model.questions
     )
 }
 
@@ -85,11 +111,14 @@ fun NavGraphBuilder.researchScreenGraph(
             val args = entry.toRoute<AddEditScreenArgs>()
             val viewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
             viewModel.onEvent(AddEditScreenEvent.SetArgs(args))
-            val state by viewModel.state
-
+            val title by viewModel.title
+            val des by viewModel.description
+            val tags by viewModel.tags
             AddEditScreen(
                 navHostController = navHostController,
-                state = state,
+                title = title,
+                description = des,
+                tags = tags,
                 onEvent = viewModel::onEvent,
             )
         }

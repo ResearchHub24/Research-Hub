@@ -285,3 +285,35 @@ data class GetAllPostedResearch @Inject constructor(
             .snapshots()
             .map { it.toObjects(ResearchModel::class.java) }
 }
+
+data class SaveResearchData @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    operator fun invoke(
+        uid: String,
+        name: String,
+        model: ResearchModel,
+        onComplete: (Exception?) -> Unit
+    ) {
+        val ref = db.collection(CollectionName.RESEARCH.value)
+        val modelWithKey = (if (model.key == null)
+            model.copy(
+                key = ref.document().id
+            )
+        else model).copy(
+            createdByUID = uid,
+            createdBy = name
+        )
+        requireNotNull(modelWithKey.key) {
+            "Key can't be Null"
+        }
+        ref.document(modelWithKey.key)
+            .set(modelWithKey)
+            .addOnCompleteListener {
+                onComplete.invoke(null)
+            }
+            .addOnFailureListener {
+                onComplete.invoke(it)
+            }
+    }
+}

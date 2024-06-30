@@ -1,5 +1,6 @@
 package com.atech.teacher.ui.add.compose
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -22,10 +23,13 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -34,16 +38,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.TagModel
 import com.atech.core.utils.fromJsonList
-import com.atech.teacher.navigation.AddEditScreenArgs
 import com.atech.teacher.navigation.ResearchRoutes
-import com.atech.teacher.navigation.replaceNA
 import com.atech.teacher.ui.add.AddEditScreenEvent
+import com.atech.ui_common.R
+import com.atech.ui_common.common.ApplyButton
 import com.atech.ui_common.common.EditText
 import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
@@ -55,18 +61,27 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 fun AddEditScreen(
     modifier: Modifier = Modifier,
     navHostController: NavHostController = rememberNavController(),
-    state: AddEditScreenArgs,
+    title: String,
+    description: String,
+    tags: String,
     onEvent: (AddEditScreenEvent) -> Unit = {},
 ) {
     val richTextState = rememberRichTextState()
     val isSet = rememberSaveable { true }
     LaunchedEffect(isSet) {
-        richTextState.setMarkdown(state.description)
+        richTextState.setMarkdown(description)
     }
+    val context = LocalContext.current
     val titleSize = MaterialTheme.typography.displaySmall.fontSize
     val subtitleSize = MaterialTheme.typography.titleLarge.fontSize
+    val lifeCycle = LocalLifecycleOwner.current
+    DisposableEffect(lifeCycle) {
+        onDispose {
+            onEvent(AddEditScreenEvent.ResetValues)
+        }
+    }
     MainContainer(modifier = modifier,
-        title = if (state.key == null) "Add Research" else "Edit Research",
+        title = if (title.isEmpty()) "Add Research" else "Edit Research",
         onNavigationClick = {
             navHostController.navigateUp()
         }) { paddingValues ->
@@ -79,7 +94,7 @@ fun AddEditScreen(
                 .padding(MaterialTheme.spacing.medium)
         ) {
             EditText(modifier = Modifier.fillMaxWidth(),
-                value = state.title,
+                value = title,
                 placeholder = "Title",
                 supportingMessage = "Title of the research",
                 onValueChange = { value ->
@@ -157,7 +172,7 @@ fun AddEditScreen(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
             ) {
                 fromJsonList<TagModel>(
-                    state.tags.replace("created_by", "createdBy")
+                    tags.replace("created_by", "createdBy")
                 ).forEach {
                     InputChip(selected = true, label = {
                         Text(it.name)
@@ -170,17 +185,28 @@ fun AddEditScreen(
                         imageVector = Icons.Outlined.Add, contentDescription = null
                     )
                 }, onClick = {
+                    onEvent(AddEditScreenEvent.OnDescriptionChange(richTextState.toMarkdown()))
                     navHostController.navigate(
                         ResearchRoutes.AddTagsScreen.route
                     )
                 }, label = {
-                    Text("Add Tags")
+                    Text(stringResource(R.string.add_tag))
                 })
             }
-//            ApplyButton(
-//                text = stringResource(R.string.add_tag)
-//            ) {
-//            }
+            ApplyButton(
+                text = "Save"/*stringResource(R.string.save)*/
+            ) {
+                onEvent(AddEditScreenEvent.SaveResearch(
+                    description = richTextState.toMarkdown(),
+                ) { message ->
+                    if (message != null) {
+                        toast(context, message)
+                        return@SaveResearch
+                    }
+                    toast(context, "Saved")
+                    navHostController.navigateUp()
+                })
+            }
         }
     }
 }
@@ -190,7 +216,7 @@ fun AddEditScreen(
 private fun AddEditScreenPreview() {
     ResearchHubTheme {
         AddEditScreen(
-            state = AddEditScreenArgs(key = null).replaceNA()
+            tags = "", title = "", description = ""
         )
     }
 }
