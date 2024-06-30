@@ -28,7 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.teacher.R
 import com.atech.teacher.navigation.AddEditScreenArgs
-import com.atech.teacher.navigation.TeacherScreenRoutes
+import com.atech.teacher.navigation.ResearchRoutes
 import com.atech.teacher.navigation.replaceNA
 import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.ui_common.common.ApplyButton
@@ -130,7 +130,7 @@ fun AddEditScreen(
                 text = stringResource(R.string.add_tag)
             ) {
                 navHostController.navigate(
-                    TeacherScreenRoutes.TagScreen.route
+                    ResearchRoutes.AddTagsScreen.route
                 )
             }
         }

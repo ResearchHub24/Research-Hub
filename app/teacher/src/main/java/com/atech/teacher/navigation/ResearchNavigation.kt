@@ -1,16 +1,14 @@
 package com.atech.teacher.navigation
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
+import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.atech.core.model.ResearchModel
 import com.atech.teacher.ui.add.AddOrEditViewModel
 import com.atech.teacher.ui.add.compose.AddEditScreen
-import com.atech.teacher.ui.profile.compose.ProfileScreen
 import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
 import com.atech.teacher.ui.tag.TagViewModel
@@ -20,12 +18,10 @@ import com.atech.ui_common.utils.fadeThroughComposableEnh
 import com.atech.ui_common.utils.sharedViewModel
 import kotlinx.serialization.Serializable
 
-sealed class TeacherScreenRoutes(
-    val route: String
-) {
-    data object ResearchScreen : TeacherScreenRoutes("research_screen")
-    data object ProfileScreen : TeacherScreenRoutes("profile_screen")
-    data object TagScreen : TeacherScreenRoutes("tag_screen")
+sealed class ResearchRoutes(val route: String) {
+    data object ResearchScreen : ResearchRoutes("research_screen")
+    data object AddOrEditScreen : ResearchRoutes("add_or_edit_screen")
+    data object AddTagsScreen : ResearchRoutes("add_tags_screen")
 }
 
 @Serializable
@@ -64,20 +60,15 @@ fun ResearchModel.fromResearchModel() = this.let { model ->
     )
 }
 
-@Composable
-fun MainScreenTeacherNavigation(
-    modifier: Modifier = Modifier,
-    navHostController: NavHostController,
-    startDestination: String = TeacherScreenRoutes.ResearchScreen.route,
-    logOut: () -> Unit
+fun NavGraphBuilder.researchScreenGraph(
+    navHostController: NavHostController
 ) {
-    NavHost(
-        modifier = modifier,
-        navController = navHostController,
-        startDestination = startDestination,
+    navigation(
+        startDestination = ResearchRoutes.ResearchScreen.route,
+        route = MainScreenRoutes.ResearchScreen.route
     ) {
         fadeThroughComposable(
-            route = TeacherScreenRoutes.ResearchScreen.route
+            route = ResearchRoutes.ResearchScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navHostController)
             val research by viewModel.research.collectAsStateWithLifecycle(emptyList())
@@ -101,14 +92,7 @@ fun MainScreenTeacherNavigation(
             )
         }
         fadeThroughComposable(
-            route = TeacherScreenRoutes.ProfileScreen.route
-        ) {
-            ProfileScreen(
-                logOut = logOut
-            )
-        }
-        fadeThroughComposable(
-            route = TeacherScreenRoutes.TagScreen.route
+            route = ResearchRoutes.AddTagsScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<TagViewModel>(navHostController)
             val addOrEditViewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)

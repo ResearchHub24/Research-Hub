@@ -5,6 +5,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.theme.ResearchHubTheme
@@ -13,6 +15,7 @@ import com.atech.ui_common.theme.ResearchHubTheme
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
+    navController: NavController = rememberNavController(),
     logOut: () -> Unit = {}
 ) {
     MainContainer(
