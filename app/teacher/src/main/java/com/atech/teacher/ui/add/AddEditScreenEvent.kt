@@ -10,5 +10,5 @@ sealed interface AddEditScreenEvent {
     data class OnCreatedChange(val created: Long) : AddEditScreenEvent
     data class OnDeadLineChange(val deadLine: Long) : AddEditScreenEvent
     data class OnQuestionsChange(val questions: String) : AddEditScreenEvent
-    data class AddOrRemoveTag(val tags : List<TagModel>) : AddEditScreenEvent
+    data class AddOrRemoveTag(val tags: List<TagModel>) : AddEditScreenEvent
 }

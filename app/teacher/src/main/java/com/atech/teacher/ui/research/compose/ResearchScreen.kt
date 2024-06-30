@@ -31,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchModel
 import com.atech.core.utils.isValidPassword
 import com.atech.teacher.navigation.AddEditScreenArgs
+import com.atech.teacher.navigation.fromResearchModel
 import com.atech.teacher.ui.research.VerifyScreenEvents
 import com.atech.teacher.ui.research.VerifyScreenState
 import com.atech.ui_common.common.GlobalEmptyScreen
@@ -143,7 +144,12 @@ fun ResearchScreen(
         ) {
             items(state) {
                 ResearchTeacherItem(
-                    model = it
+                    model = it,
+                    onClick = {
+                        navHostController.navigate(
+                            it.fromResearchModel()
+                        )
+                    }
                 )
             }
         }

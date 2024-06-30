@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.atech.core.model.ResearchModel
+import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.teacher.ui.add.AddOrEditViewModel
 import com.atech.teacher.ui.add.compose.AddEditScreen
 import com.atech.teacher.ui.research.ResearchViewModel
@@ -83,12 +84,13 @@ fun NavGraphBuilder.researchScreenGraph(
         fadeThroughComposableEnh<AddEditScreenArgs> { entry ->
             val args = entry.toRoute<AddEditScreenArgs>()
             val viewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
+            viewModel.onEvent(AddEditScreenEvent.SetArgs(args))
             val state by viewModel.state
+
             AddEditScreen(
                 navHostController = navHostController,
                 state = state,
                 onEvent = viewModel::onEvent,
-                args = args
             )
         }
         fadeThroughComposable(
