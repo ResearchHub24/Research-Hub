@@ -10,6 +10,7 @@ import com.atech.core.model.ResearchModel
 import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.teacher.ui.add.AddOrEditViewModel
 import com.atech.teacher.ui.add.compose.AddEditScreen
+import com.atech.teacher.ui.add.compose.AddQuestionScreen
 import com.atech.teacher.ui.add.compose.ViewMarkdown
 import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
@@ -22,7 +23,7 @@ import kotlinx.serialization.Serializable
 
 sealed class ResearchRoutes(val route: String) {
     data object ResearchScreen : ResearchRoutes("research_screen")
-    data object AddOrEditScreen : ResearchRoutes("add_or_edit_screen")
+    data object AddQuestionScreen : ResearchRoutes("add_or_edit_screen")
     data object AddTagsScreen : ResearchRoutes("add_tags_screen")
 }
 
@@ -120,11 +121,13 @@ fun NavGraphBuilder.researchScreenGraph(
             val title by viewModel.title
             val des by viewModel.description
             val tags by viewModel.tags
+            val question by viewModel.question
             AddEditScreen(
                 navHostController = navHostController,
                 title = title,
                 description = des,
                 tags = tags,
+                question = question,
                 onEvent = viewModel::onEvent,
             )
         }
@@ -151,6 +154,17 @@ fun NavGraphBuilder.researchScreenGraph(
             ViewMarkdown(
                 navController = navHostController,
                 args = args
+            )
+        }
+        fadeThroughComposable(
+            route = ResearchRoutes.AddQuestionScreen.route
+        ) { entry ->
+            val addOrEditViewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
+            val questionsJson by addOrEditViewModel.question
+            AddQuestionScreen(
+                navController = navHostController,
+                questionsJson = questionsJson,
+                onEvent = addOrEditViewModel::onEvent
             )
         }
     }

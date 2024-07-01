@@ -1,5 +1,7 @@
 package com.atech.teacher.ui.add.compose
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -14,17 +16,24 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -39,6 +48,8 @@ import com.atech.teacher.navigation.ViewMarkdownArgs
 import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.ui_common.R
 import com.atech.ui_common.common.ApplyButton
+import com.atech.ui_common.common.BottomPadding
+import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EditText
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.toast
@@ -53,8 +64,10 @@ fun AddEditScreen(
     title: String,
     description: String,
     tags: String,
+    question: String,
     onEvent: (AddEditScreenEvent) -> Unit = {},
 ) {
+    val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -73,12 +86,14 @@ fun AddEditScreen(
         }
     }
     MainContainer(modifier = modifier,
+        scrollBehavior = topAppBarScrollBehavior,
         title = if (title.isEmpty()) "Add Research" else "Edit Research",
         onNavigationClick = {
             navHostController.navigateUp()
         }) { paddingValues ->
         Column(
             modifier = Modifier
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .imePadding()
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
@@ -94,8 +109,7 @@ fun AddEditScreen(
                 },
                 clearIconClick = {
                     onEvent.invoke(AddEditScreenEvent.OnTitleChange(""))
-                }
-            )
+                })
             HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -103,17 +117,13 @@ fun AddEditScreen(
                         vertical = MaterialTheme.spacing.medium
                     )
             )
-            MarkdownEditor(
-                value = description,
-                onValueChange = {
-                    onEvent(AddEditScreenEvent.OnDescriptionChange(it))
-                },
-                viewInMarkdownClick = {
-                    navHostController.navigate(
-                        ViewMarkdownArgs(description)
-                    )
-                }
-            )
+            MarkdownEditor(value = description, onValueChange = {
+                onEvent(AddEditScreenEvent.OnDescriptionChange(it))
+            }, viewInMarkdownClick = {
+                navHostController.navigate(
+                    ViewMarkdownArgs(description)
+                )
+            })
             Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
             HorizontalDivider(
                 modifier = Modifier
@@ -164,12 +174,69 @@ fun AddEditScreen(
             Text(
                 text = "Questions",
                 style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)
             )
-
+            ApplyButton(
+                "Add Or remove Question"/*stringResource(R.string.add_or_remove_question)*/,
+                horizontalPadding = MaterialTheme.spacing.default
+            ) {
+                navHostController.navigate(
+                    ResearchRoutes.AddQuestionScreen.route
+                )
+            }
+            val questions = fromJsonList<String>(question)
+            if (questions.isNotEmpty())
+                Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
+            questions.forEach {
+                QuestionItem(
+                    question = it, enable = false
+                )
+            }
             Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
+            AnimatedVisibility(
+                title.isEmpty() || description.isEmpty()
+                        || tags.isEmpty() || question.isEmpty()
+            ) {
+                Column {
+                    DisplayCard(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        border = BorderStroke(
+                            width = CardDefaults.outlinedCardBorder().width,
+                            color = MaterialTheme.colorScheme.inversePrimary
+                        ),
+                    ) {
+                        val warningMessage = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize
+                                )
+                            ) {
+                                append("Warning")
+                                append("\n\n")
+                            }
+                            if (title.isEmpty()) append("❌ Title\n") else append("✅ Title\n")
+                            if (description.isEmpty()) append("❌ Description\n") else append("✅ Description\n")
+                            if (tags.isEmpty()) append("❌ Tags\n") else append("✅ Tags\n")
+                            if (question.isEmpty()) append("❌ Questions") else append("✅ Questions")
+                        }
+                        Text(
+                            text = warningMessage,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier
+                                .padding(MaterialTheme.spacing.medium)
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Start
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
+                }
+            }
             ApplyButton(
                 text = "Save",/*stringResource(R.string.save)*/
-                enable = title.isNotEmpty() && description.isNotEmpty() && tags.isNotBlank(),
+                enable = title.isNotEmpty() && description.isNotEmpty() && tags.isNotBlank() && question.isNotBlank(),
+                horizontalPadding = MaterialTheme.spacing.default
             ) {
                 onEvent(AddEditScreenEvent.SaveResearch { message ->
                     if (message != null) {
@@ -180,6 +247,7 @@ fun AddEditScreen(
                     navHostController.navigateUp()
                 })
             }
+            BottomPadding()
         }
     }
 }
@@ -189,7 +257,7 @@ fun AddEditScreen(
 private fun AddEditScreenPreview() {
     ResearchHubTheme {
         AddEditScreen(
-            tags = "", title = "", description = ""
+            tags = "", title = "", description = "", question = ""
         )
     }
 }

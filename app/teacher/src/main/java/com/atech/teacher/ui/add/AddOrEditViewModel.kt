@@ -30,6 +30,9 @@ class AddOrEditViewModel @Inject constructor(
     private val _tags = mutableStateOf(state.value.tags)
     val tags: State<String> get() = _tags
 
+    private val _question = mutableStateOf<String>(state.value.questions)
+    val question: State<String> get() = _question
+
     internal fun onEvent(
         event: AddEditScreenEvent
     ) {
@@ -42,8 +45,8 @@ class AddOrEditViewModel @Inject constructor(
 
             is AddEditScreenEvent.OnDescriptionChange -> _description.value = event.description
 
-            is AddEditScreenEvent.OnQuestionsChange -> _state.value =
-                _state.value.copy(questions = event.questions)
+            is AddEditScreenEvent.OnQuestionsChange ->
+                _question.value = event.questions
 
             is AddEditScreenEvent.OnTitleChange -> _title.value = event.title
 
@@ -56,6 +59,7 @@ class AddOrEditViewModel @Inject constructor(
                 _title.value = state.value.title
                 _tags.value = state.value.tags
                 _description.value = state.value.description
+                _question.value = state.value.questions
             }
 
             is AddEditScreenEvent.AddOrRemoveTag -> {
@@ -65,7 +69,10 @@ class AddOrEditViewModel @Inject constructor(
             is AddEditScreenEvent.SaveResearch -> {
                 useCases.saveResearch.invoke(
                     _state.value.copy(
-                        title = title.value, description = description.value, tags = tags.value
+                        title = title.value,
+                        description = description.value,
+                        tags = tags.value,
+                        questions = question.value
                     ).toResearchModel()
                 ) {
                     event.onComplete(it?.message)
@@ -76,6 +83,7 @@ class AddOrEditViewModel @Inject constructor(
                 _title.value = ""
                 _description.value = ""
                 _tags.value = ""
+                _question.value = ""
             }
         }
     }
