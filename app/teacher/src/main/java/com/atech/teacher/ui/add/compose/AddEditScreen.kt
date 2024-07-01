@@ -73,11 +73,12 @@ fun AddEditScreen(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_DESTROY -> {
-                    onEvent(AddEditScreenEvent.ResetValues)
+                Lifecycle.Event.ON_CREATE -> {
+                    onEvent.invoke(AddEditScreenEvent.RefreshUI)
                 }
 
-                else -> Unit
+                else -> {
+                }
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)

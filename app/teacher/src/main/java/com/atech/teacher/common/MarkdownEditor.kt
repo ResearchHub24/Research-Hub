@@ -279,6 +279,7 @@ fun MarkdownEditor(
                             text = "",
                             selection = TextRange(0)
                         )
+                        onValueChange.invoke("")
                     }) {
                         Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
                     }

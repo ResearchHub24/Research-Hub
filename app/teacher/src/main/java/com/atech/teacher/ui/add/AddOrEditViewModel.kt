@@ -45,13 +45,13 @@ class AddOrEditViewModel @Inject constructor(
 
             is AddEditScreenEvent.OnDescriptionChange -> _description.value = event.description
 
-            is AddEditScreenEvent.OnQuestionsChange ->
-                _question.value = event.questions
+            is AddEditScreenEvent.OnQuestionsChange -> _question.value = event.questions
 
             is AddEditScreenEvent.OnTitleChange -> _title.value = event.title
 
             is AddEditScreenEvent.SetArgs -> {
 //                Check if the args are same during recomposition of the screen
+                // to avoid unnecessary recomposition
                 if (_state.value areEqual event.args.replaceNA()) {
                     return
                 }
@@ -79,11 +79,11 @@ class AddOrEditViewModel @Inject constructor(
                 }
             }
 
-            AddEditScreenEvent.ResetValues -> {
-                _title.value = ""
-                _description.value = ""
-                _tags.value = ""
-                _question.value = ""
+            AddEditScreenEvent.RefreshUI -> {
+                _title.value = state.value.title
+                _tags.value = state.value.tags
+                _description.value = state.value.description
+                _question.value = state.value.questions
             }
         }
     }
