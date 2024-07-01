@@ -63,7 +63,6 @@ class AddOrEditViewModel @Inject constructor(
             }
 
             is AddEditScreenEvent.SaveResearch -> {
-                onEvent(AddEditScreenEvent.OnDescriptionChange(event.description))
                 useCases.saveResearch.invoke(
                     _state.value.copy(
                         title = title.value, description = description.value, tags = tags.value
