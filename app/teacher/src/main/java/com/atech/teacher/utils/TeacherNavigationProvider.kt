@@ -50,14 +50,14 @@ class TeacherNavigationProvider : NavigationProvider {
             NavBarModel(
                 title = R.string.research,
                 selectedIcon = Icons.Rounded.ScreenSearchDesktop,
-                route = MainScreenRoutes.ResearchScreen.route,
-                destinationName = MainScreenRoutes.ResearchScreen.route,
+                route = ResearchRoutes.ResearchScreen.route,
+                destinationName =  ResearchRoutes.ResearchScreen.route,
             ),
             NavBarModel(
                 title = R.string.profile,
                 selectedIcon = Icons.Rounded.AccountCircle,
-                route = MainScreenRoutes.ProfileScreen.route,
-                destinationName = MainScreenRoutes.ProfileScreen.route
+                route = ProfileRoutes.ProfileScreen.routes,
+                destinationName = ProfileRoutes.ProfileScreen.routes
             )
         )
     }

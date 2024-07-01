@@ -1,6 +1,5 @@
 package com.atech.teacher.ui.add.compose
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -38,6 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -74,10 +75,20 @@ fun AddEditScreen(
     val context = LocalContext.current
     val titleSize = MaterialTheme.typography.displaySmall.fontSize
     val subtitleSize = MaterialTheme.typography.titleLarge.fontSize
-    val lifeCycle = LocalLifecycleOwner.current
-    DisposableEffect(lifeCycle) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_DESTROY -> {
+                    onEvent(AddEditScreenEvent.ResetValues)
+                }
+
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
-            onEvent(AddEditScreenEvent.ResetValues)
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
     MainContainer(modifier = modifier,
