@@ -35,6 +35,7 @@ import com.atech.core.model.TagModel
 import com.atech.core.utils.fromJsonList
 import com.atech.teacher.common.MarkdownEditor
 import com.atech.teacher.navigation.ResearchRoutes
+import com.atech.teacher.navigation.ViewMarkdownArgs
 import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.ui_common.R
 import com.atech.ui_common.common.ApplyButton
@@ -102,6 +103,11 @@ fun AddEditScreen(
                 value = description,
                 onValueChange = {
                     onEvent(AddEditScreenEvent.OnDescriptionChange(it))
+                },
+                viewInMarkdownClick = {
+                    navHostController.navigate(
+                        ViewMarkdownArgs(description)
+                    )
                 }
             )
             Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))

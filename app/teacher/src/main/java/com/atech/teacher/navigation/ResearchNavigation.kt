@@ -10,6 +10,7 @@ import com.atech.core.model.ResearchModel
 import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.teacher.ui.add.AddOrEditViewModel
 import com.atech.teacher.ui.add.compose.AddEditScreen
+import com.atech.teacher.ui.add.compose.ViewMarkdown
 import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
 import com.atech.teacher.ui.tag.TagViewModel
@@ -24,6 +25,11 @@ sealed class ResearchRoutes(val route: String) {
     data object AddOrEditScreen : ResearchRoutes("add_or_edit_screen")
     data object AddTagsScreen : ResearchRoutes("add_tags_screen")
 }
+
+@Serializable
+data class ViewMarkdownArgs(
+    val markdown: String
+)
 
 @Serializable
 data class AddEditScreenArgs(
@@ -138,6 +144,13 @@ fun NavGraphBuilder.researchScreenGraph(
                 onEvent = viewModel::onEvent,
                 selectedTags = selectedTags,
                 onTagChangeEvents = addOrEditViewModel::onEvent
+            )
+        }
+        fadeThroughComposableEnh<ViewMarkdownArgs> { entry ->
+            val args = entry.toRoute<ViewMarkdownArgs>()
+            ViewMarkdown(
+                navController = navHostController,
+                args = args
             )
         }
     }
