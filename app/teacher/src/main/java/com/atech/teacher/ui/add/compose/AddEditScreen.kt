@@ -91,7 +91,11 @@ fun AddEditScreen(
                 supportingMessage = "Title of the research",
                 onValueChange = { value ->
                     onEvent.invoke(AddEditScreenEvent.OnTitleChange(value))
-                })
+                },
+                clearIconClick = {
+                    onEvent.invoke(AddEditScreenEvent.OnTitleChange(""))
+                }
+            )
             HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,8 +153,23 @@ fun AddEditScreen(
                     Text(stringResource(R.string.add_tag))
                 })
             }
+            Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        vertical = MaterialTheme.spacing.medium
+                    )
+            )
+            Text(
+                text = "Questions",
+                style = MaterialTheme.typography.labelSmall,
+            )
+
+            Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
             ApplyButton(
-                text = "Save"/*stringResource(R.string.save)*/
+                text = "Save",/*stringResource(R.string.save)*/
+                enable = title.isNotEmpty() && description.isNotEmpty() && tags.isNotBlank(),
             ) {
                 onEvent(AddEditScreenEvent.SaveResearch { message ->
                     if (message != null) {
