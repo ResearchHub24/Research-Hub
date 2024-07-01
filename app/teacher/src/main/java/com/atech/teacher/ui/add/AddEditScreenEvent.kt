@@ -13,5 +13,6 @@ sealed interface AddEditScreenEvent {
     data class AddOrRemoveTag(val tags: List<TagModel>) : AddEditScreenEvent
     data class SaveResearch(val onComplete: (String?) -> Unit) :
         AddEditScreenEvent
-    data object RefreshUI : AddEditScreenEvent
+
+    data object ResetValues : AddEditScreenEvent
 }

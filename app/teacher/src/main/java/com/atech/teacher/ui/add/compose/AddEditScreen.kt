@@ -1,5 +1,6 @@
 package com.atech.teacher.ui.add.compose
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -35,9 +35,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.TagModel
@@ -69,27 +66,15 @@ fun AddEditScreen(
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_CREATE -> {
-                    onEvent.invoke(AddEditScreenEvent.RefreshUI)
-                }
-
-                else -> {
-                }
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+    BackHandler {
+        onEvent.invoke(AddEditScreenEvent.ResetValues)
+        navHostController.navigateUp()
     }
     MainContainer(modifier = modifier,
         scrollBehavior = topAppBarScrollBehavior,
         title = if (title.isEmpty()) "Add Research" else "Edit Research",
         onNavigationClick = {
+            onEvent.invoke(AddEditScreenEvent.ResetValues)
             navHostController.navigateUp()
         }) { paddingValues ->
         Column(
