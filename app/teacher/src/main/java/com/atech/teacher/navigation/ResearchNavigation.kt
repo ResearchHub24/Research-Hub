@@ -89,7 +89,7 @@ fun AddEditScreenArgs.toResearchModel() = this.let { model ->
         createdBy = model.createdBy,
         createdByUID = model.createdByUID,
         created = if (created == 0L) System.currentTimeMillis() else created,
-        deadLine = if (created == 0L) null else deadLine,
+        deadLine = if (deadLine == 0L) null else deadLine,
         tags = model.tags,
         questions = model.questions
     )
