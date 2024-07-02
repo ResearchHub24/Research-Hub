@@ -15,12 +15,13 @@ import com.atech.ui_common.theme.spacing
 @Composable
 fun ApplyButton(
     text: String,
+    modifier: Modifier = Modifier,
     enable: Boolean = true,
     horizontalPadding: Dp = MaterialTheme.spacing.medium,
     action: () -> Unit
 ) {
     TextButton(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = horizontalPadding),
         onClick = action,

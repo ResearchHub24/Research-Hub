@@ -46,7 +46,6 @@ import com.atech.ui_common.theme.SelectedChipContainColor
 import com.atech.ui_common.theme.SelectedChipContainerColor
 import com.atech.ui_common.theme.spacing
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ResearchItem(
     modifier: Modifier = Modifier,

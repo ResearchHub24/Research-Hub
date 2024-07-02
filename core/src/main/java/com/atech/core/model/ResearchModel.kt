@@ -43,4 +43,5 @@ data class ResearchPublishModel(
     val answers: String? = null,
     val filledDate: Long = System.currentTimeMillis(),
     val uid: String? = null,
+    val profileImg : String? = null
 )

@@ -2,7 +2,9 @@ package com.atech.ui_common.common
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,11 +14,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Approval
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,24 +27,33 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.captionColor
 import com.atech.ui_common.theme.spacing
 
 @Composable
 fun TitleComposable(
-    modifier: Modifier = Modifier, title: String
+    modifier: Modifier = Modifier,
+    title: String,
+    padding: Dp = MaterialTheme.spacing.medium
 ) {
     Text(
         modifier = modifier
             .fillMaxWidth()
-            .padding(MaterialTheme.spacing.medium),
+            .padding(padding),
         text = title,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.captionColor
@@ -135,20 +147,70 @@ fun BottomPadding() {
 
 
 fun LazyListScope.bottomPaddingLazy() {
-    item (
+    item(
         key = "bottom_padding"
-    ){
+    ) {
         BottomPadding()
     }
 }
 
-@Preview(showBackground = true)
+@Composable
+fun ExpandableCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    expand: Boolean = false,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    var isExpand by rememberSaveable { mutableStateOf(expand) }
+    Column(
+        modifier = Modifier
+            .background(Color.Transparent)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .toggleable(
+                    value = isExpand,
+                    onValueChange = { isExpand = it }
+                )
+                .padding(
+                    horizontal = MaterialTheme.spacing.small
+                )
+                .height(
+                    TextFieldDefaults.MinHeight
+                )
+                .background(Color.Transparent),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                modifier = modifier,
+                text = title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.captionColor,
+            )
+            Icon(
+                imageVector = if (isExpand) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                contentDescription = null
+            )
+        }
+        AnimatedVisibility(isExpand) {
+            Column(
+                content = content
+            )
+        }
+    }
+}
+
+@Preview(showBackground = false)
 @Composable
 private fun TitleComposablePreview() {
     ResearchHubTheme {
-        TextItem(
-            text = "Kotlin",
-            endIcon = Icons.Outlined.Approval
+        ExpandableCard(
+            title = "Title",
+            content = {
+                Text(text = "Content")
+            }
         )
     }
 }

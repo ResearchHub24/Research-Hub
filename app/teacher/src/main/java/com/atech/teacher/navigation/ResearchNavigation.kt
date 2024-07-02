@@ -16,6 +16,7 @@ import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
 import com.atech.teacher.ui.tag.TagViewModel
 import com.atech.teacher.ui.tag.compose.TagScreen
+import com.atech.teacher.ui.view_applications.ViewApplicationViewModel
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.animatedComposableEnh
 import com.atech.ui_common.utils.fadeThroughComposable
@@ -44,6 +45,11 @@ data class AddEditScreenArgs(
     val deadLine: Long = 0L,
     val tags: String = "N/A",
     val questions: String = "N/A"
+)
+
+@Serializable
+data class ViewApplicationsArgs(
+    val key: String,
 )
 
 infix fun AddEditScreenArgs.areEqual(other: AddEditScreenArgs) =
@@ -167,6 +173,10 @@ fun NavGraphBuilder.researchScreenGraph(
                 questionsJson = questionsJson,
                 onEvent = addOrEditViewModel::onEvent
             )
+        }
+        animatedComposableEnh<ViewApplicationsArgs> { entry ->
+            val viewModel = entry.sharedViewModel<ViewApplicationViewModel>(navHostController)
+            val args = entry.toRoute<ViewApplicationsArgs>()
         }
     }
 }

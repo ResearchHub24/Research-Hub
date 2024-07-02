@@ -124,7 +124,8 @@ data class PublishApplication @Inject constructor(
             uid = auth.currentUser?.uid ?: "",
             key = key,
             model = model.copy(
-                uid = auth.currentUser?.uid
+                uid = auth.currentUser?.uid,
+                profileImg = auth.currentUser?.photoUrl?.toString() ?: ""
             ),
             filledForm = filledForm,
             onComplete = onComplete
