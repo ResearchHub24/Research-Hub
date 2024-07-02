@@ -16,8 +16,9 @@ import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
 import com.atech.teacher.ui.tag.TagViewModel
 import com.atech.teacher.ui.tag.compose.TagScreen
+import com.atech.ui_common.utils.animatedComposable
+import com.atech.ui_common.utils.animatedComposableEnh
 import com.atech.ui_common.utils.fadeThroughComposable
-import com.atech.ui_common.utils.fadeThroughComposableEnh
 import com.atech.ui_common.utils.sharedViewModel
 import kotlinx.serialization.Serializable
 
@@ -114,7 +115,7 @@ fun NavGraphBuilder.researchScreenGraph(
                 onVerifyScreenEvent = viewModel::onVerifyScreenEvent
             )
         }
-        fadeThroughComposableEnh<AddEditScreenArgs> { entry ->
+        animatedComposableEnh<AddEditScreenArgs> { entry ->
             val args = entry.toRoute<AddEditScreenArgs>()
             val viewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
             viewModel.onEvent(AddEditScreenEvent.SetArgs(args))
@@ -131,7 +132,7 @@ fun NavGraphBuilder.researchScreenGraph(
                 onEvent = viewModel::onEvent,
             )
         }
-        fadeThroughComposable(
+        animatedComposable(
             route = ResearchRoutes.AddTagsScreen.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<TagViewModel>(navHostController)
@@ -149,14 +150,14 @@ fun NavGraphBuilder.researchScreenGraph(
                 onTagChangeEvents = addOrEditViewModel::onEvent
             )
         }
-        fadeThroughComposableEnh<ViewMarkdownArgs> { entry ->
+        animatedComposableEnh<ViewMarkdownArgs> { entry ->
             val args = entry.toRoute<ViewMarkdownArgs>()
             ViewMarkdown(
                 navController = navHostController,
                 args = args
             )
         }
-        fadeThroughComposable(
+        animatedComposable(
             route = ResearchRoutes.AddQuestionScreen.route
         ) { entry ->
             val addOrEditViewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
