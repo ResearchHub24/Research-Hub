@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.PostAdd
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +27,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +49,7 @@ import com.atech.teacher.navigation.ResearchRoutes
 import com.atech.teacher.navigation.ViewMarkdownArgs
 import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.ui_common.R
+import com.atech.ui_common.common.AppAlertDialog
 import com.atech.ui_common.common.ApplyButton
 import com.atech.ui_common.common.BottomPadding
 import com.atech.ui_common.common.DisplayCard
@@ -66,6 +72,7 @@ fun AddEditScreen(
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val context = LocalContext.current
+    var isConfirmDialogVisible by remember { mutableStateOf(false) }
     BackHandler {
         onEvent.invoke(AddEditScreenEvent.ResetValues)
         navHostController.navigateUp()
@@ -219,19 +226,33 @@ fun AddEditScreen(
                     Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
                 }
             }
+            AnimatedVisibility(isConfirmDialogVisible) {
+                AppAlertDialog(
+                    dialogTitle = "Confirmation",
+                    dialogText = "Save changes and send push notifications to all users?",
+                    icon = Icons.Outlined.PostAdd,
+                    onDismissRequest = {
+                        isConfirmDialogVisible = false
+                    },
+                    onConfirmation = {
+                        onEvent(AddEditScreenEvent.SaveResearch { message ->
+                            if (message != null) {
+                                toast(context, message)
+                                return@SaveResearch
+                            }
+                            toast(context, "Saved")
+                            isConfirmDialogVisible = false
+                            navHostController.navigateUp()
+                        })
+                    }
+                )
+            }
             ApplyButton(
                 text = "Save",/*stringResource(R.string.save)*/
                 enable = title.isNotEmpty() && description.isNotEmpty() && tags.isNotBlank() && question.isNotBlank(),
                 horizontalPadding = MaterialTheme.spacing.default
             ) {
-                onEvent(AddEditScreenEvent.SaveResearch { message ->
-                    if (message != null) {
-                        toast(context, message)
-                        return@SaveResearch
-                    }
-                    toast(context, "Saved")
-                    navHostController.navigateUp()
-                })
+                isConfirmDialogVisible = true
             }
             BottomPadding()
         }
