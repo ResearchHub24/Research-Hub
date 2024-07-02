@@ -24,7 +24,7 @@ class ViewApplicationViewModel @Inject constructor(
     val submittedForms: State<List<ResearchPublishModel>> get() = _submittedForms
 
     private var job: Job? = null
-    fun onEvent(event: ViewApplicationEvents) {
+    internal fun onEvent(event: ViewApplicationEvents) {
         when (event) {
             is ViewApplicationEvents.SetKeyFromArgs -> {
                 _key.value = event.string

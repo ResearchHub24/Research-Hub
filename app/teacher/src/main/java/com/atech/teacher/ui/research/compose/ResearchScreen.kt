@@ -1,15 +1,11 @@
 package com.atech.teacher.ui.research.compose
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,13 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchModel
@@ -39,6 +32,7 @@ import com.atech.teacher.ui.research.VerifyScreenEvents
 import com.atech.teacher.ui.research.VerifyScreenState
 import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.common.ProgressBar
 import com.atech.ui_common.common.ResearchTeacherItem
 import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
@@ -165,25 +159,6 @@ fun ResearchScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun ProgressBar(
-    paddingValues: PaddingValues
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            trackColor = MaterialTheme.colorScheme.secondaryContainer,
-            modifier = Modifier.size(200.dp),
-            strokeCap = StrokeCap.Round,
-            strokeWidth = 10.dp,
-        )
     }
 }
 

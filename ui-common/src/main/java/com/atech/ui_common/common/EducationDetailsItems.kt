@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.atech.core.model.EducationDetails
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.captionColor
 import com.atech.ui_common.theme.spacing
@@ -24,6 +23,7 @@ fun EducationDetailsItems(
     modifier: Modifier = Modifier,
     title: String,
     des: String,
+    canShowButtons: Boolean = true,
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {}
 ) {
@@ -45,15 +45,18 @@ fun EducationDetailsItems(
                 color = MaterialTheme.colorScheme.captionColor
             )
         }
-        Row (
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
-        ){
-            CustomIconButton(
-                action = onDeleteClick,
-                imageVector = Icons.Outlined.Delete
-            )
-            CustomIconButton(action = onEditClick)
-        }
+        if (
+            canShowButtons
+        )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
+            ) {
+                CustomIconButton(
+                    action = onDeleteClick,
+                    imageVector = Icons.Outlined.Delete
+                )
+                CustomIconButton(action = onEditClick)
+            }
     }
 }
 

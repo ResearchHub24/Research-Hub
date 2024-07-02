@@ -32,7 +32,8 @@ data class IsUserLoggedInUseCase @Inject constructor(
 }
 
 data class GetUserDetailsUseFromAuthCase @Inject constructor(
-    private val auth: FirebaseAuth, private val getUserUseCase: GetStudentUserDataUseCase
+    private val auth: FirebaseAuth,
+    private val getUserUseCase: GetStudentUserDataUseCase
 ) {
     suspend operator fun invoke(
         fromDatabase: Boolean = false

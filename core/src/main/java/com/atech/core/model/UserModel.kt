@@ -67,13 +67,13 @@ val DUMMY_EDUCATION_DETAILS = listOf(
 )
 val EMPTY_USER = StudentUserModel(
     uid = "",
-    email = "",
-    name = "",
-    photoUrl = "",
+    email = "ayaan35200@gmail.com",
+    name = "Ayaan Ansari",
+    photoUrl = "Some URL",
     userType = "",
     password = "",
     created = 0,
-    phone = "",
+    phone = "1234567890",
     educationDetails = "@Keep\n" +
             "data class UserModel(\n" +
             "    val uid: String = \"\",\n" +

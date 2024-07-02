@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchPublishModel
+import com.atech.teacher.navigation.StudentProfileArgs
 import com.atech.teacher.navigation.ViewApplicationsArgs
 import com.atech.teacher.ui.view_applications.ViewApplicationEvents
 import com.atech.ui_common.common.GlobalEmptyScreen
@@ -63,7 +64,14 @@ fun ViewApplicationScreen(
         ) {
             items(submittedForms) {
                 ApplicationItem(
-                    model = it
+                    model = it,
+                    onViewProfileClick = {
+                        navController.navigate(
+                            StudentProfileArgs(
+                                uid = it.uid ?: return@ApplicationItem
+                            )
+                        )
+                    }
                 )
             }
         }

@@ -15,6 +15,8 @@ import com.atech.teacher.ui.add.compose.AddQuestionScreen
 import com.atech.teacher.ui.add.compose.ViewMarkdown
 import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
+import com.atech.teacher.ui.student_profile.StudentProfileViewModel
+import com.atech.teacher.ui.student_profile.compose.StudentProfileScreen
 import com.atech.teacher.ui.tag.TagViewModel
 import com.atech.teacher.ui.tag.compose.TagScreen
 import com.atech.teacher.ui.view_applications.ViewApplicationViewModel
@@ -54,16 +56,13 @@ data class ViewApplicationsArgs(
     val key: String,
 )
 
+@Serializable
+data class StudentProfileArgs(
+    val uid: String
+)
+
 infix fun AddEditScreenArgs.areEqual(other: AddEditScreenArgs) =
-    this.key == other.key &&
-            this.title == other.title &&
-            this.description == other.description &&
-            this.createdBy == other.createdBy &&
-            this.createdByUID == other.createdByUID &&
-            this.created == other.created &&
-            this.deadLine == other.deadLine &&
-            this.tags == other.tags &&
-            this.questions == other.questions
+    this.key == other.key && this.title == other.title && this.description == other.description && this.createdBy == other.createdBy && this.createdByUID == other.createdByUID && this.created == other.created && this.deadLine == other.deadLine && this.tags == other.tags && this.questions == other.questions
 
 
 fun AddEditScreenArgs.replaceNA() = this.copy(
@@ -161,8 +160,7 @@ fun NavGraphBuilder.researchScreenGraph(
         animatedComposableEnh<ViewMarkdownArgs> { entry ->
             val args = entry.toRoute<ViewMarkdownArgs>()
             ViewMarkdown(
-                navController = navHostController,
-                args = args
+                navController = navHostController, args = args
             )
         }
         animatedComposable(
@@ -185,6 +183,17 @@ fun NavGraphBuilder.researchScreenGraph(
                 args = args,
                 submittedForms = submittedForms,
                 onEvent = viewModel::onEvent
+            )
+        }
+        animatedComposableEnh<StudentProfileArgs> { entry ->
+            val viewModel: StudentProfileViewModel = hiltViewModel()
+            val args = entry.toRoute<StudentProfileArgs>()
+            val userModel by viewModel.userModel
+            StudentProfileScreen(
+                uid = args.uid,
+                navController = navHostController,
+                setUID = viewModel::setUId,
+                model = userModel
             )
         }
     }

@@ -57,6 +57,7 @@ import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.student.ui.resume.ResumeState
 import com.atech.ui_common.R
 import com.atech.ui_common.common.ApplyButton
+import com.atech.ui_common.common.CardSection
 import com.atech.ui_common.common.CustomIconButton
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EducationDetailsItems
@@ -383,36 +384,6 @@ private fun AddButton(
 }
 
 
-@Composable
-fun CardSection(
-    modifier: Modifier = Modifier, title: String, content: @Composable ColumnScope.() -> Unit
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        border = BorderStroke(
-            .5.dp, MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
-        ),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(MaterialTheme.spacing.medium)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.captionColor
-            )
-            Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
-            content()
-            Spacer(modifier = Modifier.size(MaterialTheme.spacing.large))
-        }
-    }
-}
 
 @Composable
 fun LogInScreen(

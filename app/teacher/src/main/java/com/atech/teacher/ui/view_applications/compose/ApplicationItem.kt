@@ -38,7 +38,9 @@ import com.atech.ui_common.theme.spacing
 fun ApplicationItem(
     modifier: Modifier = Modifier,
     model: ResearchPublishModel,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onViewProfileClick: () -> Unit = {},
+    onActionClick: () -> Unit = {}
 ) {
     Surface(
         modifier = modifier
@@ -117,15 +119,13 @@ fun ApplicationItem(
                     ApplyButton(
                         modifier = Modifier.weight(.5f),
                         text = "Action",
-                    ) {
-
-                    }
+                        action = onActionClick
+                    )
                     ApplyButton(
                         modifier = Modifier.weight(.5f),
                         text = "View Profile",
-                    ) {
-
-                    }
+                        action = onViewProfileClick
+                    )
                 }
             }
         }
@@ -147,6 +147,11 @@ fun QuestionsItem(
             enable = false,
             trailingIcon = null,
             colors = questionItemTextFieldColor()
+                .copy(
+                    disabledContainerColor = TextFieldDefaults.colors().unfocusedContainerColor,
+                    disabledLabelColor = TextFieldDefaults.colors().unfocusedLabelColor,
+                    disabledIndicatorColor = TextFieldDefaults.colors().unfocusedIndicatorColor
+                )
         )
 
         EditTextEnhance(
