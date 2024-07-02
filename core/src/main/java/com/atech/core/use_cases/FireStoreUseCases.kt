@@ -270,7 +270,7 @@ data class GetAllFaculties @Inject constructor(
     operator fun invoke(): Flow<List<TeacherUserModel>> =
         db.collection(CollectionName.USER.value)
             .whereEqualTo("userType", UserType.PROFESSORS.name)
-            .whereEqualTo("isVerified", true)
+            .whereEqualTo("verified", true)
             .snapshots()
             .map { it.toObjects(TeacherUserModel::class.java) }
 
