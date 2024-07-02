@@ -41,13 +41,13 @@ private val path = Path().apply {
 private val emphasizePathInterpolator = PathInterpolator(path)
 private val emphasizeEasing = emphasizePathInterpolator.toEasing()
 
-private val enterTween =
+val enterTween =
     tween<IntOffset>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
-private val exitTween =
+val exitTween =
     tween<IntOffset>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
 
-private val fadeTween = tween<Float>(durationMillis = DURATION_EXIT)
-private val fadeSpec = fadeTween
+val fadeTween = tween<Float>(durationMillis = DURATION_EXIT)
+val fadeSpec = fadeTween
 
 fun NavGraphBuilder.animatedComposable(
     route: String,
@@ -122,24 +122,24 @@ inline fun <reified T : Any> NavGraphBuilder.animatedComposableEnh(
         content = content,
         deepLinks = deepLinks,
         enterTransition = {
-            fadeIn(animationSpec = tween(220, delayMillis = 90)) +
-                    scaleIn(
-                        initialScale = 0.92f,
-                        animationSpec = tween(220, delayMillis = 90)
-                    )
+            slideInHorizontally(
+                enterTween,
+                initialOffsetX = { (it * initialOffset).toInt() }) + fadeIn(fadeSpec)
         },
         exitTransition = {
-            fadeOut(animationSpec = tween(90))
+            slideOutHorizontally(
+                exitTween,
+                targetOffsetX = { -(it * initialOffset).toInt() }) + fadeOut(fadeSpec)
         },
         popEnterTransition = {
-            fadeIn(animationSpec = tween(220, delayMillis = 90)) +
-                    scaleIn(
-                        initialScale = 0.92f,
-                        animationSpec = tween(220, delayMillis = 90)
-                    )
+            slideInHorizontally(
+                enterTween,
+                initialOffsetX = { -(it * initialOffset).toInt() }) + fadeIn(fadeSpec)
         },
         popExitTransition = {
-            fadeOut(animationSpec = tween(90))
+            slideOutHorizontally(
+                exitTween,
+                targetOffsetX = { (it * initialOffset).toInt() }) + fadeOut(fadeSpec)
         },
     )
 }
