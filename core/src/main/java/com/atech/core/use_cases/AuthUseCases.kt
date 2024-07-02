@@ -123,7 +123,9 @@ data class PublishApplication @Inject constructor(
         publishApplication.invoke(
             uid = auth.currentUser?.uid ?: "",
             key = key,
-            model = model,
+            model = model.copy(
+                uid = auth.currentUser?.uid
+            ),
             filledForm = filledForm,
             onComplete = onComplete
         )
