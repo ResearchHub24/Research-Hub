@@ -151,6 +151,7 @@ data class TeacherAuthUserCase @Inject constructor(
     val saveData: SaveTeacherData,
     val getAllPosted: GetAllPosted,
     val saveResearch: SaveResearch,
+    val getAllSubmittedForm : GetAllSubmittedForm
 )
 
 data class GetAllPosted @Inject constructor(

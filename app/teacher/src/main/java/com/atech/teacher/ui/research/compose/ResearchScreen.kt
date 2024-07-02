@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchModel
 import com.atech.core.utils.isValidPassword
 import com.atech.teacher.navigation.AddEditScreenArgs
+import com.atech.teacher.navigation.ViewApplicationsArgs
 import com.atech.teacher.navigation.fromResearchModel
 import com.atech.teacher.ui.research.VerifyScreenEvents
 import com.atech.teacher.ui.research.VerifyScreenState
@@ -53,6 +56,7 @@ fun ResearchScreen(
     val context = LocalContext.current
     var hasError by rememberSaveable { mutableStateOf(Pair(false, "")) }
     var title by rememberSaveable { mutableStateOf("") }
+    val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     LaunchedEffect(key1 = verifyScreen.errorMessage) {
         if (verifyScreen.errorMessage != null) {
             toast(context, verifyScreen.errorMessage)
@@ -75,6 +79,7 @@ fun ResearchScreen(
     MainContainer(
         modifier = modifier,
         title = title,
+        scrollBehavior = topAppBarScrollBehavior,
         floatingActionButton = floatingActionButton
     ) { paddingValues ->
         if (verifyScreen.userData == null) {
@@ -140,7 +145,9 @@ fun ResearchScreen(
         }
         title = "Your Posted Research"
         LazyColumn(
-            modifier = Modifier, contentPadding = paddingValues
+            modifier = Modifier
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            contentPadding = paddingValues
         ) {
             items(state) {
                 ResearchTeacherItem(
@@ -148,6 +155,11 @@ fun ResearchScreen(
                     onClick = {
                         navHostController.navigate(
                             it.fromResearchModel()
+                        )
+                    },
+                    onViewAllApplication = {
+                        navHostController.navigate(
+                            ViewApplicationsArgs(it.key ?: return@ResearchTeacherItem)
                         )
                     }
                 )

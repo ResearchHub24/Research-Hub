@@ -1,6 +1,7 @@
 package com.atech.teacher.navigation
 
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -17,6 +18,7 @@ import com.atech.teacher.ui.research.compose.ResearchScreen
 import com.atech.teacher.ui.tag.TagViewModel
 import com.atech.teacher.ui.tag.compose.TagScreen
 import com.atech.teacher.ui.view_applications.ViewApplicationViewModel
+import com.atech.teacher.ui.view_applications.compose.ViewApplicationScreen
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.animatedComposableEnh
 import com.atech.ui_common.utils.fadeThroughComposable
@@ -141,7 +143,7 @@ fun NavGraphBuilder.researchScreenGraph(
         animatedComposable(
             route = ResearchRoutes.AddTagsScreen.route
         ) { entry ->
-            val viewModel = entry.sharedViewModel<TagViewModel>(navHostController)
+            val viewModel: TagViewModel = hiltViewModel()
             val addOrEditViewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
             val tags by viewModel.tags
             val errorMessage by viewModel.errorMessage
@@ -175,8 +177,15 @@ fun NavGraphBuilder.researchScreenGraph(
             )
         }
         animatedComposableEnh<ViewApplicationsArgs> { entry ->
-            val viewModel = entry.sharedViewModel<ViewApplicationViewModel>(navHostController)
+            val viewModel: ViewApplicationViewModel = hiltViewModel()
             val args = entry.toRoute<ViewApplicationsArgs>()
+            val submittedForms by viewModel.submittedForms
+            ViewApplicationScreen(
+                navController = navHostController,
+                args = args,
+                submittedForms = submittedForms,
+                onEvent = viewModel::onEvent
+            )
         }
     }
 }

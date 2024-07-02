@@ -1,6 +1,7 @@
 package com.atech.teacher.ui.view_applications.compose
 
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,10 +36,14 @@ import com.atech.ui_common.theme.spacing
 
 @Composable
 fun ApplicationItem(
-    modifier: Modifier = Modifier, model: ResearchPublishModel
+    modifier: Modifier = Modifier,
+    model: ResearchPublishModel,
+    onClick: () -> Unit = {}
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick.invoke() }
     ) {
         Card(
             modifier = Modifier

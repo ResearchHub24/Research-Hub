@@ -317,3 +317,17 @@ data class SaveResearchData @Inject constructor(
             }
     }
 }
+
+data class GetAllSubmittedForm @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    operator fun invoke(
+        key: String
+    ): Flow<List<ResearchPublishModel>> =
+        db.collection(CollectionName.RESEARCH.value)
+            .document(key)
+            .collection(CollectionName.SUBMITTED_FORM.value)
+            .snapshots()
+            .map { it.toObjects(ResearchPublishModel::class.java) }
+
+}
