@@ -18,13 +18,17 @@ import com.atech.ui_common.theme.ResearchHubTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppCustomAlertDialog(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit,
+
 ) {
     BasicAlertDialog(
-        onDismissRequest = { },
+        onDismissRequest = onDismissRequest,
         modifier = modifier,
-        properties = DialogProperties()
-    ) { }
+        properties = DialogProperties(),
+        content = content
+    )
 }
 
 @Composable

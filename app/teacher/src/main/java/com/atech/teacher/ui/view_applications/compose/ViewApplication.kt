@@ -1,12 +1,17 @@
 package com.atech.teacher.ui.view_applications.compose
 
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -16,6 +21,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchPublishModel
+import com.atech.core.utils.fromJsonList
 import com.atech.teacher.navigation.StudentProfileArgs
 import com.atech.teacher.navigation.ViewApplicationsArgs
 import com.atech.teacher.ui.view_applications.ViewApplicationEvents
@@ -23,8 +29,9 @@ import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
+import com.atech.ui_common.theme.spacing
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ViewApplicationScreen(
     modifier: Modifier = Modifier,
@@ -35,6 +42,7 @@ fun ViewApplicationScreen(
 ) {
     val context = LocalContext.current
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val selectedUser = remember { fromJsonList<String>(args.selectedUser) }
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         if (args.key.isNotEmpty()) onEvent.invoke(ViewApplicationEvents.SetKeyFromArgs(args.key))
         else {
@@ -56,23 +64,52 @@ fun ViewApplicationScreen(
             )
             return@MainContainer
         }
+        val filteredSelectedUsers = submittedForms.filter { selectedUser.contains(it.uid) }
+        val map = mapOf(
+            Action.SELECTED.name.lowercase()
+                .replaceFirstChar { it.uppercaseChar() } to filteredSelectedUsers,
+            (if (filteredSelectedUsers.isEmpty()) "Application" else Action.UNSELECTED.name.lowercase()
+                .replaceFirstChar { it.uppercaseChar() }) to submittedForms.filter {
+                !selectedUser.contains(
+                    it.uid
+                )
+            })
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = paddingValues
         ) {
-            items(submittedForms) {
-                ApplicationItem(
-                    model = it,
-                    onViewProfileClick = {
-                        navController.navigate(
-                            StudentProfileArgs(
-                                uid = it.uid ?: return@ApplicationItem
-                            )
+            map.forEach { (initial, forms) ->
+                if (forms.isNotEmpty())
+                    stickyHeader {
+                        Text(
+                            modifier = Modifier
+                                .padding(start = MaterialTheme.spacing.medium),
+                            text = initial, style = MaterialTheme.typography.labelSmall
                         )
                     }
-                )
+                items(forms) { it ->
+                    ApplicationItem(
+                        model = it,
+                        action = if (initial == Action.SELECTED.name.lowercase()
+                                .replaceFirstChar { it.uppercaseChar() }
+                        ) Action.SELECTED else Action.UNSELECTED,
+                        onViewProfileClick = {
+                            navController.navigate(
+                                StudentProfileArgs(
+                                    uid = it.uid ?: return@ApplicationItem
+                                )
+                            )
+                        },
+                        onActionClick = {action ->
+                            when(action){
+                                Action.SELECTED -> TODO()
+                                Action.UNSELECTED -> TODO()
+                            }
+                        }
+                    )
+                }
             }
         }
     }

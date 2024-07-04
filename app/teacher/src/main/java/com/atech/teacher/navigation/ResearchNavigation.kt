@@ -54,6 +54,7 @@ data class AddEditScreenArgs(
 @Serializable
 data class ViewApplicationsArgs(
     val key: String,
+    val selectedUser: String = ""
 )
 
 @Serializable

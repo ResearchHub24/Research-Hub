@@ -153,7 +153,10 @@ fun ResearchScreen(
                     },
                     onViewAllApplication = {
                         navHostController.navigate(
-                            ViewApplicationsArgs(it.key ?: return@ResearchTeacherItem)
+                            ViewApplicationsArgs(
+                                key = it.key ?: return@ResearchTeacherItem,
+                                selectedUser = it.selectedUsers ?: ""
+                            )
                         )
                     }
                 )

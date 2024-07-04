@@ -18,6 +18,8 @@ data class ResearchModel(
     val tags: String? = null,
     val key: String? = null,
     val questions: String? = null,
+    @PropertyName("selected_users") @get:PropertyName("selected_users")
+    val selectedUsers: String? = null
 ) {
     @get:Exclude
     val formattedTime: String
@@ -43,5 +45,5 @@ data class ResearchPublishModel(
     val answers: String? = null,
     val filledDate: Long = System.currentTimeMillis(),
     val uid: String? = null,
-    val profileImg : String? = null
+    val profileImg: String? = null
 )
