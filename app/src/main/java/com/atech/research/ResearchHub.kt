@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Build
 import com.atech.core.utils.FacultyNotification
 import com.atech.core.utils.NotificationTopics
+import com.atech.core.utils.ResearchNotification
 import com.atech.core.utils.createNotificationChannel
 import com.atech.research.utils.isUserAdmin
 import com.google.firebase.messaging.FirebaseMessaging
@@ -19,7 +20,12 @@ class ResearchHub : Application() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             isUserAdmin {
                 fcm.subscribeToTopic(NotificationTopics.Faculties.topic)
+                fcm.unsubscribeFromTopic(NotificationTopics.ResearchPublish.topic)
                 FacultyNotification().createNotificationChannel(this)
+            } ?: {
+                fcm.unsubscribeFromTopic(NotificationTopics.Faculties.topic)
+                fcm.subscribeToTopic(NotificationTopics.ResearchPublish.topic)
+                ResearchNotification().createNotificationChannel(this)
             }
         }
     }

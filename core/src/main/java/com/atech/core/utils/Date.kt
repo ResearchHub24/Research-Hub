@@ -1,7 +1,6 @@
 package com.atech.core.utils
 
 
-
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -21,8 +20,8 @@ infix fun Long.hasSameDay(date: Long): Boolean {
 }
 
 enum class DateFormat(
-    val format:String
-){
+    val format: String
+) {
     DD_MMM("dd MMM"),
     DD_MMM_YYYY("dd MMM yyyy"),
 }
@@ -69,3 +68,5 @@ fun Long.getDate(): String {
 
     }
 }
+
+fun Long.convertToInt(): Int = (this and 0xFFFFFFFF).toInt()

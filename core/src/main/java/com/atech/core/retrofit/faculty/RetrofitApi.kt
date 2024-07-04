@@ -1,4 +1,4 @@
-package com.atech.core.retrofit
+package com.atech.core.retrofit.faculty
 
 import retrofit2.http.GET
 

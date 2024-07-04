@@ -11,6 +11,11 @@ android {
     namespace = "com.atech.teacher"
     compileSdk = 34
 
+    packaging.resources {
+        excludes.add("META-INF/AL2.0")
+        excludes.add("META-INF/LGPL2.1")
+        excludes.add("META-INF/DEPENDENCIES")
+    }
     defaultConfig {
         minSdk = 24
 

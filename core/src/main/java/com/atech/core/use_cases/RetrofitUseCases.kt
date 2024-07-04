@@ -1,8 +1,8 @@
 package com.atech.core.use_cases
 
-import com.atech.core.retrofit.BASE_URL
-import com.atech.core.retrofit.FacultyModel
-import com.atech.core.retrofit.RetrofitApi
+import com.atech.core.retrofit.faculty.BASE_URL
+import com.atech.core.retrofit.faculty.FacultyModel
+import com.atech.core.retrofit.faculty.RetrofitApi
 import com.atech.core.room.FacultyDao
 import com.atech.core.room.model.FacultyMapper
 import com.atech.core.utils.networkAccessBond

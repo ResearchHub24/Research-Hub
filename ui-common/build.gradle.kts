@@ -10,7 +10,11 @@ plugins {
 android {
     namespace = "com.atech.ui_common"
     compileSdk = 34
-
+    packaging.resources {
+        excludes.add("META-INF/AL2.0")
+        excludes.add("META-INF/LGPL2.1")
+        excludes.add("META-INF/DEPENDENCIES")
+    }
     defaultConfig {
         minSdk = 24
 
@@ -52,7 +56,8 @@ android {
         enableStrongSkippingMode = true
 
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
-        stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+        stabilityConfigurationFile =
+            rootProject.layout.projectDirectory.file("stability_config.conf")
     }
 }
 

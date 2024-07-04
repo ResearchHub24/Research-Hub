@@ -1,4 +1,4 @@
-package com.atech.core.retrofit
+package com.atech.core.retrofit.faculty
 
 import androidx.annotation.Keep
 

@@ -2,12 +2,15 @@ package com.atech.core.module
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.atech.core.utils.AiyuScope
 import com.atech.core.utils.SHARED_PREF_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 @Module
@@ -19,4 +22,9 @@ object AppModule {
     fun providePref(
         @ApplicationContext context: Context
     ): SharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
+
+    @AiyuScope
+    @Singleton
+    @Provides
+    fun provideApplicationScope() = CoroutineScope(SupervisorJob())
 }

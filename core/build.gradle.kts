@@ -4,11 +4,17 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp")
     id("androidx.room")
+    alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
 }
 
 android {
     namespace = "com.atech.core"
     compileSdk = 34
+    packaging.resources {
+        excludes.add("META-INF/AL2.0")
+        excludes.add("META-INF/LGPL2.1")
+        excludes.add("META-INF/DEPENDENCIES")
+    }
 
     defaultConfig {
         minSdk = 24
@@ -76,9 +82,11 @@ dependencies {
 
     implementation(libs.gson)
 
-    implementation (libs.retrofit)
-    implementation (libs.converter.scalars)
-    implementation (libs.jsoup)
+    implementation(libs.retrofit)
+    implementation(libs.converter.scalars)
+    implementation(libs.jsoup)
+    implementation(libs.retrofit.json)
+    implementation(libs.google.auth.library.oauth2.http)
 }
 hilt {
     enableAggregatingTask = true

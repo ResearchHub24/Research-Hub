@@ -29,7 +29,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.atech.core.model.TeacherUserModel
-import com.atech.core.retrofit.FacultyModel
+import com.atech.core.retrofit.faculty.FacultyModel
 import com.atech.ui_common.R
 import com.atech.ui_common.common.BottomPadding
 import com.atech.ui_common.common.FacultyItem
