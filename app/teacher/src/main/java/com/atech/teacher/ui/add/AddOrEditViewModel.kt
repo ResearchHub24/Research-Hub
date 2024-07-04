@@ -4,7 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.atech.core.model.TagModel
+import com.atech.core.retrofit.fcm.Data
+import com.atech.core.retrofit.fcm.Message
+import com.atech.core.retrofit.fcm.Notification
+import com.atech.core.retrofit.fcm.NotificationModel
+import com.atech.core.use_cases.FcmUseCases
 import com.atech.core.use_cases.TeacherAuthUserCase
+import com.atech.core.utils.NotificationTopics
 import com.atech.core.utils.fromJsonList
 import com.atech.core.utils.toJSON
 import com.atech.teacher.navigation.AddEditScreenArgs
@@ -16,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddOrEditViewModel @Inject constructor(
-    private val useCases: TeacherAuthUserCase
+    private val useCases: TeacherAuthUserCase, private val fcmUseCases: FcmUseCases
 ) : ViewModel() {
 
     private val _state = mutableStateOf(AddEditScreenArgs(key = null).replaceNA())
@@ -30,7 +36,7 @@ class AddOrEditViewModel @Inject constructor(
     private val _tags = mutableStateOf(state.value.tags)
     val tags: State<String> get() = _tags
 
-    private val _question = mutableStateOf<String>(state.value.questions)
+    private val _question = mutableStateOf(state.value.questions)
     val question: State<String> get() = _question
 
     internal fun onEvent(
@@ -45,8 +51,7 @@ class AddOrEditViewModel @Inject constructor(
 
             is AddEditScreenEvent.OnDescriptionChange -> _description.value = event.description
 
-            is AddEditScreenEvent.OnQuestionsChange ->
-                _question.value = event.questions
+            is AddEditScreenEvent.OnQuestionsChange -> _question.value = event.questions
 
             is AddEditScreenEvent.OnTitleChange -> _title.value = event.title
 
@@ -86,6 +91,26 @@ class AddOrEditViewModel @Inject constructor(
                 _description.value = ""
                 _tags.value = ""
                 _question.value = ""
+            }
+
+            is AddEditScreenEvent.SendPushNotification -> {
+                fcmUseCases.sendResearchPublishNotification(
+                    model = NotificationModel(
+                        message = Message(
+                            topic = NotificationTopics.ResearchPublish.topic,
+                            notification = Notification(
+                                title = title.value,
+                                body =
+                                description
+                                    .value[if (description.value.length >= 20) 20 else description.value.length].toString()
+                            ),
+                            data = Data(
+                                key = state.value.key!!,
+                                created = state.value.created.toString(),
+                            )
+                        )
+                    ), event.onSuccess
+                )
             }
         }
     }

@@ -15,7 +15,9 @@ data class NotificationModel(
 
 @Keep
 data class Message(
-    val topic: String, val notification: Notification
+    val topic: String,
+    val notification: Notification,
+    val data: Data? = null
 )
 
 @Keep
@@ -27,6 +29,6 @@ data class Notification(
 data class Data(
     val key: String,
     val created: String,
-    val type: Type,
+    val type: Type = Type.RESEARCH,
     val image: String? = null
 )

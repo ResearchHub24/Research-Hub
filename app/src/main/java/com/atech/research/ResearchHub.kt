@@ -22,11 +22,10 @@ class ResearchHub : Application() {
                 fcm.subscribeToTopic(NotificationTopics.Faculties.topic)
                 fcm.unsubscribeFromTopic(NotificationTopics.ResearchPublish.topic)
                 FacultyNotification().createNotificationChannel(this)
-            } ?: {
-                fcm.unsubscribeFromTopic(NotificationTopics.Faculties.topic)
-                fcm.subscribeToTopic(NotificationTopics.ResearchPublish.topic)
-                ResearchNotification().createNotificationChannel(this)
             }
+            fcm.unsubscribeFromTopic(NotificationTopics.Faculties.topic)
+            fcm.subscribeToTopic(NotificationTopics.ResearchPublish.topic)
+            ResearchNotification().createNotificationChannel(this)
         }
     }
 }

@@ -67,6 +67,7 @@ fun MainContainer(
     floatingActionButton: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit = { }
 ) {
 
@@ -80,7 +81,8 @@ fun MainContainer(
                 color = appBarColor
             )
         }, floatingActionButton = floatingActionButton,
-        bottomBar = bottomBar
+        bottomBar = bottomBar,
+        snackbarHost = snackbarHost
     ) {
         content(it)
     }

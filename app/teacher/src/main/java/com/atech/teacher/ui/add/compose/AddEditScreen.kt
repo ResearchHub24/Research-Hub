@@ -24,12 +24,16 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -55,9 +59,9 @@ import com.atech.ui_common.common.BottomPadding
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EditText
 import com.atech.ui_common.common.MainContainer
-import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -73,12 +77,17 @@ fun AddEditScreen(
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val context = LocalContext.current
     var isConfirmDialogVisible by remember { mutableStateOf(false) }
+    val snackBarHost = remember { SnackbarHostState() }
+    val coroutine = rememberCoroutineScope()
     BackHandler {
         onEvent.invoke(AddEditScreenEvent.ResetValues)
         navHostController.navigateUp()
     }
     MainContainer(modifier = modifier,
         scrollBehavior = topAppBarScrollBehavior,
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHost)
+        },
         title = if (title.isEmpty()) "Add Research" else "Edit Research",
         onNavigationClick = {
             onEvent.invoke(AddEditScreenEvent.ResetValues)
@@ -237,12 +246,33 @@ fun AddEditScreen(
                     onConfirmation = {
                         onEvent(AddEditScreenEvent.SaveResearch { message ->
                             if (message != null) {
-                                toast(context, message)
+                                coroutine.launch {
+                                    snackBarHost.showSnackbar(
+                                        message = message,
+                                        duration = SnackbarDuration.Long
+                                    )
+                                }
                                 return@SaveResearch
                             }
-                            toast(context, "Saved")
-                            isConfirmDialogVisible = false
-                            navHostController.navigateUp()
+                            onEvent.invoke(
+                                AddEditScreenEvent.SendPushNotification { error ->
+                                    coroutine.launch {
+                                        if (error != null) {
+                                            snackBarHost.showSnackbar(
+                                                message = error.message ?: "Error",
+                                                duration = SnackbarDuration.Long
+                                            )
+                                            return@launch
+                                        }
+                                        snackBarHost.showSnackbar(
+                                            message = "Saved & Notification Send !!",
+                                            duration = SnackbarDuration.Long
+                                        )
+                                        isConfirmDialogVisible = false
+                                        navHostController.navigateUp()
+                                    }
+                                }
+                            )
                         })
                     }
                 )

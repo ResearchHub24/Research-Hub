@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class FcmUseCases @Inject constructor(
-    private val sendResearchPublishNotification: SendResearchPublishNotification
+    val sendResearchPublishNotification: SendResearchPublishNotification
 )
 
 data class SendResearchPublishNotification @Inject constructor(

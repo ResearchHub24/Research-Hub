@@ -1,6 +1,7 @@
 package com.atech.teacher.ui.add
 
 import com.atech.core.model.TagModel
+import com.atech.core.retrofit.fcm.NotificationModel
 import com.atech.teacher.navigation.AddEditScreenArgs
 
 sealed interface AddEditScreenEvent {
@@ -15,4 +16,7 @@ sealed interface AddEditScreenEvent {
         AddEditScreenEvent
 
     data object ResetValues : AddEditScreenEvent
+    data class SendPushNotification(
+        val onSuccess: (Exception?) -> Unit = {}
+    ) : AddEditScreenEvent
 }
