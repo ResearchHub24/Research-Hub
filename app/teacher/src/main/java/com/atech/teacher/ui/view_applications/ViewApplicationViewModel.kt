@@ -1,11 +1,11 @@
 package com.atech.teacher.ui.view_applications
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atech.core.model.ResearchPublishModel
+import com.atech.core.use_cases.SelectUseUserCase
 import com.atech.core.use_cases.TeacherAuthUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewApplicationViewModel @Inject constructor(
-    private val useCase: TeacherAuthUserCase
+    private val useCase: TeacherAuthUserCase, private val selectUserUserCase: SelectUseUserCase
 ) : ViewModel() {
     private val _key = mutableStateOf("")
 
@@ -30,17 +30,25 @@ class ViewApplicationViewModel @Inject constructor(
                 _key.value = event.string
                 fetchData()
             }
+
+            is ViewApplicationEvents.SelectUserAction -> {
+                if (_key.value.isNotBlank())
+                    selectUserUserCase.invoke(_key.value,
+                        event.ui,
+                        action = event.action,
+                        onComplete = {
+                            event.onComplete.invoke(it?.message)
+                            if (it == null)
+                                fetchData()
+                        })
+            }
         }
     }
 
     private fun fetchData() {
         job?.cancel()
-        job = useCase
-            .getAllSubmittedForm
-            .invoke(_key.value)
-            .onEach {
-                _submittedForms.value = it
-            }
-            .launchIn(viewModelScope)
+        job = useCase.getAllSubmittedForm.invoke(_key.value).onEach {
+            _submittedForms.value = it
+        }.launchIn(viewModelScope)
     }
 }

@@ -1,6 +1,7 @@
 package com.atech.core.use_cases
 
 import android.util.Log
+import com.atech.core.model.Action
 import com.atech.core.model.EducationDetails
 import com.atech.core.model.ResearchModel
 import com.atech.core.model.ResearchPublishModel
@@ -32,21 +33,18 @@ class GetAllResearchUseCase @Inject constructor(
 ) {
     operator fun invoke(
         isEmpty: (Boolean) -> Unit
-    ): Flow<List<ResearchModel>> =
-        db.collection("research").snapshots().map {
-            val researchModels = it.toObjects(ResearchModel::class.java)
-            isEmpty.invoke(researchModels.isEmpty())
-            researchModels
-        }
+    ): Flow<List<ResearchModel>> = db.collection("research").snapshots().map {
+        val researchModels = it.toObjects(ResearchModel::class.java)
+        isEmpty.invoke(researchModels.isEmpty())
+        researchModels
+    }
 }
 
 data class LogInUseCase @Inject constructor(
     private val db: FirebaseFirestore, private val hasUserUseCase: HasUserUseCase
 ) {
     suspend operator fun <T : UserModel> invoke(
-        uid: String,
-        model: T,
-        state: (State<String>) -> Unit = { _ -> }
+        uid: String, model: T, state: (State<String>) -> Unit = { _ -> }
     ) {
         try {
             hasUserUseCase.invoke(uid) { state1 ->
@@ -68,12 +66,10 @@ data class LogInUseCase @Inject constructor(
                                     db.collection(CollectionName.USER.value).document(uid).get()
                                         .await().toObject(TeacherUserModel::class.java)
                                         ?.let { userModel ->
-                                            if (userModel.userType != UserType.PROFESSORS.name)
-                                                state.invoke(
-                                                    State.Error(Exception("This mail is linked with student account & can't be used for faculty account"))
-                                                )
-                                            else
-                                                state(State.Success(uid))
+                                            if (userModel.userType != UserType.PROFESSORS.name) state.invoke(
+                                                State.Error(Exception("This mail is linked with student account & can't be used for faculty account"))
+                                            )
+                                            else state(State.Success(uid))
                                         }
                                 }
                             } ?: state(State.Success(uid))
@@ -133,19 +129,16 @@ data class SaveTeacherUserData @Inject constructor(
     private val db: FirebaseFirestore
 ) {
     suspend fun savePassword(
-        uid: String,
-        password: String,
-        onComplete: (Exception?) -> Unit = {}
+        uid: String, password: String, onComplete: (Exception?) -> Unit = {}
     ) {
         try {
             db.collection(
                 CollectionName.USER.value
-            ).document(uid)
-                .update(
-                    mapOf(
-                        "password" to password
-                    )
-                ).await()
+            ).document(uid).update(
+                mapOf(
+                    "password" to password
+                )
+            ).await()
             onComplete(null)
         } catch (e: Exception) {
             Log.e(TAGS.ERROR.name, "savePassword: $e")
@@ -191,9 +184,7 @@ data class SaveStudentUserDetails @Inject constructor(
     }
 
     suspend fun saveSkillData(
-        uid: String,
-        models: List<String>,
-        onComplete: (Exception?) -> Unit = {}
+        uid: String, models: List<String>, onComplete: (Exception?) -> Unit = {}
     ) {
         try {
             db.collection(CollectionName.USER.value).document(uid).update(
@@ -209,10 +200,7 @@ data class SaveStudentUserDetails @Inject constructor(
     }
 
     suspend fun saveFilledForm(
-        uid: String,
-        filledForm: String,
-        key: String,
-        onComplete: (Exception?) -> Unit = {}
+        uid: String, filledForm: String, key: String, onComplete: (Exception?) -> Unit = {}
     ) {
         try {
 
@@ -233,8 +221,7 @@ data class SaveStudentUserDetails @Inject constructor(
 
 
 data class PublishApplicationToDb @Inject constructor(
-    private val db: FirebaseFirestore,
-    private val saveStudentUserDetails: SaveStudentUserDetails
+    private val db: FirebaseFirestore, private val saveStudentUserDetails: SaveStudentUserDetails
 ) {
     suspend operator fun invoke(
         uid: String,
@@ -244,17 +231,10 @@ data class PublishApplicationToDb @Inject constructor(
         onComplete: (Exception?) -> Unit = {}
     ) {
         try {
-            db.collection(CollectionName.RESEARCH.value)
-                .document(key)
-                .collection(CollectionName.SUBMITTED_FORM.value)
-                .document(uid)
-                .set(model)
-                .await()
+            db.collection(CollectionName.RESEARCH.value).document(key)
+                .collection(CollectionName.SUBMITTED_FORM.value).document(uid).set(model).await()
             saveStudentUserDetails.saveFilledForm(
-                uid = uid,
-                key = key,
-                filledForm = filledForm,
-                onComplete = onComplete
+                uid = uid, key = key, filledForm = filledForm, onComplete = onComplete
             )
             onComplete.invoke(null)
         } catch (e: Exception) {
@@ -268,10 +248,8 @@ data class GetAllFaculties @Inject constructor(
     private val db: FirebaseFirestore
 ) {
     operator fun invoke(): Flow<List<TeacherUserModel>> =
-        db.collection(CollectionName.USER.value)
-            .whereEqualTo("userType", UserType.PROFESSORS.name)
-            .whereEqualTo("verified", true)
-            .snapshots()
+        db.collection(CollectionName.USER.value).whereEqualTo("userType", UserType.PROFESSORS.name)
+            .whereEqualTo("verified", true).snapshots()
             .map { it.toObjects(TeacherUserModel::class.java) }
 
 }
@@ -280,9 +258,7 @@ data class GetAllPostedResearch @Inject constructor(
     private val db: FirebaseFirestore
 ) {
     operator fun invoke(ui: String): Flow<List<ResearchModel>> =
-        db.collection(CollectionName.RESEARCH.value)
-            .whereEqualTo("created_by_UID", ui)
-            .snapshots()
+        db.collection(CollectionName.RESEARCH.value).whereEqualTo("created_by_UID", ui).snapshots()
             .map { it.toObjects(ResearchModel::class.java) }
 }
 
@@ -290,31 +266,23 @@ data class SaveResearchData @Inject constructor(
     private val db: FirebaseFirestore
 ) {
     operator fun invoke(
-        uid: String,
-        name: String,
-        model: ResearchModel,
-        onComplete: (Exception?) -> Unit
+        uid: String, name: String, model: ResearchModel, onComplete: (Exception?) -> Unit
     ) {
         val ref = db.collection(CollectionName.RESEARCH.value)
-        val modelWithKey = (if (model.key == null)
-            model.copy(
-                key = ref.document().id
-            )
+        val modelWithKey = (if (model.key == null) model.copy(
+            key = ref.document().id
+        )
         else model).copy(
-            createdByUID = uid,
-            createdBy = name
+            createdByUID = uid, createdBy = name
         )
         requireNotNull(modelWithKey.key) {
             "Key can't be Null"
         }
-        ref.document(modelWithKey.key)
-            .set(modelWithKey)
-            .addOnCompleteListener {
-                onComplete.invoke(null)
-            }
-            .addOnFailureListener {
-                onComplete.invoke(it)
-            }
+        ref.document(modelWithKey.key).set(modelWithKey).addOnCompleteListener {
+            onComplete.invoke(null)
+        }.addOnFailureListener {
+            onComplete.invoke(it)
+        }
     }
 }
 
@@ -323,11 +291,60 @@ data class GetAllSubmittedForm @Inject constructor(
 ) {
     operator fun invoke(
         key: String
-    ): Flow<List<ResearchPublishModel>> =
-        db.collection(CollectionName.RESEARCH.value)
-            .document(key)
-            .collection(CollectionName.SUBMITTED_FORM.value)
-            .snapshots()
-            .map { it.toObjects(ResearchPublishModel::class.java) }
+    ): Flow<List<ResearchPublishModel>> = db.collection(CollectionName.RESEARCH.value).document(key)
+        .collection(CollectionName.SUBMITTED_FORM.value).snapshots()
+        .map { it.toObjects(ResearchPublishModel::class.java) }
 
+}
+
+data class SelectUseUserCase @Inject constructor(
+    private val db: FirebaseFirestore,
+) {
+    operator fun invoke(
+        key: String,
+        uid: String,
+        action: Action = Action.UNSELECTED,
+        onComplete: (Exception?) -> Unit
+    ) {
+        val researchDbReference = db.collection(CollectionName.RESEARCH.value)
+            .document(key)
+        val userDbReference = db.collection(CollectionName.USER.value)
+            .document(uid)
+        researchDbReference.get().addOnSuccessListener { document ->
+            researchDbReference.update(
+                mapOf(
+                    "selected_users" to toJSON(
+                        fromJsonList<String>(
+                            document.getString("selected_users") ?: ""
+                        ).toMutableList()
+                            .apply {
+                                when (action) {
+                                    Action.SELECTED -> add(uid)
+                                    Action.UNSELECTED -> remove(uid)
+                                }
+                            }
+                    )
+                )
+            ).addOnSuccessListener { // Level 2
+                userDbReference.get().addOnSuccessListener { document ->
+                    userDbReference.update(
+                        mapOf(
+                            "selectedForm" to toJSON(fromJsonList<String>(
+                                document.getString("selectedForm") ?: ""
+                            ).toMutableList()
+                                .apply {
+                                    when (action) {
+                                        Action.SELECTED -> add(key)
+                                        Action.UNSELECTED -> remove(key)
+                                    }
+                                })
+                        )
+                    ).addOnSuccessListener {
+                        onComplete.invoke(null)
+                    }.addOnFailureListener(onComplete)
+                }
+            }.addOnFailureListener(onComplete)
+        }.addOnFailureListener(onComplete)
+
+    }
 }

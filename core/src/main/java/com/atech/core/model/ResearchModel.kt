@@ -47,3 +47,8 @@ data class ResearchPublishModel(
     val uid: String? = null,
     val profileImg: String? = null
 )
+
+@Keep
+enum class Action {
+    SELECTED, UNSELECTED
+}

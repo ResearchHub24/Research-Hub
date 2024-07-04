@@ -70,7 +70,7 @@ data class DeleteTag @Inject constructor(
         onError: (String) -> Unit = {},
         onSuccess: () -> Unit
     ) {
-        val uid = auth.currentUser?.uid ?: return
+        auth.currentUser?.uid ?: return
         db.reference.child("tags").child(tagModel.name.uppercase())
             .removeValue()
             .addOnCompleteListener {

@@ -1,6 +1,5 @@
 package com.atech.teacher.ui.view_applications.compose
 
-import androidx.annotation.Keep
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -36,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.atech.core.model.Action
 import com.atech.core.model.QuestionModel
 import com.atech.core.model.ResearchPublishModel
 import com.atech.core.utils.DateFormat
@@ -48,11 +48,6 @@ import com.atech.ui_common.common.ExpandableCard
 import com.atech.ui_common.common.ImageLoaderRounderCorner
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
-
-@Keep
-enum class Action {
-    SELECTED, UNSELECTED
-}
 
 @Composable
 fun ApplicationItem(
