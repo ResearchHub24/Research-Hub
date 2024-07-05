@@ -1,5 +1,6 @@
 package com.atech.core.module
 
+import com.atech.core.BuildConfig
 import com.atech.core.retrofit.faculty.BASE_URL
 import com.atech.core.retrofit.faculty.RetrofitApi
 import com.atech.core.retrofit.fcm.FcmApi
@@ -33,7 +34,7 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideFCMService(): FcmApi =
-        Retrofit.Builder().baseUrl(FcmApi.BASE_URL)
+        Retrofit.Builder().baseUrl(BuildConfig.fcmBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(FcmApi::class.java)

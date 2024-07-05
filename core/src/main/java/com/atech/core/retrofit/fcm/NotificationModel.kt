@@ -2,12 +2,6 @@ package com.atech.core.retrofit.fcm
 
 import androidx.annotation.Keep
 
-
-@Keep
-enum class Type {
-    RESEARCH, FACULTY, SELECTION, ADVERTISEMENT
-}
-
 @Keep
 data class NotificationModel(
     val message: Message
@@ -29,6 +23,5 @@ data class Notification(
 data class Data(
     val key: String,
     val created: String,
-    val type: Type = Type.RESEARCH,
     val image: String? = null
 )
