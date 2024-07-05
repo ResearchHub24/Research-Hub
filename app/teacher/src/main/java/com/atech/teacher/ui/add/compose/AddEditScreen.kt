@@ -24,16 +24,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -59,9 +55,9 @@ import com.atech.ui_common.common.BottomPadding
 import com.atech.ui_common.common.DisplayCard
 import com.atech.ui_common.common.EditText
 import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.common.toast
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -77,18 +73,14 @@ fun AddEditScreen(
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val context = LocalContext.current
     var isConfirmDialogVisible by remember { mutableStateOf(false) }
-    val snackBarHost = remember { SnackbarHostState() }
-    val coroutine = rememberCoroutineScope()
     BackHandler {
         onEvent.invoke(AddEditScreenEvent.ResetValues)
         navHostController.navigateUp()
     }
     MainContainer(modifier = modifier,
         scrollBehavior = topAppBarScrollBehavior,
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHost)
-        },
-        title = if (title.isEmpty()) "Add Research" else "Edit Research",
+        title = if (title.isEmpty()) stringResource(R.string.add_research)
+        else stringResource(R.string.edit_research),
         onNavigationClick = {
             onEvent.invoke(AddEditScreenEvent.ResetValues)
             navHostController.navigateUp()
@@ -104,8 +96,8 @@ fun AddEditScreen(
         ) {
             EditText(modifier = Modifier.fillMaxWidth(),
                 value = title,
-                placeholder = "Title",
-                supportingMessage = "Title of the research",
+                placeholder = stringResource(R.string.title),
+                supportingMessage = stringResource(R.string.title_des),
                 onValueChange = { value ->
                     onEvent.invoke(AddEditScreenEvent.OnTitleChange(value))
                 },
@@ -179,7 +171,7 @@ fun AddEditScreen(
                 modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)
             )
             ApplyButton(
-                "Add Or remove Question"/*stringResource(R.string.add_or_remove_question)*/,
+                stringResource(R.string.add_or_remove_question),
                 horizontalPadding = MaterialTheme.spacing.default
             ) {
                 navHostController.navigate(
@@ -187,8 +179,7 @@ fun AddEditScreen(
                 )
             }
             val questions = fromJsonList<String>(question)
-            if (questions.isNotEmpty())
-                Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
+            if (questions.isNotEmpty()) Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
             questions.forEach {
                 QuestionItem(
                     question = it, enable = false
@@ -196,13 +187,11 @@ fun AddEditScreen(
             }
             Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
             AnimatedVisibility(
-                title.isEmpty() || description.isEmpty()
-                        || tags.isEmpty() || question.isEmpty()
+                title.isEmpty() || description.isEmpty() || tags.isEmpty() || question.isEmpty()
             ) {
                 Column {
                     DisplayCard(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         border = BorderStroke(
                             width = CardDefaults.outlinedCardBorder().width,
                             color = MaterialTheme.colorScheme.inversePrimary
@@ -236,9 +225,8 @@ fun AddEditScreen(
                 }
             }
             AnimatedVisibility(isConfirmDialogVisible) {
-                AppAlertDialog(
-                    dialogTitle = "Confirmation",
-                    dialogText = "Save changes and send push notifications to all users?",
+                AppAlertDialog(dialogTitle = stringResource(R.string.confirmation),
+                    dialogText = stringResource(R.string.save_changes),
                     icon = Icons.Outlined.PostAdd,
                     onDismissRequest = {
                         isConfirmDialogVisible = false
@@ -246,39 +234,17 @@ fun AddEditScreen(
                     onConfirmation = {
                         onEvent(AddEditScreenEvent.SaveResearch { message ->
                             if (message != null) {
-                                coroutine.launch {
-                                    snackBarHost.showSnackbar(
-                                        message = message,
-                                        duration = SnackbarDuration.Long
-                                    )
-                                }
+                                toast(context, message)
                                 return@SaveResearch
                             }
-                            onEvent.invoke(
-                                AddEditScreenEvent.SendPushNotification { error ->
-                                    coroutine.launch {
-                                        if (error != null) {
-                                            snackBarHost.showSnackbar(
-                                                message = error.message ?: "Error",
-                                                duration = SnackbarDuration.Long
-                                            )
-                                            return@launch
-                                        }
-                                        snackBarHost.showSnackbar(
-                                            message = "Saved & Notification Send !!",
-                                            duration = SnackbarDuration.Long
-                                        )
-                                        isConfirmDialogVisible = false
-                                        navHostController.navigateUp()
-                                    }
-                                }
-                            )
+                            toast(context, context.getString(R.string.saved))
+                            isConfirmDialogVisible = false
+                            navHostController.navigateUp()
                         })
-                    }
-                )
+                    })
             }
             ApplyButton(
-                text = "Save",/*stringResource(R.string.save)*/
+                text = stringResource(R.string.save),
                 enable = title.isNotEmpty() && description.isNotEmpty() && tags.isNotBlank() && question.isNotBlank(),
                 horizontalPadding = MaterialTheme.spacing.default
             ) {

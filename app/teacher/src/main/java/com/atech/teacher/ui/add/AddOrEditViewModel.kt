@@ -4,13 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.atech.core.model.TagModel
-import com.atech.core.retrofit.fcm.Data
-import com.atech.core.retrofit.fcm.Message
-import com.atech.core.retrofit.fcm.Notification
-import com.atech.core.retrofit.fcm.NotificationModel
-import com.atech.core.use_cases.FcmUseCases
 import com.atech.core.use_cases.TeacherAuthUserCase
-import com.atech.core.utils.NotificationTopics
 import com.atech.core.utils.fromJsonList
 import com.atech.core.utils.toJSON
 import com.atech.teacher.navigation.AddEditScreenArgs
@@ -22,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddOrEditViewModel @Inject constructor(
-    private val useCases: TeacherAuthUserCase, private val fcmUseCases: FcmUseCases
+    private val useCases: TeacherAuthUserCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(AddEditScreenArgs(key = null).replaceNA())
@@ -73,13 +67,18 @@ class AddOrEditViewModel @Inject constructor(
             }
 
             is AddEditScreenEvent.SaveResearch -> {
+                val updatedModel = _state.value.copy(
+                    title = title.value,
+                    description = description.value,
+                    tags = tags.value,
+                    questions = question.value
+                )
+                if (updatedModel == state.value) {
+                    event.onComplete.invoke(null)
+                    return
+                }
                 useCases.saveResearch.invoke(
-                    _state.value.copy(
-                        title = title.value,
-                        description = description.value,
-                        tags = tags.value,
-                        questions = question.value
-                    ).toResearchModel()
+                    updatedModel.toResearchModel()
                 ) {
                     event.onComplete(it?.message)
                 }
@@ -93,25 +92,25 @@ class AddOrEditViewModel @Inject constructor(
                 _question.value = ""
             }
 
-            is AddEditScreenEvent.SendPushNotification -> {
-                fcmUseCases.sendResearchPublishNotification(
-                    model = NotificationModel(
-                        message = Message(
-                            topic = NotificationTopics.ResearchPublish.topic,
-                            notification = Notification(
-                                title = title.value,
-                                body =
-                                description
-                                    .value[if (description.value.length >= 20) 20 else description.value.length].toString()
-                            ),
-                            data = Data(
-                                key = state.value.key!!,
-                                created = state.value.created.toString(),
-                            )
-                        )
-                    ), event.onSuccess
-                )
-            }
+//            is AddEditScreenEvent.SendPushNotification -> {
+//                fcmUseCases.sendResearchPublishNotification(
+//                    model = NotificationModel(
+//                        message = Message(
+//                            topic = NotificationTopics.ResearchPublish.topic,
+//                            notification = Notification(
+//                                title = title.value,
+//                                body =
+//                                description
+//                                    .value[if (description.value.length >= 20) 20 else description.value.length].toString()
+//                            ),
+//                            data = Data(
+//                                key = state.value.key!!,
+//                                created = state.value.created.toString(),
+//                            )
+//                        )
+//                    ), event.onSuccess
+//                )
+//            }
         }
     }
 

@@ -47,7 +47,7 @@
     <string name="require">Require *</string>
     <string name="skill_added">Skill Added !!</string>
     <string name="already_apply">Already Applied</string>
-    <string name="view_all_applications">View all applications</string>
+    <string name="view_all_applications">All applications</string>
     <string name="log_out">Log Out</string>
     <string name="please_login_to_view_your_resume">Please login to view your resume</string>
     <string name="login_to_apply">Login to apply</string>
@@ -64,4 +64,12 @@
     <string name="view_markdown">View Markdown</string>
     <string name="question">Question</string>
     <string name="add_or_remove_question">Add/Remove Question</string>
+    <string name="notify">Notify</string>
+    <string name="add_research">Add Research</string>
+    <string name="edit_research">Edit Research</string>
+    <string name="title">Title</string>
+    <string name="title_des">Title of the research</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="save_changes">Save changes</string>
+    <string name="saved">Save changes</string>
 </resources>

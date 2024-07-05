@@ -1,7 +1,6 @@
 package com.atech.ui_common.common
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Notes
@@ -226,7 +226,8 @@ fun ResearchTeacherItem(
     modifier: Modifier = Modifier,
     model: ResearchModel,
     onClick: () -> Unit = {},
-    onViewAllApplication : () -> Unit = {}
+    onNotifyClick: () -> Unit = {},
+    onViewAllApplication: () -> Unit = {}
 ) {
     Surface(
         modifier = Modifier
@@ -355,12 +356,23 @@ fun ResearchTeacherItem(
                         )
                     }
                 }
-                Box(
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(
+                        onClick = onNotifyClick,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Celebration,
+                            contentDescription = null,
+                        )
+                        Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
+                        Text(text = stringResource(R.string.notify))
+                    }
+                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+                    TextButton(
                         onClick = onViewAllApplication,
-                        modifier = Modifier.align(Alignment.BottomEnd)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.PendingActions,
