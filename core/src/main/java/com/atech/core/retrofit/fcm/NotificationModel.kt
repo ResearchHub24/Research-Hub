@@ -10,8 +10,9 @@ data class NotificationModel(
 @Keep
 data class Message(
     val topic: String,
+    val to: String? = null,
     val notification: Notification,
-    val data: Data? = null
+    val data: Data
 )
 
 @Keep

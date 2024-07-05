@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchModel
 import com.atech.core.utils.isValidPassword
 import com.atech.teacher.navigation.AddEditScreenArgs
+import com.atech.teacher.navigation.SendNotificationScreenArgs
 import com.atech.teacher.navigation.ViewApplicationsArgs
 import com.atech.teacher.navigation.fromResearchModel
 import com.atech.teacher.ui.research.VerifyScreenEvents
@@ -156,6 +157,15 @@ fun ResearchScreen(
                             ViewApplicationsArgs(
                                 key = it.key ?: return@ResearchTeacherItem,
                                 selectedUser = it.selectedUsers ?: ""
+                            )
+                        )
+                    },
+                    onNotifyClick = {
+                        navHostController.navigate(
+                            SendNotificationScreenArgs(
+                                key = it.key ?: return@ResearchTeacherItem,
+                                title = it.title ?: "",
+                                created = it.created ?: -1L
                             )
                         )
                     }

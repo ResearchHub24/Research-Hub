@@ -91,26 +91,6 @@ class AddOrEditViewModel @Inject constructor(
                 _tags.value = ""
                 _question.value = ""
             }
-
-//            is AddEditScreenEvent.SendPushNotification -> {
-//                fcmUseCases.sendResearchPublishNotification(
-//                    model = NotificationModel(
-//                        message = Message(
-//                            topic = NotificationTopics.ResearchPublish.topic,
-//                            notification = Notification(
-//                                title = title.value,
-//                                body =
-//                                description
-//                                    .value[if (description.value.length >= 20) 20 else description.value.length].toString()
-//                            ),
-//                            data = Data(
-//                                key = state.value.key!!,
-//                                created = state.value.created.toString(),
-//                            )
-//                        )
-//                    ), event.onSuccess
-//                )
-//            }
         }
     }
 

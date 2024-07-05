@@ -15,6 +15,8 @@ import com.atech.teacher.ui.add.compose.AddQuestionScreen
 import com.atech.teacher.ui.add.compose.ViewMarkdown
 import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
+import com.atech.teacher.ui.send.SendNotificationViewModel
+import com.atech.teacher.ui.send.compose.SendNotificationScreen
 import com.atech.teacher.ui.student_profile.StudentProfileViewModel
 import com.atech.teacher.ui.student_profile.compose.StudentProfileScreen
 import com.atech.teacher.ui.tag.TagViewModel
@@ -60,6 +62,13 @@ data class ViewApplicationsArgs(
 @Serializable
 data class StudentProfileArgs(
     val uid: String
+)
+
+@Serializable
+data class SendNotificationScreenArgs(
+    val key: String,
+    val title: String,
+    val created: Long
 )
 
 infix fun AddEditScreenArgs.areEqual(other: AddEditScreenArgs) =
@@ -195,6 +204,17 @@ fun NavGraphBuilder.researchScreenGraph(
                 navController = navHostController,
                 setUID = viewModel::setUId,
                 model = userModel
+            )
+        }
+        animatedComposableEnh<SendNotificationScreenArgs> { entry ->
+            val viewModel: SendNotificationViewModel = hiltViewModel()
+            val args = entry.toRoute<SendNotificationScreenArgs>()
+            val title by viewModel.title
+            SendNotificationScreen(
+                args = args,
+                navController = navHostController,
+                title = title,
+                onEvent = viewModel::onEvent
             )
         }
     }
