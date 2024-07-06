@@ -8,6 +8,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     id("com.google.firebase.crashlytics")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -69,16 +70,16 @@ android {
         compose = true
         buildConfig = true
     }
-//    composeCompiler {
-//        enableStrongSkippingMode = true
-//
-//        reportsDestination = layout.buildDirectory.dir("compose_compiler")
-//        stabilityConfigurationFile =
-//            rootProject.layout.projectDirectory.file("stability_config.conf")
-//    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+    composeCompiler {
+        enableStrongSkippingMode = true
+
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+        stabilityConfigurationFile =
+            rootProject.layout.projectDirectory.file("stability_config.conf")
     }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.14"
+//    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
