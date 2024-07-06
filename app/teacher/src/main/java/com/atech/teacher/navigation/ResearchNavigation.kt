@@ -55,8 +55,7 @@ data class AddEditScreenArgs(
 
 @Serializable
 data class ViewApplicationsArgs(
-    val key: String,
-    val selectedUser: String = ""
+    val key: String, val selectedUser: String = ""
 )
 
 @Serializable
@@ -66,9 +65,7 @@ data class StudentProfileArgs(
 
 @Serializable
 data class SendNotificationScreenArgs(
-    val key: String,
-    val title: String,
-    val created: Long
+    val key: String, val title: String, val created: Long
 )
 
 infix fun AddEditScreenArgs.areEqual(other: AddEditScreenArgs) =
@@ -154,8 +151,8 @@ fun NavGraphBuilder.researchScreenGraph(
             val addOrEditViewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
             val tags by viewModel.tags
             val errorMessage by viewModel.errorMessage
-            val addEditScreenState by addOrEditViewModel.state
-            val selectedTags = addOrEditViewModel.getTagsFromString(addEditScreenState.tags)
+            val addEditScreenState by addOrEditViewModel.tags
+            val selectedTags = addOrEditViewModel.getTagsFromString(addEditScreenState)
             TagScreen(
                 navController = navHostController,
                 tags = tags,

@@ -1,5 +1,6 @@
 package com.atech.teacher.ui.add.compose
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -186,8 +187,17 @@ fun AddEditScreen(
                 )
             }
             Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
+            Log.e(
+                "AAA", "${
+                    fromJsonList<TagModel>(
+                        tags
+                    ).isEmpty()
+                }"
+            )
             AnimatedVisibility(
-                title.isEmpty() || description.isEmpty() || tags.isEmpty() || question.isEmpty()
+                title.isEmpty() || description.isEmpty() || tags.isEmpty() || question.isEmpty() || fromJsonList<TagModel>(
+                    tags
+                ).isEmpty() || fromJsonList<String>(question).isEmpty()
             ) {
                 Column {
                     DisplayCard(
@@ -209,8 +219,12 @@ fun AddEditScreen(
                             }
                             if (title.isEmpty()) append("❌ Title\n") else append("✅ Title\n")
                             if (description.isEmpty()) append("❌ Description\n") else append("✅ Description\n")
-                            if (tags.isEmpty()) append("❌ Tags\n") else append("✅ Tags\n")
-                            if (question.isEmpty()) append("❌ Questions") else append("✅ Questions")
+                            if (tags.isEmpty() || fromJsonList<TagModel>(tags).isEmpty()) append("❌ Tags\n") else append(
+                                "✅ Tags\n"
+                            )
+                            if (question.isEmpty() || fromJsonList<String>(question).isEmpty()) append(
+                                "❌ Questions"
+                            ) else append("✅ Questions")
                         }
                         Text(
                             text = warningMessage,
