@@ -11,6 +11,7 @@ import com.atech.core.utils.coreCheckIsAdmin
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -54,11 +55,10 @@ data class GetUserDetailsUseFromAuthCase @Inject constructor(
 data class LogInWithGoogleStudent @Inject constructor(
     private val auth: FirebaseAuth,
     private val logInUseCase: LogInUseCase,
-    private val hasUserData: HasUserUseCase,
+    private val setToken: SetToken
 ) {
     suspend operator fun invoke(
         uid: String,
-        fcmToken: String,
         state: (State<String>) -> Unit = { _ -> }
     ) {
         try {
@@ -81,7 +81,6 @@ data class LogInWithGoogleStudent @Inject constructor(
                         photoUrl = userPhoto?.toString() ?: "",
                         userType = UserType.PROFESSORS.name,
                         verified = false,
-                        token = fcmToken
                     )
                 } ?: StudentUserModel(
                     uid = userId,
@@ -89,9 +88,23 @@ data class LogInWithGoogleStudent @Inject constructor(
                     name = userName ?: "",
                     photoUrl = userPhoto?.toString() ?: "",
                     userType = UserType.STUDENTS.name,
-                    token = fcmToken
                 )
-                logInUseCase.invoke(userId, studentUserModel, state)
+                logInUseCase.invoke(userId, studentUserModel) { state1 ->
+                    if (state1 is State.Error)
+                        state(state1)
+                    if (state1 is State.Success) {
+                        runBlocking {
+                            setToken.invoke(
+                                uid = state1.data
+                            ) { error ->
+                                if (error != null)
+                                    state.invoke(State.Error(error))
+                                else
+                                    state.invoke(state1)
+                            }
+                        }
+                    }
+                }
             }
         } catch (e: Exception) {
             state(State.Error(e))

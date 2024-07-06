@@ -8,6 +8,7 @@ enum class CollectionName(
     USER("user_database"),
     RESEARCH("research"),
     SUBMITTED_FORM("submitted_form"),
+    FCM_TOKEN("fcmTokens")
 }
 
 
@@ -15,6 +16,7 @@ const val SHARED_PREF_NAME = "ResearchHubPrefs"
 
 enum class PrefKeys(val value: String) {
     IS_LOGIN_SKIP("is_login_skip"),
+    DEVICE_TOKEN("deviceToken")
 }
 
 enum class RemoteConfigKeys(val value: String) {
@@ -22,7 +24,8 @@ enum class RemoteConfigKeys(val value: String) {
 }
 
 enum class TAGS {
-    ERROR
+    ERROR,
+    INFO
 }
 
 enum class FlavourDimensions(val value: String) {

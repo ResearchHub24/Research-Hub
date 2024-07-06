@@ -1,5 +1,6 @@
 package com.atech.core.use_cases
 
+import android.content.SharedPreferences
 import android.util.Log
 import com.atech.core.model.Action
 import com.atech.core.model.EducationDetails
@@ -10,13 +11,16 @@ import com.atech.core.model.TeacherUserModel
 import com.atech.core.model.UserModel
 import com.atech.core.model.UserType
 import com.atech.core.utils.CollectionName
+import com.atech.core.utils.PrefKeys
 import com.atech.core.utils.State
 import com.atech.core.utils.TAGS
 import com.atech.core.utils.coreCheckIsAdmin
 import com.atech.core.utils.fromJsonList
 import com.atech.core.utils.toJSON
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -346,5 +350,33 @@ data class SelectUseUserCase @Inject constructor(
             }.addOnFailureListener(onComplete)
         }.addOnFailureListener(onComplete)
 
+    }
+}
+
+data class SetToken @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val messaging: FirebaseMessaging,
+    private val pref: SharedPreferences
+) {
+    suspend operator fun invoke(
+        uid: String,
+        localToken: String? = null,
+        onComplete: (Exception?) -> Unit
+    ) {
+        try {
+            val token = localToken ?: messaging.token.await()
+            pref.edit()
+                .putString(PrefKeys.DEVICE_TOKEN.value, token)
+                .apply()
+            val deviceToken = hashMapOf(
+                "token" to token,
+                "timestamp" to FieldValue.serverTimestamp(),
+            )
+            db.collection(CollectionName.FCM_TOKEN.value)
+                .document(uid).set(deviceToken).await()
+            onComplete(null)
+        } catch (e: Exception) {
+            onComplete(e)
+        }
     }
 }

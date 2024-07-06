@@ -8,6 +8,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import dagger.Module
@@ -45,5 +47,9 @@ object FirebaseModule {
     fun provideUserIsLogIn(
         auth: FirebaseAuth
     ): Boolean = auth.currentUser != null
+
+    @Provides
+    @Singleton
+    fun provideMessage(): FirebaseMessaging = Firebase.messaging
 
 }
