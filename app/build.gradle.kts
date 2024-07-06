@@ -91,6 +91,7 @@ dependencies {
 
     implementation(project(":core"))
     implementation(project(":ui-common"))
+    implementation(libs.androidx.work.runtime.ktx)
     "studentImplementation"(project(mapOf("path" to ":app:student")))
     "teacherImplementation"(project(mapOf("path" to ":app:teacher")))
 //    implementation(project(mapOf("path" to ":app:student")))
@@ -112,7 +113,10 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
     implementation(libs.androidx.hilt.navigation.fragment)
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
 
     implementation(libs.androidx.material.icons.extended)

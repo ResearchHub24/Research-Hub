@@ -7,7 +7,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.atech.core.use_cases.AuthUseCases
-import com.atech.core.use_cases.SetToken
+import com.atech.core.use_cases.SetTokenUseCase
 import com.atech.core.utils.AiyuScope
 import com.atech.core.utils.ResearchNotification
 import com.atech.core.utils.TAGS
@@ -27,7 +27,7 @@ class NotificationService : FirebaseMessagingService() {
     lateinit var auth: AuthUseCases
 
     @Inject
-    lateinit var setToken: SetToken
+    lateinit var setTokenUseCase: SetTokenUseCase
 
     @AiyuScope
     @Inject
@@ -60,7 +60,7 @@ class NotificationService : FirebaseMessagingService() {
         val uId = auth.isUserLoggedInUseCase.invoke()
         if (uId != null) {
             scope.launch {
-                setToken.invoke(uId) {
+                setTokenUseCase.invoke(uId) {
                     if (it != null) {
                         Log.e(TAGS.ERROR.name, "onNewToken: $it")
                         return@invoke

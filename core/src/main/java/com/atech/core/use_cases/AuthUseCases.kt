@@ -55,7 +55,7 @@ data class GetUserDetailsUseFromAuthCase @Inject constructor(
 data class LogInWithGoogleStudent @Inject constructor(
     private val auth: FirebaseAuth,
     private val logInUseCase: LogInUseCase,
-    private val setToken: SetToken
+    private val setTokenUseCase: SetTokenUseCase
 ) {
     suspend operator fun invoke(
         uid: String,
@@ -94,7 +94,7 @@ data class LogInWithGoogleStudent @Inject constructor(
                         state(state1)
                     if (state1 is State.Success) {
                         runBlocking {
-                            setToken.invoke(
+                            setTokenUseCase.invoke(
                                 uid = state1.data
                             ) { error ->
                                 if (error != null)

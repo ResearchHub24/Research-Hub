@@ -310,24 +310,19 @@ data class SelectUseUserCase @Inject constructor(
         action: Action = Action.UNSELECTED,
         onComplete: (Exception?) -> Unit
     ) {
-        val researchDbReference = db.collection(CollectionName.RESEARCH.value)
-            .document(key)
-        val userDbReference = db.collection(CollectionName.USER.value)
-            .document(uid)
+        val researchDbReference = db.collection(CollectionName.RESEARCH.value).document(key)
+        val userDbReference = db.collection(CollectionName.USER.value).document(uid)
         researchDbReference.get().addOnSuccessListener { document ->
             researchDbReference.update(
                 mapOf(
-                    "selected_users" to toJSON(
-                        fromJsonList<String>(
-                            document.getString("selected_users") ?: ""
-                        ).toMutableList()
-                            .apply {
-                                when (action) {
-                                    Action.SELECTED -> add(uid)
-                                    Action.UNSELECTED -> remove(uid)
-                                }
-                            }
-                    )
+                    "selected_users" to toJSON(fromJsonList<String>(
+                        document.getString("selected_users") ?: ""
+                    ).toMutableList().apply {
+                        when (action) {
+                            Action.SELECTED -> add(uid)
+                            Action.UNSELECTED -> remove(uid)
+                        }
+                    })
                 )
             ).addOnSuccessListener { // Level 2
                 userDbReference.get().addOnSuccessListener { document ->
@@ -335,13 +330,12 @@ data class SelectUseUserCase @Inject constructor(
                         mapOf(
                             "selectedForm" to toJSON(fromJsonList<String>(
                                 document.getString("selectedForm") ?: ""
-                            ).toMutableList()
-                                .apply {
-                                    when (action) {
-                                        Action.SELECTED -> add(key)
-                                        Action.UNSELECTED -> remove(key)
-                                    }
-                                })
+                            ).toMutableList().apply {
+                                when (action) {
+                                    Action.SELECTED -> add(key)
+                                    Action.UNSELECTED -> remove(key)
+                                }
+                            })
                         )
                     ).addOnSuccessListener {
                         onComplete.invoke(null)
@@ -353,30 +347,54 @@ data class SelectUseUserCase @Inject constructor(
     }
 }
 
-data class SetToken @Inject constructor(
+data class SetTokenUseCase @Inject constructor(
     private val db: FirebaseFirestore,
     private val messaging: FirebaseMessaging,
     private val pref: SharedPreferences
 ) {
     suspend operator fun invoke(
-        uid: String,
-        localToken: String? = null,
-        onComplete: (Exception?) -> Unit
+        uid: String, localToken: String? = null, onComplete: (Exception?) -> Unit
     ) {
         try {
             val token = localToken ?: messaging.token.await()
-            pref.edit()
-                .putString(PrefKeys.DEVICE_TOKEN.value, token)
-                .apply()
+            pref.edit().putString(PrefKeys.DEVICE_TOKEN.value, token).apply()
             val deviceToken = hashMapOf(
                 "token" to token,
                 "timestamp" to FieldValue.serverTimestamp(),
             )
-            db.collection(CollectionName.FCM_TOKEN.value)
-                .document(uid).set(deviceToken).await()
+            db.collection(CollectionName.FCM_TOKEN.value).document(uid).set(deviceToken).await()
             onComplete(null)
         } catch (e: Exception) {
             onComplete(e)
         }
+    }
+}
+
+class NoUserLogInException(override val message: String) : Exception(message)
+
+data class SetTokenWorkManagerUseCase @Inject constructor(
+    private val auth: IsUserLoggedInUseCase,
+    private val db: FirebaseFirestore,
+    private val messaging: FirebaseMessaging,
+    private val pref: SharedPreferences
+) {
+    suspend operator fun <T> invoke(
+        onComplete: (Exception?) -> T
+    ): T = try {
+        val uid = auth.invoke()
+        if (uid == null) {
+            onComplete.invoke(NoUserLogInException("User is"))
+        } else {
+            val token = messaging.token.await()
+            pref.edit().putString(PrefKeys.DEVICE_TOKEN.value, token).apply()
+            val deviceToken = hashMapOf(
+                "token" to token,
+                "timestamp" to FieldValue.serverTimestamp(),
+            )
+            db.collection(CollectionName.FCM_TOKEN.value).document(uid).set(deviceToken).await()
+            onComplete(null)
+        }
+    } catch (e: Exception) {
+        onComplete(e)
     }
 }
