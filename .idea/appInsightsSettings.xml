@@ -23,8 +23,8 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.atech.research" />
-                  <option name="mobileSdkAppId" value="1:369302165748:android:5e38211ac241c5cb3666a1" />
+                  <option name="appId" value="com.atech.research.student" />
+                  <option name="mobileSdkAppId" value="1:369302165748:android:6b0b46901ae51e723666a1" />
                   <option name="projectId" value="researchhub-21392" />
                   <option name="projectNumber" value="369302165748" />
                 </ConnectionSetting>

@@ -1,5 +1,6 @@
 package com.atech.core.room.model
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.atech.core.retrofit.faculty.FacultyModel
@@ -7,6 +8,7 @@ import com.atech.core.utils.EntityMapper
 import javax.inject.Inject
 
 @Entity(tableName = "faculty_table")
+@Keep
 data class FacultyRoomModel(
     val name: String,
     @PrimaryKey(autoGenerate = false) val email: String,

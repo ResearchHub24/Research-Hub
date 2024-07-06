@@ -8,18 +8,12 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     id("com.google.firebase.crashlytics")
-    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "com.atech.research"
     compileSdk = 34
 
-    packaging.resources {
-        excludes.add("META-INF/AL2.0")
-        excludes.add("META-INF/LGPL2.1")
-        excludes.add("META-INF/DEPENDENCIES")
-    }
     defaultConfig {
         applicationId = "com.atech.research"
         minSdk = 24
@@ -45,10 +39,12 @@ android {
         create("student") {
             dimension = "role"
             versionNameSuffix = "-student"
+            applicationIdSuffix = ".student"
         }
         create("teacher") {
             dimension = "role"
             versionNameSuffix = "-teacher"
+            applicationIdSuffix = ".teacher"
         }
     }
 
@@ -73,12 +69,15 @@ android {
         compose = true
         buildConfig = true
     }
-    composeCompiler {
-        enableStrongSkippingMode = true
-
-        reportsDestination = layout.buildDirectory.dir("compose_compiler")
-        stabilityConfigurationFile =
-            rootProject.layout.projectDirectory.file("stability_config.conf")
+//    composeCompiler {
+//        enableStrongSkippingMode = true
+//
+//        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//        stabilityConfigurationFile =
+//            rootProject.layout.projectDirectory.file("stability_config.conf")
+//    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {

@@ -4,18 +4,13 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp")
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.compose.compiler)
+//    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "com.atech.teacher"
     compileSdk = 34
 
-    packaging.resources {
-        excludes.add("META-INF/AL2.0")
-        excludes.add("META-INF/LGPL2.1")
-        excludes.add("META-INF/DEPENDENCIES")
-    }
     defaultConfig {
         minSdk = 24
 
@@ -53,11 +48,14 @@ android {
     buildFeatures {
         compose = true
     }
-    composeCompiler {
-        enableStrongSkippingMode = true
-        reportsDestination = layout.buildDirectory.dir("compose_compiler")
-        stabilityConfigurationFile =
-            rootProject.layout.projectDirectory.file("stability_config.conf")
+//    composeCompiler {
+//        enableStrongSkippingMode = true
+//        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//        stabilityConfigurationFile =
+//            rootProject.layout.projectDirectory.file("stability_config.conf")
+//    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 }
 
