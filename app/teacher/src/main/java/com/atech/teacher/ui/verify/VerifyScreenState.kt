@@ -1,4 +1,4 @@
-package com.atech.teacher.ui.research
+package com.atech.teacher.ui.verify
 
 import com.atech.core.model.TeacherUserModel
 

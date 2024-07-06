@@ -124,12 +124,10 @@ fun NavGraphBuilder.researchScreenGraph(
         ) { entry ->
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navHostController)
             val research by viewModel.research.collectAsStateWithLifecycle(emptyList())
-            val verifyScreenState by viewModel.verifyScreenState
+
             ResearchScreen(
                 navHostController = navHostController,
                 state = research,
-                verifyScreen = verifyScreenState,
-                onVerifyScreenEvent = viewModel::onVerifyScreenEvent
             )
         }
         animatedComposableEnh<AddEditScreenArgs> { entry ->

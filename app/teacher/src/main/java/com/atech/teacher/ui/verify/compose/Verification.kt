@@ -1,4 +1,4 @@
-package com.atech.teacher.ui.research.compose
+package com.atech.teacher.ui.verify.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
