@@ -1,7 +1,6 @@
 package com.atech.research.notification
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
@@ -14,7 +13,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlin.random.Random
 
-@SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class NotificationService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
@@ -38,4 +36,7 @@ class NotificationService : FirebaseMessagingService() {
         managerCompat.notify(key, builder.build())
     }
 
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+    }
 }

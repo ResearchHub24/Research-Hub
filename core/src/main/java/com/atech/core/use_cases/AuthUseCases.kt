@@ -57,10 +57,12 @@ data class LogInWithGoogleStudent @Inject constructor(
     private val hasUserData: HasUserUseCase,
 ) {
     suspend operator fun invoke(
-        token: String, state: (State<String>) -> Unit = { _ -> }
+        uid: String,
+        fcmToken: String,
+        state: (State<String>) -> Unit = { _ -> }
     ) {
         try {
-            val credential = GoogleAuthProvider.getCredential(token, null)
+            val credential = GoogleAuthProvider.getCredential(uid, null)
             val task = auth.signInWithCredential(credential).await()
             val user = task.user
             if (user == null) {
@@ -78,14 +80,16 @@ data class LogInWithGoogleStudent @Inject constructor(
                         name = userName ?: "",
                         photoUrl = userPhoto?.toString() ?: "",
                         userType = UserType.PROFESSORS.name,
-                        verified = false
+                        verified = false,
+                        token = fcmToken
                     )
                 } ?: StudentUserModel(
                     uid = userId,
                     email = userEmail ?: "",
                     name = userName ?: "",
                     photoUrl = userPhoto?.toString() ?: "",
-                    userType = UserType.STUDENTS.name
+                    userType = UserType.STUDENTS.name,
+                    token = fcmToken
                 )
                 logInUseCase.invoke(userId, studentUserModel, state)
             }
@@ -152,7 +156,7 @@ data class TeacherAuthUserCase @Inject constructor(
     val saveData: SaveTeacherData,
     val getAllPosted: GetAllPosted,
     val saveResearch: SaveResearch,
-    val getAllSubmittedForm : GetAllSubmittedForm
+    val getAllSubmittedForm: GetAllSubmittedForm
 )
 
 data class GetAllPosted @Inject constructor(
