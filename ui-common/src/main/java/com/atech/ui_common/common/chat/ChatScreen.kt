@@ -41,6 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.MessageModel
 import com.atech.core.utils.getDate
+import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
@@ -51,7 +52,9 @@ fun ChatScreen(
     modifier: Modifier = Modifier,
     title: String = "",
     uid: String = "",
+    canSendMessage: Boolean = true,
     navController: NavController = rememberNavController(),
+    onSendClick: (String) -> Unit = {},
     chats: List<MessageModel> = emptyList()
 ) {
     MainContainer(
@@ -62,9 +65,19 @@ fun ChatScreen(
             navController.navigateUp()
         },
         bottomBar = {
-            ChatBox()
+            ChatBox(
+                canSendMessage = canSendMessage,
+                onSendClick = onSendClick
+            )
         }
     ) { paddingValues ->
+        if(chats.isEmpty()){
+            GlobalEmptyScreen(
+                modifier = Modifier.padding(paddingValues),
+                title = ""
+            )
+            return@MainContainer
+        }
         LazyColumn(
             reverseLayout = true,
             modifier = Modifier
@@ -91,6 +104,7 @@ val drawerColor: Color
 
 @Composable
 fun ChatBox(
+    canSendMessage: Boolean = true,
     onSendClick: (String) -> Unit = {}
 ) {
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
@@ -116,17 +130,21 @@ fun ChatBox(
             )
         )
         IconButton(
-            onClick = { onSendClick.invoke(chatBoxValue.text) },
+            onClick = {
+                onSendClick.invoke(chatBoxValue.text)
+                chatBoxValue = TextFieldValue("")
+            },
             Modifier
                 .padding(start = MaterialTheme.spacing.small)
                 .align(Alignment.CenterVertically)
                 .fillMaxWidth()
                 .weight(0.1f),
-            enabled = chatBoxValue.text.isNotBlank()
+            enabled = chatBoxValue.text.isNotBlank() && canSendMessage
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.Send,
-                contentDescription = null
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }

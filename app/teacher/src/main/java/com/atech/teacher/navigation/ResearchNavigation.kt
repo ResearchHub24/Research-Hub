@@ -1,6 +1,10 @@
 package com.atech.teacher.navigation
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -27,6 +31,7 @@ import com.atech.teacher.ui.view_applications.ViewApplicationViewModel
 import com.atech.teacher.ui.view_applications.compose.ViewApplicationScreen
 import com.atech.ui_common.common.chat.AllChatScreen
 import com.atech.ui_common.common.chat.ChatScreen
+import com.atech.ui_common.common.toast
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.animatedComposableEnh
 import com.atech.ui_common.utils.fadeThroughComposable
@@ -248,11 +253,29 @@ fun NavGraphBuilder.researchScreenGraph(
             val args = entry.toRoute<ChatScreenArgs>()
             val viewModel: ChatViewModel = entry.sharedViewModel(navHostController)
             val chats by viewModel.getAllMessage(args.path).collectAsStateWithLifecycle(emptyList())
+            var canSendMessage by rememberSaveable { mutableStateOf(true) }
+            val context = LocalContext.current
             ChatScreen(
                 title = args.receiverName,
                 chats = chats.sortedByDescending { it.created },
                 uid = args.senderUid,
-                navController = navHostController
+                navController = navHostController,
+                canSendMessage = canSendMessage,
+                onSendClick = { message ->
+                    canSendMessage = false
+                    viewModel.sendMessage(
+                        receiverName = args.receiverName,
+                        receiverUid = args.receiverUid,
+                        path = args.path,
+                        message = message
+                    ) {
+                        canSendMessage = true
+                        if (it != null) {
+                            toast(context, it.localizedMessage ?: "Some Error")
+                            return@sendMessage
+                        }
+                    }
+                }
             )
         }
     }
