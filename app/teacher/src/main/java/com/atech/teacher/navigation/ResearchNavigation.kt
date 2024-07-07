@@ -13,6 +13,8 @@ import com.atech.teacher.ui.add.AddOrEditViewModel
 import com.atech.teacher.ui.add.compose.AddEditScreen
 import com.atech.teacher.ui.add.compose.AddQuestionScreen
 import com.atech.teacher.ui.add.compose.ViewMarkdown
+import com.atech.teacher.ui.chat.AllChatViewModel
+import com.atech.teacher.ui.chat.ChatViewModel
 import com.atech.teacher.ui.research.ResearchViewModel
 import com.atech.teacher.ui.research.compose.ResearchScreen
 import com.atech.teacher.ui.send.SendNotificationViewModel
@@ -23,6 +25,8 @@ import com.atech.teacher.ui.tag.TagViewModel
 import com.atech.teacher.ui.tag.compose.TagScreen
 import com.atech.teacher.ui.view_applications.ViewApplicationViewModel
 import com.atech.teacher.ui.view_applications.compose.ViewApplicationScreen
+import com.atech.ui_common.common.chat.AllChatScreen
+import com.atech.ui_common.common.chat.ChatScreen
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.animatedComposableEnh
 import com.atech.ui_common.utils.fadeThroughComposable
@@ -33,7 +37,14 @@ sealed class ResearchRoutes(val route: String) {
     data object ResearchScreen : ResearchRoutes("research_screen")
     data object AddQuestionScreen : ResearchRoutes("add_or_edit_screen")
     data object AddTagsScreen : ResearchRoutes("add_tags_screen")
+    data object AllChats : ResearchRoutes("all_chat_screen")
 }
+
+@Serializable
+data class ChatScreenArgs(
+    val path: String
+)
+
 
 @Serializable
 data class ViewMarkdownArgs(
@@ -210,6 +221,28 @@ fun NavGraphBuilder.researchScreenGraph(
                 navController = navHostController,
                 title = title,
                 onEvent = viewModel::onEvent
+            )
+        }
+        animatedComposable(
+            route = ResearchRoutes.AllChats.route
+        ) { entry ->
+            val viewModel: AllChatViewModel = entry.sharedViewModel(navHostController)
+            val allChats by viewModel.allChats.collectAsStateWithLifecycle(emptyList())
+            AllChatScreen(
+                navController = navHostController,
+                state = allChats,
+                onClick = {
+                    navHostController.navigate(ChatScreenArgs(path = it.path))
+                }
+            )
+        }
+        animatedComposableEnh<ChatScreenArgs> { entry ->
+            val args = entry.toRoute<ChatScreenArgs>()
+            val viewModel: ChatViewModel = entry.sharedViewModel(navHostController)
+            val chats by viewModel.getAllMessage(args.path).collectAsStateWithLifecycle(emptyList())
+            ChatScreen(
+                chats = chats,
+                navController = navHostController
             )
         }
     }

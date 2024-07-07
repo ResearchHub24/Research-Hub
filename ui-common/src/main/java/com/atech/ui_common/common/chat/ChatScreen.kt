@@ -68,7 +68,8 @@ fun ChatScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .imePadding(),
+                .imePadding()
+                .padding(MaterialTheme.spacing.medium),
             contentPadding = paddingValues,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {

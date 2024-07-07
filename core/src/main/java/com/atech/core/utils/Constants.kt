@@ -9,7 +9,8 @@ enum class CollectionName(
     RESEARCH("research"),
     SUBMITTED_FORM("submitted_form"),
     FCM_TOKEN("fcmTokens"),
-    CHATS("chats")
+    CHATS("chats"),
+    MESSAGES("messages")
 }
 
 

@@ -1,6 +1,7 @@
 package com.atech.ui_common.common.chat
 
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -42,6 +44,7 @@ import com.atech.ui_common.theme.spacing
 fun AllChatScreen(
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController(),
+    onClick: (AllChatModel) -> Unit = {},
     state: List<AllChatModel> = emptyList()
 ) {
     val scrollBarBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -63,13 +66,12 @@ fun AllChatScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .nestedScroll(connection = scrollBarBehavior.nestedScrollConnection)
-                .padding(MaterialTheme.spacing.medium),
+                .nestedScroll(connection = scrollBarBehavior.nestedScrollConnection),
             contentPadding = paddingValues,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             items(state) {
-                AllChatItems(model = it)
+                AllChatItems(model = it, onClick = { onClick.invoke(it) })
             }
         }
     }
@@ -78,42 +80,50 @@ fun AllChatScreen(
 @Composable
 fun AllChatItems(
     modifier: Modifier = Modifier,
-    model: AllChatModel
+    model: AllChatModel,
+    onClick: () -> Unit = {}
 ) {
-    Card(
+    Surface(
         modifier = modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors()
-            .copy(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface
-            )
+            .fillMaxWidth()
+            .clickable { onClick.invoke() }
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(MaterialTheme.spacing.medium),
-            verticalAlignment = Alignment.CenterVertically
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors()
+                .copy(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
         ) {
-            ImageLoaderRounderCorner(
-                modifier = Modifier.size(70.dp),
-                imageUrl = model.receiverProfileUrl,
-            )
-            Spacer(Modifier.width(MaterialTheme.spacing.medium))
-            Column(
-                modifier = Modifier.fillMaxWidth()
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(MaterialTheme.spacing.medium),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    modifier = Modifier.basicMarquee(),
-                    text = model.receiverName,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1
+                ImageLoaderRounderCorner(
+                    modifier = Modifier.size(70.dp),
+                    imageUrl = model.receiverProfileUrl,
+                    isRounderCorner = 40.dp
                 )
-                Text(
-                    text = model.createdAt.getDate(),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.captionColor
-                )
+                Spacer(Modifier.width(MaterialTheme.spacing.medium))
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.basicMarquee(),
+                        text = model.receiverName,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1
+                    )
+                    Text(
+                        text = "Chat created : ${model.createdAt.getDate().trim()}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.captionColor
+                    )
+                }
             }
         }
     }

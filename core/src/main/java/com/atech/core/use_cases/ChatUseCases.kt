@@ -2,12 +2,14 @@ package com.atech.core.use_cases
 
 import android.util.Log
 import com.atech.core.model.AllChatModel
+import com.atech.core.model.MessageModel
 import com.atech.core.utils.CollectionName
 import com.atech.core.utils.TAGS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -15,7 +17,10 @@ import javax.inject.Inject
 
 
 data class ChatUseCases @Inject constructor(
-    val createChat: CreateChatUseCase, val getAllChats: GetAllChatsUseCase
+    val createChat: CreateChatUseCase,
+    val getAllChats: GetAllChatsUseCase,
+    val sendMessage: SendMessageUseCases,
+    val getAllMessage: GetMessageUseCases
 )
 
 private fun getRootPath(
@@ -27,17 +32,23 @@ private fun getRootPath(
 
 
 data class CreateChatUseCase @Inject constructor(
-    private val db: FirebaseFirestore, private val auth: FirebaseAuth
+    private val db: FirebaseFirestore,
+    private val auth: FirebaseAuth,
+    private val sendMessage: SendMessageUseCases
 ) {
     suspend operator fun invoke(
         receiverName: String,
         receiverUid: String,
         receiverProfileUrl: String,
+        message: String,
         onComplete: (Exception?) -> Unit
     ) {
         val senderUid = auth.currentUser?.uid ?: return
         val senderName = auth.currentUser?.displayName ?: return
         val senderProfileUrl = auth.currentUser?.photoUrl.toString()
+        val path = getRootPath(
+            senderUid, senderName, receiverName, receiverUid
+        )
         val isDataExists = checkIfChatExists(
             senderUid = senderUid,
             senderName = senderName,
@@ -45,13 +56,16 @@ data class CreateChatUseCase @Inject constructor(
             receiverUid = receiverUid
         )
         if (isDataExists) {
-            onComplete.invoke(null)
+            sendMessage.invoke(
+                receiverName = receiverName,
+                receiverUid = receiverUid,
+                message = message,
+                onComplete = onComplete,
+                path = path
+            )
             return
         }
         try {
-            val path = getRootPath(
-                senderUid, senderName, receiverName, receiverUid
-            )
             db.collection(
                 CollectionName.CHATS.value
             ).document(
@@ -67,7 +81,13 @@ data class CreateChatUseCase @Inject constructor(
                     path = path
                 )
             ).await()
-            onComplete.invoke(null)
+            sendMessage.invoke(
+                receiverName = receiverName,
+                receiverUid = receiverUid,
+                message = message,
+                onComplete = onComplete,
+                path = path,
+            )
         } catch (e: Exception) {
             onComplete.invoke(e)
         }
@@ -110,7 +130,64 @@ data class GetAllChatsUseCase @Inject constructor(
         allChats
     } catch (e: Exception) {
         onError.invoke(e)
-        flow { }
+        emptyFlow()
     }
+
+}
+
+data class SendMessageUseCases @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val auth: FirebaseAuth
+) {
+    suspend operator fun invoke(
+        receiverName: String,
+        receiverUid: String,
+        message: String,
+        path: String,
+        onComplete: (Exception?) -> Unit
+    ) {
+        val senderUid = auth.currentUser?.uid ?: return
+        val senderName = auth.currentUser?.displayName ?: return
+        try {
+            db.collection(CollectionName.CHATS.value)
+                .document(path)
+                .collection(CollectionName.MESSAGES.value)
+                .document()
+                .set(
+                    MessageModel(
+                        senderUid = senderUid,
+                        senderName = senderName,
+                        receiverUid = receiverUid,
+                        receiverName = receiverName,
+                        message = message
+                    )
+                )
+                .await()
+            onComplete.invoke(null)
+        } catch (e: Exception) {
+            onComplete.invoke(e)
+        }
+    }
+}
+
+data class GetMessageUseCases @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val auth: FirebaseAuth
+) {
+    operator fun invoke(
+        path: String,
+    ) =
+        try {
+            db.collection(CollectionName.CHATS.value)
+                .document(path)
+                .collection(CollectionName.MESSAGES.value)
+                .snapshots()
+                .map {
+                    it.toObjects(MessageModel::class.java)
+                }
+        } catch (e: Exception) {
+            Log.e(TAGS.ERROR.name, "invoke: $e")
+            emptyFlow()
+        }
 
 }
