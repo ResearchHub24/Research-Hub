@@ -36,6 +36,8 @@ import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.animatedComposableEnh
 import com.atech.ui_common.utils.fadeThroughComposable
 import com.atech.ui_common.utils.sharedViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
 sealed class ResearchRoutes(val route: String) {
@@ -51,7 +53,8 @@ data class ChatScreenArgs(
     val senderName: String,
     val senderUid: String,
     val receiverName: String,
-    val receiverUid: String
+    val receiverUid: String,
+    val created: Long
 )
 
 
@@ -244,7 +247,8 @@ fun NavGraphBuilder.researchScreenGraph(
                         receiverUid = it.receiverUid,
                         receiverName = it.receiverName,
                         senderUid = it.senderUid,
-                        senderName = it.senderName
+                        senderName = it.senderName,
+                        created = it.createdAt
                     )
                 )
             })
@@ -268,11 +272,26 @@ fun NavGraphBuilder.researchScreenGraph(
                         receiverUid = args.receiverUid,
                         path = args.path,
                         message = message
-                    ) {
+                    ) { it ->
                         canSendMessage = true
                         if (it != null) {
-                            toast(context, it.localizedMessage ?: "Some Error")
+                            runBlocking(Dispatchers.Main) {
+                                toast(context, it.localizedMessage ?: "Some Error")
+                            }
                             return@sendMessage
+                        }
+                        viewModel.sendPushNotification(
+                            senderUid = args.receiverUid,
+                            message = message,
+                            title = args.senderName,
+                            key = args.created
+                        ) {
+                            if (it != null) {
+                                runBlocking(Dispatchers.Main) {
+                                    toast(context, it.localizedMessage ?: "Some Error")
+                                }
+                                return@sendPushNotification
+                            }
                         }
                     }
                 },

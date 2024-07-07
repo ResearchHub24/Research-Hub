@@ -124,7 +124,11 @@ data class GetAllChatsUseCase @Inject constructor(
         val senderUid = auth.currentUser?.uid!!
         val allChats =
             db.collection(CollectionName.CHATS.value)
-                .whereEqualTo(if (forAdmin) "senderUid" else "receiverUid", senderUid)
+                .apply {
+                    if (forAdmin)
+                        whereEqualTo("senderUid", senderUid)
+                    else whereEqualTo("receiverUid", senderUid)
+                }
                 .snapshots()
                 .map { it.toObjects(AllChatModel::class.java) }
         allChats

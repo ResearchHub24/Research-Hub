@@ -1,5 +1,7 @@
 package com.atech.student.navigation
 
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,7 +53,8 @@ data class ChatScreenArgs(
     val senderName: String,
     val senderUid: String,
     val receiverName: String,
-    val receiverUid: String
+    val receiverUid: String,
+    val created: Long
 )
 
 
@@ -211,7 +214,8 @@ fun NavGraphBuilder.researchScreenGraph(
                             receiverUid = it.receiverUid,
                             receiverName = it.receiverName,
                             senderUid = it.senderUid,
-                            senderName = it.senderName
+                            senderName = it.senderName,
+                            created = it.createdAt
                         ),
                     )
                 }, forAdmin = false
@@ -237,11 +241,26 @@ fun NavGraphBuilder.researchScreenGraph(
                         receiverUid = args.senderUid,
                         path = args.path,
                         message = message
-                    ) {
+                    ) { it ->
                         canSendMessage = true
                         if (it != null) {
-                            toast(context, it.localizedMessage ?: "Some Error")
+                            Handler(Looper.getMainLooper()).post {
+                                toast(context, it.localizedMessage ?: "Some Error")
+                            }
                             return@sendMessage
+                        }
+                        viewModel.sendPushNotification(
+                            senderUid = args.senderUid,
+                            message = message,
+                            title = args.receiverName,
+                            key = args.created
+                        ) {
+                            if (it != null) {
+                                Handler(Looper.getMainLooper()).post {
+                                    toast(context, it.localizedMessage ?: "Some Error")
+                                }
+                                return@sendPushNotification
+                            }
                         }
                     }
                 },
