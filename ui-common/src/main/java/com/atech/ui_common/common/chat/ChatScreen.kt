@@ -112,7 +112,8 @@ fun ChatBox(
             .background(MaterialTheme.colorScheme.surface)
     ) {
         Spacer(Modifier.width(MaterialTheme.spacing.small))
-        OutlinedTextField(modifier = Modifier.weight(.7f),
+        OutlinedTextField(
+            modifier = Modifier.weight(.7f),
             value = chatBoxValue,
             onValueChange = { newText ->
                 chatBoxValue = newText
@@ -163,11 +164,12 @@ fun ChatItem(
             }, onClick = {
                 if (isDeleteVisible) isDeleteVisible = false
             })
-            .fillMaxWidth(.8f),
+            .fillMaxWidth(),
     ) {
         val isUserSender = model.senderUid == uid
         Box(
             modifier = Modifier
+                .fillMaxWidth(.8f)
                 .align(if (isUserSender) Alignment.CenterEnd else Alignment.CenterStart)
                 .clip(
                     RoundedCornerShape(
