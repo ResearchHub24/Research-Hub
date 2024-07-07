@@ -10,6 +10,7 @@ data class AllChatModel(
     val receiverName: String = "",
     val receiverUid: String = "",
     val receiverProfileUrl: String = "",
+    val path : String = "",
     val createdAt: Long = System.currentTimeMillis()
 )
 

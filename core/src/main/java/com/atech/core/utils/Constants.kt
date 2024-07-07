@@ -8,7 +8,8 @@ enum class CollectionName(
     USER("user_database"),
     RESEARCH("research"),
     SUBMITTED_FORM("submitted_form"),
-    FCM_TOKEN("fcmTokens")
+    FCM_TOKEN("fcmTokens"),
+    CHATS("chats")
 }
 
 

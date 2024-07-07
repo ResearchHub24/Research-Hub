@@ -3,6 +3,7 @@ package com.atech.research.ui.activities
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
@@ -21,6 +23,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.atech.core.use_cases.ChatUseCases
 import com.atech.core.use_cases.IsUserLoggedInUseCase
 import com.atech.core.use_cases.SignOut
 import com.atech.core.utils.PrefKeys
@@ -52,6 +55,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var signOut: SignOut
 
+    @Inject
+    lateinit var chatUseCase: ChatUseCases
+
     private val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
             oneTapClient = Identity.getSignInClient(this)
@@ -80,6 +86,9 @@ class MainActivity : ComponentActivity() {
             .enqueueUniquePeriodicWork(
                 "saveRequest", ExistingPeriodicWorkPolicy.UPDATE, saveRequest
             )
+        lifecycleScope.launch {
+
+        }
     }
 
     @Composable
