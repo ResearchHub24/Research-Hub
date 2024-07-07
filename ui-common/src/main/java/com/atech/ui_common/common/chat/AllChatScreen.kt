@@ -45,6 +45,7 @@ fun AllChatScreen(
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController(),
     onClick: (AllChatModel) -> Unit = {},
+    forAdmin: Boolean = true,
     state: List<AllChatModel> = emptyList()
 ) {
     val scrollBarBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -71,7 +72,10 @@ fun AllChatScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             items(state) {
-                AllChatItems(model = it, onClick = { onClick.invoke(it) })
+                AllChatItems(
+                    model = it, onClick = { onClick.invoke(it) },
+                    forAdmin = forAdmin
+                )
             }
         }
     }
@@ -81,6 +85,7 @@ fun AllChatScreen(
 fun AllChatItems(
     modifier: Modifier = Modifier,
     model: AllChatModel,
+    forAdmin: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     Surface(
@@ -114,7 +119,7 @@ fun AllChatItems(
                 ) {
                     Text(
                         modifier = Modifier.basicMarquee(),
-                        text = model.receiverName,
+                        text = if (forAdmin) model.receiverName else model.senderName,
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1
                     )

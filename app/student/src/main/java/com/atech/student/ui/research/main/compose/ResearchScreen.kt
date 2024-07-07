@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Message
 import androidx.compose.material.icons.rounded.Bookmarks
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -74,6 +75,15 @@ fun ResearchScreen(
         title = stringResource(id = R.string.research),
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         actions = {
+            IconButton(onClick = {
+                navController.navigate(ResearchScreenRoutes.AllChats.route)
+            }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.Message,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
             IconButton(onClick = {
                 navController.navigate(
                     MainScreenRoutes.Wishlist.route

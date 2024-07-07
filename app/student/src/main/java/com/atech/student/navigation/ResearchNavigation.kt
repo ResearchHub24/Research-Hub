@@ -2,12 +2,19 @@ package com.atech.student.navigation
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.atech.student.ui.chat.AllChatViewModel
+import com.atech.student.ui.chat.ChatViewModel
 import com.atech.student.ui.question.QuestionsViewModel
 import com.atech.student.ui.question.compose.QuestionScreen
 import com.atech.student.ui.research.detail.compose.ResearchDetailScreen
@@ -18,6 +25,9 @@ import com.atech.student.ui.resume.ResumeViewModel
 import com.atech.student.ui.resume.compose.AddEditScreen
 import com.atech.student.ui.resume.compose.AllApplicationScreen
 import com.atech.student.ui.resume.compose.ResumeScreen
+import com.atech.ui_common.common.chat.AllChatScreen
+import com.atech.ui_common.common.chat.ChatScreen
+import com.atech.ui_common.common.toast
 import com.atech.ui_common.utils.animatedComposable
 import com.atech.ui_common.utils.animatedComposableEnh
 import com.atech.ui_common.utils.fadeThroughComposable
@@ -32,7 +42,18 @@ sealed class ResearchScreenRoutes(
     data object ResumeScreen : ResearchScreenRoutes("resume_screen")
     data object EditScreen : ResearchScreenRoutes("edit_screen")
     data object AllApplicationScreen : ResearchScreenRoutes("all_application_screen")
+    data object AllChats : ResearchScreenRoutes("all_chat_screen")
 }
+
+@Serializable
+data class ChatScreenArgs(
+    val path: String,
+    val senderName: String,
+    val senderUid: String,
+    val receiverName: String,
+    val receiverUid: String
+)
+
 
 @Serializable
 data class ResumeScreenArgs(
@@ -175,6 +196,67 @@ fun NavGraphBuilder.researchScreenGraph(
             }
             AllApplicationScreen(
                 navHostController = navController, state = filledApplication
+            )
+        }
+        animatedComposable(
+            route = ResearchScreenRoutes.AllChats.route
+        ) { entry ->
+            val viewModel: AllChatViewModel = entry.sharedViewModel(navController)
+            val allChats by viewModel.allChats.collectAsStateWithLifecycle(emptyList())
+            AllChatScreen(
+                navController = navController, state = allChats, onClick = {
+                    navController.navigate(
+                        ChatScreenArgs(
+                            path = it.path,
+                            receiverUid = it.receiverUid,
+                            receiverName = it.receiverName,
+                            senderUid = it.senderUid,
+                            senderName = it.senderName
+                        ),
+                    )
+                }, forAdmin = false
+            )
+        }
+        animatedComposableEnh<ChatScreenArgs> { entry ->
+            val args = entry.toRoute<ChatScreenArgs>()
+            val viewModel: ChatViewModel = entry.sharedViewModel(navController)
+            val chats by viewModel.getAllMessage(args.path).collectAsStateWithLifecycle(emptyList())
+            var canSendMessage by rememberSaveable { mutableStateOf(true) }
+            val context = LocalContext.current
+            ChatScreen(
+                title = args.senderName,
+                chats = chats.sortedByDescending { it.created },
+                uid = args.receiverUid,
+                navController = navController,
+                canSendMessage = canSendMessage,
+                longPressEnable = false,
+                onSendClick = { message ->
+                    canSendMessage = false
+                    viewModel.sendMessage(
+                        receiverName = args.senderName,
+                        receiverUid = args.senderUid,
+                        path = args.path,
+                        message = message
+                    ) {
+                        canSendMessage = true
+                        if (it != null) {
+                            toast(context, it.localizedMessage ?: "Some Error")
+                            return@sendMessage
+                        }
+                    }
+                },
+                onDeleteClick = {
+                    viewModel.deleteMessage(
+                        rootPath = args.path,
+                        docPath = it,
+                    ) { error ->
+                        if (error != null) {
+                            toast(context, error.localizedMessage ?: "Some Error")
+                            return@deleteMessage
+                        }
+                        toast(context, "Message Deleted")
+                    }
+                }
             )
         }
     }

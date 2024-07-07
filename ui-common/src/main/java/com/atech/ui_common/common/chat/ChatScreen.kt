@@ -60,6 +60,7 @@ fun ChatScreen(
     title: String = "",
     uid: String = "",
     canSendMessage: Boolean = true,
+    longPressEnable: Boolean = true,
     navController: NavController = rememberNavController(),
     chats: List<MessageModel> = emptyList(),
     onSendClick: (String) -> Unit = {},
@@ -88,9 +89,14 @@ fun ChatScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         ) {
             items(chats) {
-                ChatItem(model = it, uid = uid, onDeleteClick = {
-                    onDeleteClick.invoke(it.path)
-                })
+                ChatItem(
+                    model = it,
+                    uid = uid,
+                    longPressEnable = longPressEnable,
+                    onDeleteClick = {
+                        onDeleteClick.invoke(it.path)
+                    }
+                )
             }
         }
     }
@@ -154,16 +160,21 @@ fun ChatItem(
     modifier: Modifier = Modifier,
     model: MessageModel,
     uid: String = "",
+    longPressEnable: Boolean = true,
     onDeleteClick: () -> Unit = {}
 ) {
     var isDeleteVisible by remember { mutableStateOf(false) }
     Box(
         modifier = modifier
-            .combinedClickable(onLongClickLabel = stringResource(R.string.delete), onLongClick = {
-                isDeleteVisible = !isDeleteVisible
-            }, onClick = {
-                if (isDeleteVisible) isDeleteVisible = false
-            })
+            .apply {
+                if (longPressEnable) combinedClickable(onLongClickLabel = stringResource(R.string.delete),
+                    onLongClick = {
+                        isDeleteVisible = !isDeleteVisible
+                    },
+                    onClick = {
+                        if (isDeleteVisible) isDeleteVisible = false
+                    })
+            }
             .fillMaxWidth(),
     ) {
         val isUserSender = model.senderUid == uid

@@ -118,15 +118,15 @@ data class GetAllChatsUseCase @Inject constructor(
     private val db: FirebaseFirestore, private val auth: FirebaseAuth
 ) {
     operator fun invoke(
+        forAdmin: Boolean = true,
         onError: (Exception) -> Unit = {},
     ): Flow<List<AllChatModel>> = try {
         val senderUid = auth.currentUser?.uid!!
         val allChats =
             db.collection(CollectionName.CHATS.value)
-                .whereEqualTo("senderUid", senderUid)
-                .snapshots().map {
-                    it.toObjects(AllChatModel::class.java)
-                }
+                .whereEqualTo(if (forAdmin) "senderUid" else "receiverUid", senderUid)
+                .snapshots()
+                .map { it.toObjects(AllChatModel::class.java) }
         allChats
     } catch (e: Exception) {
         onError.invoke(e)
