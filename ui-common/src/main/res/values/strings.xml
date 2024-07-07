@@ -72,4 +72,6 @@
     <string name="confirmation">Confirmation</string>
     <string name="save_changes">Save changes</string>
     <string name="saved">Save changes</string>
+    <string name="all_chats">All Chats</string>
+    <string name="no_chats_yet">No chats yet</string>
 </resources>
