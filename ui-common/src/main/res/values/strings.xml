@@ -74,4 +74,5 @@
     <string name="saved">Save changes</string>
     <string name="all_chats">All Chats</string>
     <string name="no_chats_yet">No chats yet</string>
+    <string name="delete">Delete</string>
 </resources>

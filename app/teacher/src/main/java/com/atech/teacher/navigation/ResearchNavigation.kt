@@ -275,6 +275,18 @@ fun NavGraphBuilder.researchScreenGraph(
                             return@sendMessage
                         }
                     }
+                },
+                onDeleteClick = {
+                    viewModel.deleteMessage(
+                        rootPath = args.path,
+                        docPath = it,
+                    ) { error ->
+                        if (error != null) {
+                            toast(context, error.localizedMessage ?: "Some Error")
+                            return@deleteMessage
+                        }
+                        toast(context, "Message Deleted")
+                    }
                 }
             )
         }

@@ -29,4 +29,16 @@ class ChatViewModel @Inject constructor(
             onComplete = onComplete
         )
     }
+
+    internal fun deleteMessage(
+        rootPath: String,
+        docPath: String,
+        onComplete: (Exception?) -> Unit = {}
+    ) = viewModelScope.launch {
+        chatUseCase.deleteMessage.invoke(
+            rootPath = rootPath,
+            docPath = docPath,
+            onComplete = onComplete
+        )
+    }
 }

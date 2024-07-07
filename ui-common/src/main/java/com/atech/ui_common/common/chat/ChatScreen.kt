@@ -1,6 +1,9 @@
 package com.atech.ui_common.common.chat
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -16,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +47,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.MessageModel
 import com.atech.core.utils.getDate
+import com.atech.ui_common.R
 import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
 import com.atech.ui_common.theme.ResearchHubTheme
@@ -54,27 +61,20 @@ fun ChatScreen(
     uid: String = "",
     canSendMessage: Boolean = true,
     navController: NavController = rememberNavController(),
+    chats: List<MessageModel> = emptyList(),
     onSendClick: (String) -> Unit = {},
-    chats: List<MessageModel> = emptyList()
+    onDeleteClick: (String) -> Unit = {}
 ) {
-    MainContainer(
-        modifier = modifier
-            .imePadding(),
-        title = title,
-        onNavigationClick = {
-            navController.navigateUp()
-        },
-        bottomBar = {
-            ChatBox(
-                canSendMessage = canSendMessage,
-                onSendClick = onSendClick
-            )
-        }
-    ) { paddingValues ->
-        if(chats.isEmpty()){
+    MainContainer(modifier = modifier.imePadding(), title = title, onNavigationClick = {
+        navController.navigateUp()
+    }, bottomBar = {
+        ChatBox(
+            canSendMessage = canSendMessage, onSendClick = onSendClick
+        )
+    }) { paddingValues ->
+        if (chats.isEmpty()) {
             GlobalEmptyScreen(
-                modifier = Modifier.padding(paddingValues),
-                title = ""
+                modifier = Modifier.padding(paddingValues), title = ""
             )
             return@MainContainer
         }
@@ -88,24 +88,22 @@ fun ChatScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         ) {
             items(chats) {
-                ChatItem(model = it, uid = uid)
+                ChatItem(model = it, uid = uid, onDeleteClick = {
+                    onDeleteClick.invoke(it.path)
+                })
             }
         }
     }
 }
 
 val drawerColor: Color
-    @Composable
-    get() = ColorUtils.blendARGB(
-        MaterialTheme.colorScheme.surface.toArgb(),
-        MaterialTheme.colorScheme.primary.toArgb(),
-        .09f
+    @Composable get() = ColorUtils.blendARGB(
+        MaterialTheme.colorScheme.surface.toArgb(), MaterialTheme.colorScheme.primary.toArgb(), .09f
     ).let { Color(it) }
 
 @Composable
 fun ChatBox(
-    canSendMessage: Boolean = true,
-    onSendClick: (String) -> Unit = {}
+    canSendMessage: Boolean = true, onSendClick: (String) -> Unit = {}
 ) {
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
     Row(
@@ -114,8 +112,7 @@ fun ChatBox(
             .background(MaterialTheme.colorScheme.surface)
     ) {
         Spacer(Modifier.width(MaterialTheme.spacing.small))
-        OutlinedTextField(
-            modifier = Modifier.weight(.7f),
+        OutlinedTextField(modifier = Modifier.weight(.7f),
             value = chatBoxValue,
             onValueChange = { newText ->
                 chatBoxValue = newText
@@ -150,15 +147,23 @@ fun ChatBox(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatItem(
     modifier: Modifier = Modifier,
     model: MessageModel,
-    uid: String = ""
+    uid: String = "",
+    onDeleteClick: () -> Unit = {}
 ) {
+    var isDeleteVisible by remember { mutableStateOf(false) }
     Box(
         modifier = modifier
-            .fillMaxWidth(),
+            .combinedClickable(onLongClickLabel = stringResource(R.string.delete), onLongClick = {
+                isDeleteVisible = !isDeleteVisible
+            }, onClick = {
+                if (isDeleteVisible) isDeleteVisible = false
+            })
+            .fillMaxWidth(.8f),
     ) {
         val isUserSender = model.senderUid == uid
         Box(
@@ -179,8 +184,7 @@ fun ChatItem(
 
         ) {
             Column(
-                modifier = Modifier
-                    .padding(MaterialTheme.spacing.large)
+                modifier = Modifier.padding(MaterialTheme.spacing.large)
             ) {
                 Text(
                     text = model.message,
@@ -190,11 +194,22 @@ fun ChatItem(
                 )
                 Text(
                     text = model.created.getDate().trim(),
-
                     modifier = Modifier,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .5f)
                 )
+                Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                AnimatedVisibility(isDeleteVisible) {
+                    IconButton(
+                        onClick = onDeleteClick, modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Delete,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.inversePrimary
+                        )
+                    }
+                }
             }
         }
     }
@@ -204,18 +219,17 @@ fun ChatItem(
 @Composable
 private fun ChatScreenPreview() {
     ResearchHubTheme {
-//        ChatItem(
-//            model = MessageModel(
-//                senderName = "Ayaan",
-//                receiverName = "Jai",
-//                message = "This is for Information",
-//                senderUid = "abc"
-//            ),
-//            uid = "abc"
-//        )
-        ChatScreen(
-            title = "Jay",
-            chats = listOf()
+        ChatItem(
+            model = MessageModel(
+                senderName = "Ayaan",
+                receiverName = "Jai",
+                message = "This is for Information",
+                senderUid = "abc"
+            ), uid = "abc"
         )
+//        ChatScreen(
+//            title = "Jay",
+//            chats = listOf()
+//        )
     }
 }

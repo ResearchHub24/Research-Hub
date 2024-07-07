@@ -10,7 +10,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -20,7 +19,8 @@ data class ChatUseCases @Inject constructor(
     val createChat: CreateChatUseCase,
     val getAllChats: GetAllChatsUseCase,
     val sendMessage: SendMessageUseCases,
-    val getAllMessage: GetMessageUseCases
+    val getAllMessage: GetMessageUseCases,
+    val deleteMessage: DeleteMessageUseCase
 )
 
 private fun getRootPath(
@@ -149,17 +149,19 @@ data class SendMessageUseCases @Inject constructor(
         val senderUid = auth.currentUser?.uid ?: return
         val senderName = auth.currentUser?.displayName ?: return
         try {
-            db.collection(CollectionName.CHATS.value)
+            val ref = db.collection(CollectionName.CHATS.value)
                 .document(path)
                 .collection(CollectionName.MESSAGES.value)
-                .document()
+            val doc = ref.document().id
+            ref.document(doc)
                 .set(
                     MessageModel(
                         senderUid = senderUid,
                         senderName = senderName,
                         receiverUid = receiverUid,
                         receiverName = receiverName,
-                        message = message
+                        message = message,
+                        path = doc
                     )
                 )
                 .await()
@@ -189,5 +191,27 @@ data class GetMessageUseCases @Inject constructor(
             Log.e(TAGS.ERROR.name, "invoke: $e")
             emptyFlow()
         }
+}
 
+data class DeleteMessageUseCase @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    suspend operator fun invoke(
+        rootPath: String,
+        docPath: String,
+        onComplete: (Exception?) -> Unit
+    ) {
+        try {
+            db.collection(CollectionName.CHATS.value)
+                .document(rootPath)
+                .collection(CollectionName.MESSAGES.value)
+                .document(docPath)
+                .delete()
+                .await()
+            onComplete.invoke(null)
+        } catch (e: Exception) {
+            Log.e(TAGS.ERROR.name, "invoke: $e")
+            onComplete.invoke(e)
+        }
+    }
 }
