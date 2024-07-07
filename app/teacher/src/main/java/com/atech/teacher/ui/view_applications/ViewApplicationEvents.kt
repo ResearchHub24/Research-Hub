@@ -7,6 +7,8 @@ sealed interface ViewApplicationEvents {
     data class SelectUserAction(
         val action: Action,
         val ui: String,
+        val name: String,
+        val profileUrl : String,
         val onComplete: (String?) -> Unit
     ) :
         ViewApplicationEvents

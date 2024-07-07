@@ -109,21 +109,26 @@ fun ViewApplicationScreen(
                             ) {
                                 return@ApplicationItem // Save Item click
                             }
-                            onEvent.invoke(ViewApplicationEvents.SelectUserAction(action = action,
-                                ui = model.uid!!,
-                                onComplete = {
-                                    if (it != null) {
-                                        toast(context, it)
-                                        return@SelectUserAction
-                                    }
-                                    toast(
-                                        context, "User ${action.name.lowercase()} successfully"
-                                    )
-                                    selectedUser =
-                                        if (action == Action.SELECTED) selectedUser.toMutableList().apply { add(model.uid!!) }
-                                        else selectedUser.toMutableList()
-                                            .apply { remove(model.uid!!) }
-                                }))
+                            onEvent.invoke(
+                                ViewApplicationEvents.SelectUserAction(action = action,
+                                    ui = model.uid!!,
+                                    name = model.studentName ?: "",
+                                    profileUrl = model.profileImg!!,
+                                    onComplete = {
+                                        if (it != null) {
+                                            toast(context, it)
+                                            return@SelectUserAction
+                                        }
+                                        toast(
+                                            context, "User ${action.name.lowercase()} successfully"
+                                        )
+                                        selectedUser =
+                                            if (action == Action.SELECTED) selectedUser.toMutableList()
+                                                .apply { add(model.uid!!) }
+                                            else selectedUser.toMutableList()
+                                                .apply { remove(model.uid!!) }
+                                    })
+                            )
                         })
                 }
             }
