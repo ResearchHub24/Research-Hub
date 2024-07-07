@@ -42,7 +42,11 @@ sealed class ResearchRoutes(val route: String) {
 
 @Serializable
 data class ChatScreenArgs(
-    val path: String
+    val path: String,
+    val senderName: String,
+    val senderUid: String,
+    val receiverName: String,
+    val receiverUid: String
 )
 
 
@@ -228,20 +232,26 @@ fun NavGraphBuilder.researchScreenGraph(
         ) { entry ->
             val viewModel: AllChatViewModel = entry.sharedViewModel(navHostController)
             val allChats by viewModel.allChats.collectAsStateWithLifecycle(emptyList())
-            AllChatScreen(
-                navController = navHostController,
-                state = allChats,
-                onClick = {
-                    navHostController.navigate(ChatScreenArgs(path = it.path))
-                }
-            )
+            AllChatScreen(navController = navHostController, state = allChats, onClick = {
+                navHostController.navigate(
+                    ChatScreenArgs(
+                        path = it.path,
+                        receiverUid = it.receiverUid,
+                        receiverName = it.receiverName,
+                        senderUid = it.senderUid,
+                        senderName = it.senderName
+                    )
+                )
+            })
         }
         animatedComposableEnh<ChatScreenArgs> { entry ->
             val args = entry.toRoute<ChatScreenArgs>()
             val viewModel: ChatViewModel = entry.sharedViewModel(navHostController)
             val chats by viewModel.getAllMessage(args.path).collectAsStateWithLifecycle(emptyList())
             ChatScreen(
-                chats = chats,
+                title = args.receiverName,
+                chats = chats.sortedByDescending { it.created },
+                uid = args.senderUid,
                 navController = navHostController
             )
         }

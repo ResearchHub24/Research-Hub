@@ -66,12 +66,13 @@ fun ChatScreen(
         }
     ) { paddingValues ->
         LazyColumn(
+            reverseLayout = true,
             modifier = Modifier
                 .fillMaxSize()
                 .imePadding()
                 .padding(MaterialTheme.spacing.medium),
             contentPadding = paddingValues,
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         ) {
             items(chats) {
                 ChatItem(model = it, uid = uid)
@@ -170,7 +171,8 @@ fun ChatItem(
                     color = MaterialTheme.colorScheme.onPrimary
                 )
                 Text(
-                    text = model.created.getDate(),
+                    text = model.created.getDate().trim(),
+
                     modifier = Modifier,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .5f)
