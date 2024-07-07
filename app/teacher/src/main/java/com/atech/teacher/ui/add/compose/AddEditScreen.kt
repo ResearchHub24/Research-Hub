@@ -187,13 +187,6 @@ fun AddEditScreen(
                 )
             }
             Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
-            Log.e(
-                "AAA", "${
-                    fromJsonList<TagModel>(
-                        tags
-                    ).isEmpty()
-                }"
-            )
             AnimatedVisibility(
                 title.isEmpty() || description.isEmpty() || tags.isEmpty() || question.isEmpty() || fromJsonList<TagModel>(
                     tags

@@ -6,12 +6,16 @@ import com.atech.core.utils.CollectionName
 import com.atech.core.utils.TAGS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.snapshots
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
 data class ChatUseCases @Inject constructor(
-    val createChat: CreateChatUseCase
+    val createChat: CreateChatUseCase, val getAllChats: GetAllChatsUseCase
 )
 
 private fun getRootPath(
@@ -86,6 +90,27 @@ data class CreateChatUseCase @Inject constructor(
     } catch (e: Exception) {
         Log.e(TAGS.ERROR.name, "checkIfChatExists: $e")
         false
+    }
+
+}
+
+data class GetAllChatsUseCase @Inject constructor(
+    private val db: FirebaseFirestore, private val auth: FirebaseAuth
+) {
+    operator fun invoke(
+        onError: (Exception) -> Unit = {},
+    ): Flow<List<AllChatModel>> = try {
+        val senderUid = auth.currentUser?.uid!!
+        val allChats =
+            db.collection(CollectionName.CHATS.value)
+                .whereEqualTo("senderUid", senderUid)
+                .snapshots().map {
+                    it.toObjects(AllChatModel::class.java)
+                }
+        allChats
+    } catch (e: Exception) {
+        onError.invoke(e)
+        flow { }
     }
 
 }
