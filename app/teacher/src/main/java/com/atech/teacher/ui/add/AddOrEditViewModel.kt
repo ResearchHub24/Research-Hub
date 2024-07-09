@@ -2,7 +2,9 @@ package com.atech.teacher.ui.add
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.toRoute
 import com.atech.core.model.TagModel
 import com.atech.core.use_cases.TeacherAuthUserCase
 import com.atech.core.utils.fromJsonList
@@ -16,10 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddOrEditViewModel @Inject constructor(
+    savedState: SavedStateHandle,
     private val useCases: TeacherAuthUserCase
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(AddEditScreenArgs(key = null).replaceNA())
+    private val _state = mutableStateOf(savedState.toRoute<AddEditScreenArgs>().replaceNA())
     val state: State<AddEditScreenArgs> get() = _state
     private val _title = mutableStateOf(state.value.title)
     val title: State<String> get() = _title

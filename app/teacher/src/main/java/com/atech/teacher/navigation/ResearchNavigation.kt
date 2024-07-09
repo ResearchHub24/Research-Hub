@@ -12,7 +12,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.atech.core.model.ResearchModel
-import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.teacher.ui.add.AddOrEditViewModel
 import com.atech.teacher.ui.add.compose.AddEditScreen
 import com.atech.teacher.ui.add.compose.AddQuestionScreen
@@ -65,7 +64,7 @@ data class ViewMarkdownArgs(
 
 @Serializable
 data class AddEditScreenArgs(
-    val key: String?,
+    val key: String? = "",
     val title: String = "N/A",
     val description: String = "N/A",
     val createdBy: String = "N/A",
@@ -151,9 +150,10 @@ fun NavGraphBuilder.researchScreenGraph(
             )
         }
         animatedComposableEnh<AddEditScreenArgs> { entry ->
-            val args = entry.toRoute<AddEditScreenArgs>()
-            val viewModel = entry.sharedViewModel<AddOrEditViewModel>(navHostController)
-            viewModel.onEvent(AddEditScreenEvent.SetArgs(args))
+//            val args = entry.toRoute<AddEditScreenArgs>()
+            val viewModel: AddOrEditViewModel =
+                hiltViewModel()//entry.sharedViewModel<AddOrEditViewModel>(navHostController)
+//            viewModel.onEvent(AddEditScreenEvent.SetArgs(args))
             val title by viewModel.title
             val des by viewModel.description
             val tags by viewModel.tags
