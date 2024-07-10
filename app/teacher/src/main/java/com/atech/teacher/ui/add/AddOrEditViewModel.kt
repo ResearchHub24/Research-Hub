@@ -1,5 +1,6 @@
 package com.atech.teacher.ui.add
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -18,23 +19,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddOrEditViewModel @Inject constructor(
-    savedState: SavedStateHandle,
-    private val useCases: TeacherAuthUserCase
+    savedState: SavedStateHandle, private val useCases: TeacherAuthUserCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(savedState.toRoute<AddEditScreenArgs>().replaceNA())
     val state: State<AddEditScreenArgs> get() = _state
     private val _title = mutableStateOf(state.value.title)
     val title: State<String> get() = _title
-
-    private val _description = mutableStateOf(state.value.description)
-    val description: State<String> get() = _description
-
-    private val _tags = mutableStateOf(state.value.tags)
-    val tags: State<String> get() = _tags
-
-    private val _question = mutableStateOf(state.value.questions)
-    val question: State<String> get() = _question
+    private val oldData = _state.value
 
     internal fun onEvent(
         event: AddEditScreenEvent
@@ -46,53 +38,29 @@ class AddOrEditViewModel @Inject constructor(
             is AddEditScreenEvent.OnDeadLineChange -> _state.value =
                 _state.value.copy(deadLine = event.deadLine)
 
-            is AddEditScreenEvent.OnDescriptionChange -> _description.value = event.description
+            is AddEditScreenEvent.OnDescriptionChange -> _state.value =
+                _state.value.copy(description = event.description)
 
-            is AddEditScreenEvent.OnQuestionsChange -> _question.value = event.questions
+            is AddEditScreenEvent.OnQuestionsChange -> _state.value =
+                _state.value.copy(questions = event.questions)
 
-            is AddEditScreenEvent.OnTitleChange -> _title.value = event.title
+            is AddEditScreenEvent.OnTitleChange -> _state.value =
+                _state.value.copy(title = event.title)
 
-            is AddEditScreenEvent.SetArgs -> {
-//                Check if the args are same during recomposition of the screen
-                // to avoid unnecessary recomposition
-                if (_state.value areEqual event.args.replaceNA()) {
-                    return
-                }
-                _state.value = event.args.replaceNA()
-                _title.value = state.value.title
-                _tags.value = state.value.tags
-                _description.value = state.value.description
-                _question.value = state.value.questions
-            }
 
-            is AddEditScreenEvent.AddOrRemoveTag -> {
-                _tags.value = tagsToJson(event.tags)
-            }
+            is AddEditScreenEvent.AddOrRemoveTag -> _state.value =
+                _state.value.copy(tags = tagsToJson(event.tags))
 
             is AddEditScreenEvent.SaveResearch -> {
-                val updatedModel = _state.value.copy(
-                    title = title.value,
-                    description = description.value,
-                    tags = tags.value,
-                    questions = question.value
-                )
-                if (updatedModel == state.value) {
+                if (oldData areEqual state.value) {
                     event.onComplete.invoke(null)
                     return
                 }
                 useCases.saveResearch.invoke(
-                    updatedModel.toResearchModel()
+                    state.value.toResearchModel()
                 ) {
                     event.onComplete(it?.message)
                 }
-            }
-
-            AddEditScreenEvent.ResetValues -> {
-                _state.value = AddEditScreenArgs(key = null).replaceNA()
-                _title.value = ""
-                _description.value = ""
-                _tags.value = ""
-                _question.value = ""
             }
         }
     }

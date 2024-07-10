@@ -1,7 +1,5 @@
 package com.atech.teacher.ui.add.compose
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.TagModel
 import com.atech.core.utils.fromJsonList
 import com.atech.teacher.common.MarkdownEditor
-import com.atech.teacher.navigation.ResearchRoutes
+import com.atech.teacher.navigation.EditRoutes
 import com.atech.teacher.navigation.ViewMarkdownArgs
 import com.atech.teacher.ui.add.AddEditScreenEvent
 import com.atech.ui_common.R
@@ -74,16 +72,11 @@ fun AddEditScreen(
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val context = LocalContext.current
     var isConfirmDialogVisible by remember { mutableStateOf(false) }
-    BackHandler {
-        onEvent.invoke(AddEditScreenEvent.ResetValues)
-        navHostController.navigateUp()
-    }
     MainContainer(modifier = modifier,
         scrollBehavior = topAppBarScrollBehavior,
         title = if (title.isEmpty()) stringResource(R.string.add_research)
         else stringResource(R.string.edit_research),
         onNavigationClick = {
-            onEvent.invoke(AddEditScreenEvent.ResetValues)
             navHostController.navigateUp()
         }) { paddingValues ->
         Column(
@@ -152,7 +145,7 @@ fun AddEditScreen(
                     )
                 }, onClick = {
                     navHostController.navigate(
-                        ResearchRoutes.AddTagsScreen.route
+                        EditRoutes.AddTagsScreen.route
                     )
                 }, label = {
                     Text(stringResource(R.string.add_tag))
@@ -176,7 +169,7 @@ fun AddEditScreen(
                 horizontalPadding = MaterialTheme.spacing.default
             ) {
                 navHostController.navigate(
-                    ResearchRoutes.AddQuestionScreen.route
+                    EditRoutes.AddQuestionScreen.route
                 )
             }
             val questions = fromJsonList<String>(question)
