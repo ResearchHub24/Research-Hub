@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,13 +17,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -35,10 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,6 +52,7 @@ import com.atech.core.utils.getDate
 import com.atech.ui_common.R
 import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.common.MarkDown
 import com.atech.ui_common.theme.ResearchHubTheme
 import com.atech.ui_common.theme.spacing
 
@@ -131,6 +134,10 @@ fun ChatBox(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = drawerColor,
                 unfocusedContainerColor = drawerColor,
+            ),
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences,
+                autoCorrectEnabled = true
             )
         )
         IconButton(
@@ -164,68 +171,61 @@ fun ChatItem(
     onDeleteClick: () -> Unit = {}
 ) {
     var isDeleteVisible by remember { mutableStateOf(false) }
-    Box(
+    OutlinedCard(
         modifier = modifier
-            .apply {
-                if (longPressEnable) combinedClickable(onLongClickLabel = stringResource(R.string.delete),
+            .let {
+                if (longPressEnable) it.combinedClickable(onLongClickLabel = stringResource(R.string.delete),
                     onLongClick = {
                         isDeleteVisible = !isDeleteVisible
                     },
                     onClick = {
                         if (isDeleteVisible) isDeleteVisible = false
                     })
+                else it
             }
             .fillMaxWidth(),
     ) {
-        val isUserSender = model.senderUid == uid
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(.8f)
-                .align(if (isUserSender) Alignment.CenterEnd else Alignment.CenterStart)
-                .clip(
-                    RoundedCornerShape(
-                        topStart = 48f,
-                        topEnd = 48f,
-                        bottomStart = if (isUserSender) 48f else 0f,
-                        bottomEnd = if (isUserSender) 0f else 48f
-                    )
-                )
-                .background(
-                    if (isUserSender) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.secondary
-                )
-
+        Column(
+            modifier = Modifier.padding(MaterialTheme.spacing.medium)
         ) {
-            Column(
-                modifier = Modifier.padding(MaterialTheme.spacing.large)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = MaterialTheme.spacing.small),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = model.message,
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    text = if (model.senderUid == uid) "Me" else model.senderName,
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 Text(
                     text = model.created.getDate().trim(),
                     modifier = Modifier,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .5f)
                 )
-                Spacer(Modifier.height(MaterialTheme.spacing.medium))
-                AnimatedVisibility(isDeleteVisible) {
-                    IconButton(
-                        onClick = onDeleteClick, modifier = Modifier.align(Alignment.End)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Delete,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.inversePrimary
-                        )
-                    }
+            }
+            HorizontalDivider()
+            Spacer(Modifier.height(MaterialTheme.spacing.medium))
+            MarkDown(
+                markDown = model.message,
+                modifier = Modifier,
+            )
+            Spacer(Modifier.height(MaterialTheme.spacing.medium))
+            AnimatedVisibility(isDeleteVisible) {
+                IconButton(
+                    onClick = onDeleteClick, modifier = Modifier.align(Alignment.End)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.inversePrimary
+                    )
                 }
             }
         }
     }
+
 }
 
 @Preview(showBackground = true)
