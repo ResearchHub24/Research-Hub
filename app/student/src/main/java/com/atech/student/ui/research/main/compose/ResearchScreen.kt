@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Message
 import androidx.compose.material.icons.rounded.Bookmarks
+import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +25,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.atech.core.model.ResearchModel
+import com.atech.core.utils.DataState
 import com.atech.student.navigation.MainScreenRoutes
 import com.atech.student.navigation.ResearchScreenRoutes
 import com.atech.student.ui.research.main.ResearchScreenEvents
@@ -31,6 +33,7 @@ import com.atech.student.ui.resume.ResumeScreenEvents
 import com.atech.ui_common.R
 import com.atech.ui_common.common.GlobalEmptyScreen
 import com.atech.ui_common.common.MainContainer
+import com.atech.ui_common.common.ProgressBar
 import com.atech.ui_common.common.ResearchItem
 import com.atech.ui_common.common.bottomPaddingLazy
 import com.atech.ui_common.theme.ResearchHubTheme
@@ -41,7 +44,7 @@ import com.atech.ui_common.theme.spacing
 fun ResearchScreen(
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController(),
-    items: List<ResearchModel> = emptyList(),
+    items: DataState<List<ResearchModel>> = DataState.Loading,
     onEvent: (ResearchScreenEvents) -> Unit = {},
     resumeEvents: (ResumeScreenEvents) -> Unit = {}
 ) {
@@ -52,9 +55,12 @@ fun ResearchScreen(
         when (lifecycleState) {
             Lifecycle.State.RESUMED -> {
                 resumeEvents(ResumeScreenEvents.UpdateUserDetails)
-                onEvent.invoke(ResearchScreenEvents.DeleteResearchNotInKeys(items.map {
-                    it.key ?: ""
-                }))
+                if (items is DataState.Success) onEvent.invoke(
+                    ResearchScreenEvents.DeleteResearchNotInKeys(
+                        items.data.map {
+                            it.key ?: ""
+                        })
+                )
             }
 
             else -> {}
@@ -63,16 +69,12 @@ fun ResearchScreen(
     LaunchedEffect(
         items
     ) {
-        onEvent.invoke(
-            ResearchScreenEvents.DeleteResearchNotInKeys(
-                items.map {
-                    it.key ?: ""
-                }
-            )
-        )
+        if (items is DataState.Success)
+            onEvent.invoke(ResearchScreenEvents.DeleteResearchNotInKeys(items.data.map {
+                it.key ?: ""
+            }))
     }
-    MainContainer(
-        title = stringResource(id = R.string.research),
+    MainContainer(title = stringResource(id = R.string.research),
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         actions = {
             IconButton(onClick = {
@@ -95,28 +97,46 @@ fun ResearchScreen(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-        }
-    ) { paddingValues ->
-        if (items.isEmpty()) {
-            GlobalEmptyScreen(
-                modifier = Modifier
-                    .padding(paddingValues),
-                title = stringResource(id = R.string.no_research_found),
-            )
-            return@MainContainer
-        }
-        LazyColumn(
-            contentPadding = paddingValues,
-            modifier = Modifier,
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-        ) {
-            items(items.size) { index ->
-                ResearchItem(model = items[index], onClick = {
-                    onEvent.invoke(ResearchScreenEvents.OnItemClick(items[index]))
-                    navController.navigate(ResearchScreenRoutes.DetailScreen.route)
-                })
+            IconButton(onClick = {
+//                navController.navigate(
+//                    MainScreenRoutes.Wishlist.route
+//                )
+            }) {
+                Icon(
+                    imageVector = Icons.Rounded.FilterAlt,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
-            bottomPaddingLazy()
+        }) { paddingValues ->
+        when (items) {
+            is DataState.Error -> {}
+            DataState.Loading -> {
+                ProgressBar(paddingValues)
+            }
+
+            is DataState.Success -> {
+                if (items.data.isEmpty()) {
+                    GlobalEmptyScreen(
+                        modifier = Modifier.padding(paddingValues),
+                        title = stringResource(id = R.string.no_research_found),
+                    )
+                    return@MainContainer
+                }
+                LazyColumn(
+                    contentPadding = paddingValues,
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                ) {
+                    items(items.data.size) { index ->
+                        ResearchItem(model = items.data[index], onClick = {
+                            onEvent.invoke(ResearchScreenEvents.OnItemClick(items.data[index]))
+                            navController.navigate(ResearchScreenRoutes.DetailScreen.route)
+                        })
+                    }
+                    bottomPaddingLazy()
+                }
+            }
         }
     }
 }

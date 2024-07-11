@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.atech.core.config.RemoteConfigHelper
 import com.atech.core.model.EducationDetails
 import com.atech.core.use_cases.AuthUseCases
+import com.atech.core.use_cases.FireStoreUseCases
 import com.atech.core.utils.RemoteConfigKeys
 import com.atech.core.utils.TAGS
 import com.atech.core.utils.UserLoggedIn
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class ResumeViewModel @Inject constructor(
     private val authUseCases: AuthUseCases,
     private val conf: RemoteConfigHelper,
+    private val useCases: FireStoreUseCases,
     @UserLoggedIn val isUserLogIn: Boolean
 ) : ViewModel() {
     private val _resumeState = mutableStateOf(ResumeState())
@@ -30,7 +32,7 @@ class ResumeViewModel @Inject constructor(
     private val _addScreenState = mutableStateOf(AddScreenState())
     val addScreenState: State<AddScreenState> get() = _addScreenState
     private var educationClickItemPos: Int? = null
-
+    val research = useCases.getAllResearchUseCase {}
 
     init {
         updateUserDetails()

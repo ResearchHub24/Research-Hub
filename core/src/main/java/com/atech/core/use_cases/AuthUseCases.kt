@@ -6,7 +6,7 @@ import com.atech.core.model.ResearchPublishModel
 import com.atech.core.model.StudentUserModel
 import com.atech.core.model.TeacherUserModel
 import com.atech.core.model.UserType
-import com.atech.core.utils.State
+import com.atech.core.utils.DataState
 import com.atech.core.utils.coreCheckIsAdmin
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -59,14 +59,14 @@ data class LogInWithGoogleStudent @Inject constructor(
 ) {
     suspend operator fun invoke(
         uid: String,
-        state: (State<String>) -> Unit = { _ -> }
+        state: (DataState<String>) -> Unit = { _ -> }
     ) {
         try {
             val credential = GoogleAuthProvider.getCredential(uid, null)
             val task = auth.signInWithCredential(credential).await()
             val user = task.user
             if (user == null) {
-                state((State.Error(Exception("User not found"))))
+                state((DataState.Error(Exception("User not found"))))
             }
             user?.let { logInUser ->
                 val userId = logInUser.uid
@@ -90,15 +90,15 @@ data class LogInWithGoogleStudent @Inject constructor(
                     userType = UserType.STUDENTS.name,
                 )
                 logInUseCase.invoke(userId, studentUserModel) { state1 ->
-                    if (state1 is State.Error)
+                    if (state1 is DataState.Error)
                         state(state1)
-                    if (state1 is State.Success) {
+                    if (state1 is DataState.Success) {
                         runBlocking {
                             setTokenUseCase.invoke(
                                 uid = state1.data
                             ) { error ->
                                 if (error != null)
-                                    state.invoke(State.Error(error))
+                                    state.invoke(DataState.Error(error))
                                 else
                                     state.invoke(state1)
                             }
@@ -107,7 +107,7 @@ data class LogInWithGoogleStudent @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            state(State.Error(e))
+            state(DataState.Error(e))
         }
     }
 }

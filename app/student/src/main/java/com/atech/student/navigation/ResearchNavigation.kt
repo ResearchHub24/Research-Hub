@@ -90,9 +90,9 @@ fun NavGraphBuilder.researchScreenGraph(
             val viewModel = entry.sharedViewModel<ResearchViewModel>(navController = navController)
             val resumeViewModel =
                 entry.sharedViewModel<ResumeViewModel>(navController = navController)
-            val items = viewModel.research.collectAsState(initial = emptyList())
+            val items by viewModel.researchWithDataState
             ResearchScreen(
-                items = items.value,
+                items = items,
                 navController = navController,
                 onEvent = viewModel::onEvent,
                 resumeEvents = resumeViewModel::onEvent
@@ -184,11 +184,9 @@ fun NavGraphBuilder.researchScreenGraph(
         animatedComposable(
             route = ResearchScreenRoutes.AllApplicationScreen.route
         ) { entry ->
-            val researchViewModel =
-                entry.sharedViewModel<ResearchViewModel>(navController = navController)
             val resumeViewModel =
                 entry.sharedViewModel<ResumeViewModel>(navController = navController)
-            val appApplication by researchViewModel.research.collectAsState(emptyList())
+            val appApplication by resumeViewModel.research.collectAsState(emptyList())
             val resumeState by resumeViewModel.resumeState
             val filledForm = resumeState.userData.filledForm ?: ""
             val selectedForm = resumeState.userData.selectedForm ?: ""
@@ -227,8 +225,7 @@ fun NavGraphBuilder.researchScreenGraph(
             val chats by viewModel.getAllMessage(args.path).collectAsStateWithLifecycle(emptyList())
             var canSendMessage by rememberSaveable { mutableStateOf(true) }
             val context = LocalContext.current
-            ChatScreen(
-                title = args.senderName,
+            ChatScreen(title = args.senderName,
                 chats = chats.sortedByDescending { it.created },
                 uid = args.receiverUid,
                 navController = navController,
@@ -275,8 +272,7 @@ fun NavGraphBuilder.researchScreenGraph(
                         }
                         toast(context, "Message Deleted")
                     }
-                }
-            )
+                })
         }
     }
 }

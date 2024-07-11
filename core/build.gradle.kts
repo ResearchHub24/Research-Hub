@@ -82,6 +82,8 @@ dependencies {
     implementation(libs.converter.scalars)
     implementation(libs.jsoup)
     implementation(libs.retrofit.json)
+
+    implementation(libs.androidx.datastore.preferences)
 }
 hilt {
     enableAggregatingTask = true

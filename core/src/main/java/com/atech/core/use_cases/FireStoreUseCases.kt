@@ -12,7 +12,7 @@ import com.atech.core.model.UserModel
 import com.atech.core.model.UserType
 import com.atech.core.utils.CollectionName
 import com.atech.core.utils.PrefKeys
-import com.atech.core.utils.State
+import com.atech.core.utils.DataState
 import com.atech.core.utils.TAGS
 import com.atech.core.utils.coreCheckIsAdmin
 import com.atech.core.utils.fromJsonList
@@ -48,21 +48,21 @@ data class LogInUseCase @Inject constructor(
     private val db: FirebaseFirestore, private val hasUserUseCase: HasUserUseCase
 ) {
     suspend operator fun <T : UserModel> invoke(
-        uid: String, model: T, state: (State<String>) -> Unit = { _ -> }
+        uid: String, model: T, state: (DataState<String>) -> Unit = { _ -> }
     ) {
         try {
             hasUserUseCase.invoke(uid) { state1 ->
                 when (state1) {
-                    is State.Error -> {
+                    is DataState.Error -> {
                         state(state1)
                     }
 
-                    is State.Success -> {
+                    is DataState.Success -> {
                         if (!state1.data) {
                             runBlocking {
                                 db.collection(CollectionName.USER.value).document(uid).set(model)
                                     .await()
-                                state(State.Success(uid))
+                                state(DataState.Success(uid))
                             }
                         } else {
                             coreCheckIsAdmin {
@@ -71,12 +71,12 @@ data class LogInUseCase @Inject constructor(
                                         .await().toObject(TeacherUserModel::class.java)
                                         ?.let { userModel ->
                                             if (userModel.userType != UserType.PROFESSORS.name) state.invoke(
-                                                State.Error(Exception("This mail is linked with student account & can't be used for faculty account"))
+                                                DataState.Error(Exception("This mail is linked with student account & can't be used for faculty account"))
                                             )
-                                            else state(State.Success(uid))
+                                            else state(DataState.Success(uid))
                                         }
                                 }
-                            } ?: state(State.Success(uid))
+                            } ?: state(DataState.Success(uid))
                         }
                     }
 
@@ -84,7 +84,7 @@ data class LogInUseCase @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            state(State.Error(e))
+            state(DataState.Error(e))
         }
     }
 }
@@ -93,13 +93,13 @@ data class HasUserUseCase @Inject constructor(
     private val db: FirebaseFirestore
 ) {
     suspend operator fun invoke(
-        uid: String, state: (State<Boolean>) -> Unit = { _ -> }
+        uid: String, state: (DataState<Boolean>) -> Unit = { _ -> }
     ) {
         try {
             val doc = db.collection(CollectionName.USER.value).document(uid).get().await()
-            state(State.Success(doc.exists()))
+            state(DataState.Success(doc.exists()))
         } catch (e: Exception) {
-            state(State.Error(e))
+            state(DataState.Error(e))
         }
     }
 }

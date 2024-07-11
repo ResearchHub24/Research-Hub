@@ -31,11 +31,11 @@ class LoginViewModel @Inject constructor(
             uid = uid,
         ) { state ->
             when (state) {
-                is com.atech.core.utils.State.Error -> _logInState.value =
+                is com.atech.core.utils.DataState.Error -> _logInState.value =
                     LogInState(errorMessage = state.exception.message)
 
-                com.atech.core.utils.State.Loading -> {}
-                is com.atech.core.utils.State.Success -> {
+                com.atech.core.utils.DataState.Loading -> {}
+                is com.atech.core.utils.DataState.Success -> {
                     _logInState.value = LogInState(uId = state.data)
                 }
             }
