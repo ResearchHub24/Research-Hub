@@ -91,7 +91,8 @@ fun ResearchScreen(
             }) {
                 Icon(
                     imageVector = Icons.Rounded.Bookmarks,
-                    contentDescription = stringResource(R.string.wishlist)
+                    contentDescription = stringResource(R.string.wishlist),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
